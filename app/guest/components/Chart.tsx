@@ -24,7 +24,7 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
       try {
         const [
           ChartJS,
-          { CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement },
+          { CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement, PointElement, LineElement, Filler },
           { Pie, Line }
         ] = await Promise.all([
           import('chart.js').then(mod => mod.Chart),
@@ -32,7 +32,7 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
           import('react-chartjs-2')
         ])
 
-        // Register only the components we need
+        // Register only the components we need (including Filler for filled line charts)
         ChartJS.register(
           CategoryScale,
           LinearScale,
@@ -42,7 +42,8 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
           Legend,
           ArcElement,
           PointElement,
-          LineElement
+          LineElement,
+          Filler
         )
 
         setChartComponent(type === 'pie' ? Pie : Line)
