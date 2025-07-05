@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp } from 'lucide-react'
+import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem } from '@/lib/supabase'
@@ -156,10 +156,13 @@ export default function GuestDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-12 h-12 animate-spin text-primary-600 mx-auto mb-4" />
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <div className="relative">
+            <Loader2 className="w-16 h-16 animate-spin text-white mx-auto mb-4" />
+            <div className="absolute inset-0 w-16 h-16 border-4 border-white/20 rounded-full mx-auto"></div>
+          </div>
+          <p className="text-white text-lg font-medium">Loading your dashboard...</p>
         </div>
       </div>
     )
@@ -167,14 +170,14 @@ export default function GuestDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card text-center max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
           <div className="text-red-500 mb-4">
-            <User className="w-12 h-12 mx-auto mb-2" />
-            <h2 className="text-xl font-semibold">Access Required</h2>
+            <User className="w-16 h-16 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold">Access Required</h2>
           </div>
           <p className="text-gray-600 mb-6">{error}</p>
-          <Link href="/" className="btn-primary">
+          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
             Go Home
           </Link>
         </div>
@@ -184,14 +187,14 @@ export default function GuestDashboard() {
 
   if (!guestData) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="card text-center max-w-md">
-          <User className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Guest Not Found</h2>
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
+          <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4">Guest Not Found</h2>
           <p className="text-gray-600 mb-6">
             We couldn't find your guest profile. Please contact the event organizer.
           </p>
-          <Link href="/" className="btn-primary">
+          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
             Go Home
           </Link>
         </div>
@@ -207,13 +210,29 @@ export default function GuestDashboard() {
     return acc
   }, {} as Record<string, DrinkMenuItem[]>)
 
-  // Chart data for user statistics
+  // Enhanced chart styling with blue theme
   const userDrinkCategoryData = {
     labels: Object.keys(guestData.drink_summary),
     datasets: [{
       label: 'Drinks Consumed',
       data: Object.values(guestData.drink_summary),
-      backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#F97316'],
+      backgroundColor: [
+        'rgba(59, 130, 246, 0.8)',   // blue-500
+        'rgba(14, 165, 233, 0.8)',   // sky-500
+        'rgba(6, 182, 212, 0.8)',    // cyan-500
+        'rgba(168, 85, 247, 0.8)',   // purple-500
+        'rgba(236, 72, 153, 0.8)',   // pink-500
+        'rgba(34, 197, 94, 0.8)',    // green-500
+      ],
+      borderColor: [
+        'rgb(59, 130, 246)',
+        'rgb(14, 165, 233)',
+        'rgb(6, 182, 212)',
+        'rgb(168, 85, 247)',
+        'rgb(236, 72, 153)',
+        'rgb(34, 197, 94)',
+      ],
+      borderWidth: 2,
     }]
   }
 
@@ -289,198 +308,243 @@ export default function GuestDashboard() {
   })()
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">
-              Welcome, {guestData.guest.name}! 🎉
-            </h1>
-            <p className="text-gray-600">Your PousFest dashboard</p>
-          </div>
-          <Link href="/" className="btn-outline">
-            <Home className="w-4 h-4 mr-2" />
-            Home
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">Achievements</h3>
-                <p className="text-3xl font-bold text-yellow-500">{guestData.total_achievements}</p>
-                <p className="text-sm text-gray-600">badges unlocked</p>
-              </div>
-              <Trophy className="w-12 h-12 text-yellow-500" />
+      <div className="relative p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">
+                Welcome, {guestData.guest.name}!
+              </h1>
+              <p className="text-blue-100 text-lg">Your PousFest dashboard</p>
             </div>
+            <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
+              <Home className="w-4 h-4" />
+              Home
+            </Link>
           </div>
 
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-800">Drinks</h3>
-                <p className="text-3xl font-bold text-purple-500">{guestData.total_drinks}</p>
-                <p className="text-sm text-gray-600">drinks logged</p>
-              </div>
-              <Wine className="w-12 h-12 text-purple-500" />
-            </div>
-          </div>
-        </div>
-
-        {/* Personal Statistics Charts */}
-        {(Object.keys(guestData.drink_summary).length > 0 || guestData.achievements.length > 0) && (
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {Object.keys(guestData.drink_summary).length > 0 && (
-              <div className="card">
-                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5" />
-                  Your Drink Preferences
-                </h3>
-                <div className="h-64">
-                  <Pie data={userDrinkCategoryData} options={{ responsive: true, maintainAspectRatio: false }} />
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Achievements</h3>
+                  <p className="text-4xl font-bold text-yellow-500 mb-1">{guestData.total_achievements}</p>
+                  <p className="text-sm text-gray-600">badges unlocked</p>
+                </div>
+                <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Trophy className="w-8 h-8 text-white" />
                 </div>
               </div>
-            )}
-            
-            {guestData.drink_orders.length > 0 && (
-              <div className="card">
-                                 <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                   <Wine className="w-5 h-5" />
-                   Drinks Timeline (30-min intervals)
-                 </h3>
-                <div className="h-64">
-                  <Line 
-                    data={drinkTimelineData} 
-                    options={{ 
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Drinks</h3>
+                  <p className="text-4xl font-bold text-blue-500 mb-1">{guestData.total_drinks}</p>
+                  <p className="text-sm text-gray-600">drinks logged</p>
+                </div>
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg">
+                  <Wine className="w-8 h-8 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Personal Statistics Charts */}
+          {(Object.keys(guestData.drink_summary).length > 0 || guestData.achievements.length > 0) && (
+            <div className="grid lg:grid-cols-2 gap-6 mb-8">
+              {Object.keys(guestData.drink_summary).length > 0 && (
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6">
+                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800">
+                    <TrendingUp className="w-6 h-6 text-blue-500" />
+                    Your Drink Preferences
+                  </h3>
+                  <div className="h-64">
+                    <Pie data={userDrinkCategoryData} options={{ 
                       responsive: true, 
                       maintainAspectRatio: false,
-                      scales: {
-                        y: {
-                          beginAtZero: true,
-                          ticks: {
-                            stepSize: 1,
-                            callback: function(value) {
-                              return Number.isInteger(value) ? value : null;
-                            }
+                      plugins: {
+                        legend: {
+                          position: 'bottom',
+                          labels: {
+                            padding: 20,
+                            usePointStyle: true,
                           }
                         }
                       }
-                    }} 
-                  />
+                    }} />
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        )}
+              )}
+              
+              {guestData.drink_orders.length > 0 && (
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6">
+                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2 text-gray-800">
+                    <Wine className="w-6 h-6 text-blue-500" />
+                    Drinks Timeline
+                  </h3>
+                  <div className="h-64">
+                    <Line 
+                      data={drinkTimelineData} 
+                      options={{ 
+                        responsive: true, 
+                        maintainAspectRatio: false,
+                        plugins: {
+                          legend: {
+                            display: false
+                          }
+                        },
+                        scales: {
+                          y: {
+                            beginAtZero: true,
+                            ticks: {
+                              stepSize: 1,
+                              callback: function(value) {
+                                return Number.isInteger(value) ? value : null;
+                              }
+                            },
+                            grid: {
+                              color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                          },
+                          x: {
+                            grid: {
+                              color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                          }
+                        }
+                      }} 
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Achievements Section */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-800">Your Achievements</h2>
-            {guestData.achievements.length > 0 ? (
-              <div className="space-y-4">
-                {guestData.achievements.map((achievement) => (
-                  <div key={achievement.id} className="achievement-card">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center">
-                        <Trophy className="w-6 h-6 text-yellow-800" />
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-gray-800">
-                          {achievement.achievement_templates?.title}
-                        </h3>
-                        <p className="text-sm text-gray-600 mb-2">
-                          {achievement.achievement_templates?.description}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Unlocked: {new Date(achievement.unlocked_at).toLocaleDateString()}
-                        </p>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Achievements Section */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Sparkles className="w-6 h-6" />
+                Your Achievements
+              </h2>
+              {guestData.achievements.length > 0 ? (
+                <div className="space-y-4">
+                  {guestData.achievements.map((achievement) => (
+                    <div key={achievement.id} className="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 rounded-2xl p-6 shadow-lg">
+                      <div className="flex items-start gap-4">
+                        <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                          <Trophy className="w-7 h-7 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-gray-800 text-lg mb-1">
+                            {achievement.achievement_templates?.title}
+                          </h3>
+                          <p className="text-gray-600 mb-2">
+                            {achievement.achievement_templates?.description}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            Unlocked: {new Date(achievement.unlocked_at).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="card text-center py-8">
-                <Trophy className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-600">
-                  No achievements yet. Keep participating to unlock badges!
-                </p>
-              </div>
-            )}
-          </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 text-center py-12 px-6">
+                  <Trophy className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-gray-600 mb-2">No achievements yet</h3>
+                  <p className="text-gray-500">
+                    Keep participating to unlock badges!
+                  </p>
+                </div>
+              )}
+            </div>
 
-          {/* Drinks Section */}
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-gray-800">Order Drinks</h2>
-            {Object.entries(drinksByCategory).map(([category, drinks]) => (
-              <div key={category} className="space-y-3">
-                <h3 className="text-lg font-medium text-gray-700 capitalize">
-                  {category.replace('_', ' ')}
-                </h3>
-                <div className="grid gap-3">
-                  {drinks.map((drink) => (
-                    <div key={drink.id} className="drink-card">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-800">{drink.name}</h4>
-                          {drink.description && (
-                            <p className="text-sm text-gray-600">{drink.description}</p>
+            {/* Drinks Section */}
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                <Wine className="w-6 h-6" />
+                Order Drinks
+              </h2>
+              {Object.entries(drinksByCategory).map(([category, drinks]) => (
+                <div key={category} className="space-y-3">
+                  <h3 className="text-lg font-semibold text-white/90 capitalize">
+                    {category.replace('_', ' ')}
+                  </h3>
+                  <div className="grid gap-3">
+                    {drinks.map((drink) => (
+                      <div key={drink.id} className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-white/20 p-4 hover:shadow-xl transition-all duration-200">
+                        <div className="flex items-center justify-between">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-800 mb-1">{drink.name}</h4>
+                            {drink.description && (
+                              <p className="text-sm text-gray-600">{drink.description}</p>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => orderDrink(drink.id)}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg text-sm"
+                          >
+                            Order
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* Recent Drinks */}
+              {guestData.drink_orders.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-white/90">Recent Orders</h3>
+                  <div className="space-y-2">
+                    {guestData.drink_orders.slice(0, 5).map((order) => (
+                      <div key={order.id} className="flex items-center justify-between p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/20">
+                        <div>
+                          <span className="font-medium text-white">{order.drink_menu?.name}</span>
+                          {order.quantity > 1 && (
+                            <span className="text-sm text-blue-100"> x{order.quantity}</span>
                           )}
                         </div>
-                        <button
-                          onClick={() => orderDrink(drink.id)}
-                          className="btn-primary text-sm py-2 px-4"
-                        >
-                          Order
-                        </button>
+                        <span className="text-sm text-blue-100">
+                          {new Date(order.ordered_at).toLocaleTimeString()}
+                        </span>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
-
-            {/* Recent Drinks */}
-            {guestData.drink_orders.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="text-lg font-medium text-gray-700">Recent Orders</h3>
-                <div className="space-y-2">
-                  {guestData.drink_orders.slice(0, 5).map((order) => (
-                    <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <span className="font-medium">{order.drink_menu?.name}</span>
-                        {order.quantity > 1 && (
-                          <span className="text-sm text-gray-600"> x{order.quantity}</span>
-                        )}
-                      </div>
-                      <span className="text-sm text-gray-500">
-                        {new Date(order.ordered_at).toLocaleTimeString()}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Order Feedback Overlay */}
       {orderFeedback.show && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
-          <div className={`bg-white rounded-lg p-6 max-w-sm mx-4 text-center shadow-xl ${orderFeedback.success ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}>
-            <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-100' : 'bg-red-100'}`}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+          <div className={`bg-white rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl ${orderFeedback.success ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}>
+            <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-100' : 'bg-red-100'}`}>
               {orderFeedback.success ? (
-                <Wine className={`w-8 h-8 ${orderFeedback.success ? 'text-green-600' : 'text-red-600'}`} />
+                <Wine className={`w-10 h-10 ${orderFeedback.success ? 'text-green-600' : 'text-red-600'}`} />
               ) : (
-                <div className="text-red-600 text-2xl">⚠️</div>
+                <div className="text-red-600 text-3xl">⚠️</div>
               )}
             </div>
-            <p className={`text-lg font-semibold ${orderFeedback.success ? 'text-green-800' : 'text-red-800'}`}>
+            <p className={`text-xl font-bold ${orderFeedback.success ? 'text-green-800' : 'text-red-800'}`}>
               {orderFeedback.message}
             </p>
           </div>

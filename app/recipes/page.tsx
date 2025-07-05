@@ -1,17 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Home, Play, ShoppingCart, Wine, Clock, Users } from 'lucide-react'
+import { Wine, Clock, Users, Play, Home, ChefHat, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import type { DrinkMenuItem, Recipe } from '@/lib/supabase'
+import type { Recipe } from '@/lib/supabase'
 
 export default function RecipesPage() {
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
   const [recipes, setRecipes] = useState<Recipe[]>([])
-  const [drinkMenu, setDrinkMenu] = useState<DrinkMenuItem[]>([])
-  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean }>({ show: false, message: '', success: false })
   const [loading, setLoading] = useState(true)
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
+  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean }>({ show: false, message: '', success: false })
 
   useEffect(() => {
     fetchData()
@@ -19,18 +18,23 @@ export default function RecipesPage() {
 
   const fetchData = async () => {
     try {
-      const [recipesData, drinkMenuData] = await Promise.all([
-        supabase.from('recipes').select('*, drink_menu(name, category)').order('name', { ascending: true }),
-        supabase.from('drink_menu').select('*').eq('available', true).eq('category', 'cocktail').order('name', { ascending: true })
-      ])
+      const { data: recipes, error } = await supabase
+        .from('recipes')
+        .select(`
+          *,
+          drink_menu (
+            id,
+            name,
+            category,
+            description
+          )
+        `)
+        .order('name')
 
-      if (recipesData.error) throw recipesData.error
-      if (drinkMenuData.error) throw drinkMenuData.error
-
-      setRecipes(recipesData.data || [])
-      setDrinkMenu(drinkMenuData.data || [])
-    } catch (err) {
-      console.error('Failed to fetch data:', err)
+      if (error) throw error
+      setRecipes(recipes || [])
+    } catch (error) {
+      console.error('Error fetching recipes:', error)
     } finally {
       setLoading(false)
     }
@@ -41,17 +45,7 @@ export default function RecipesPage() {
     if (!tagUid) {
       setOrderFeedback({
         show: true,
-        message: 'Please scan your NFC tag first from the guest dashboard',
-        success: false
-      })
-      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
-      return
-    }
-
-    if (!recipe.drink_menu_id) {
-      setOrderFeedback({
-        show: true,
-        message: 'This recipe is not linked to a drink in the menu.',
+        message: 'Please scan your NFC tag first to order drinks.',
         success: false
       })
       setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
@@ -86,7 +80,7 @@ export default function RecipesPage() {
       console.error('Failed to order drink:', err)
       setOrderFeedback({
         show: true,
-        message: 'Failed to order cocktail. Please try again.',
+        message: 'Failed to order drink. Please try again.',
         success: false
       })
       setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
@@ -104,94 +98,113 @@ export default function RecipesPage() {
 
   if (selectedRecipe) {
     return (
-      <div className="min-h-screen p-4">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-6">
-            <button
-              onClick={() => setSelectedRecipe(null)}
-              className="btn-outline"
-            >
-              ← Back to Recipes
-            </button>
-            <Link href="/" className="btn-outline">
-              <Home className="w-4 h-4 mr-2" />
-              Home
-            </Link>
-          </div>
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '2s'}}></div>
+          <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
+        </div>
 
-          {/* Recipe Details */}
-          <div className="card mb-6">
-            <div className="flex flex-col lg:flex-row gap-6">
-              {/* Video Section */}
-              <div className="lg:w-1/2">
-                <h1 className="text-3xl font-bold text-gray-800 mb-4">{selectedRecipe.name}</h1>
-                <p className="text-gray-600 mb-4">{selectedRecipe.description}</p>
-                
-                {/* Recipe Info */}
-                <div className="flex flex-wrap gap-4 mb-6">
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">{selectedRecipe.prep_time}</span>
+        <div className="relative p-4">
+          <div className="max-w-4xl mx-auto">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+              <button
+                onClick={() => setSelectedRecipe(null)}
+                className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
+              >
+                ← Back to Recipes
+              </button>
+              <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
+                <Home className="w-4 h-4" />
+                Home
+              </Link>
+            </div>
+
+            {/* Recipe Details */}
+            <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 mb-6">
+              <div className="flex flex-col lg:flex-row gap-8">
+                {/* Video Section */}
+                <div className="lg:w-1/2">
+                  <h1 className="text-4xl font-bold text-gray-800 mb-4">{selectedRecipe.name}</h1>
+                  <p className="text-gray-600 mb-6 text-lg">{selectedRecipe.description}</p>
+                  
+                  {/* Recipe Info */}
+                  <div className="flex flex-wrap gap-4 mb-6">
+                    <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+                      <Clock className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-800">{selectedRecipe.prep_time}</span>
+                    </div>
+                    <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
+                      <Users className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-800">Serves {selectedRecipe.serves}</span>
+                    </div>
+                    <span className={`px-3 py-2 rounded-lg text-sm font-medium ${getDifficultyColor(selectedRecipe.difficulty || 'Easy')}`}>
+                      {selectedRecipe.difficulty}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">Serves {selectedRecipe.serves}</span>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(selectedRecipe.difficulty || 'Easy')}`}>
-                    {selectedRecipe.difficulty}
-                  </span>
+
+                  {selectedRecipe.video_url && (
+                    <div className="aspect-video bg-gray-100 rounded-xl overflow-hidden mb-6 shadow-lg">
+                      <iframe
+                        src={selectedRecipe.video_url}
+                        title={`${selectedRecipe.name} Recipe Video`}
+                        className="w-full h-full"
+                        allowFullScreen
+                      />
+                    </div>
+                  )}
+
+                  {/* Order Button */}
+                  <button
+                    onClick={() => orderDrink(selectedRecipe)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl w-full lg:w-auto text-lg"
+                  >
+                    Order This Cocktail
+                  </button>
                 </div>
 
-                {selectedRecipe.video_url && (
-                  <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-6">
-                    <iframe
-                      src={selectedRecipe.video_url}
-                      title={`${selectedRecipe.name} Recipe Video`}
-                      className="w-full h-full"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
+                {/* Recipe Instructions */}
+                <div className="lg:w-1/2">
+                  <div className="space-y-8">
+                    {/* Ingredients */}
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <Sparkles className="w-6 h-6 text-blue-600" />
+                        Ingredients
+                      </h3>
+                      <div className="bg-gray-50 rounded-xl p-6">
+                        <ul className="space-y-3">
+                          {selectedRecipe.ingredients.map((ingredient, index) => (
+                            <li key={index} className="flex items-start gap-3">
+                              <span className="w-2 h-2 bg-blue-500 rounded-full mt-3 flex-shrink-0"></span>
+                              <span className="text-gray-700 font-medium">{ingredient}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
 
-                {/* Order Button */}
-                <button
-                  onClick={() => orderDrink(selectedRecipe)}
-                  className="btn-primary w-full lg:w-auto"
-                >
-                  Order This Cocktail
-                </button>
-              </div>
-
-              {/* Recipe Instructions */}
-              <div className="lg:w-1/2">
-                <div className="space-y-6">
-                  {/* Ingredients */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-3">Ingredients</h3>
-                    <ul className="space-y-2">
-                      {selectedRecipe.ingredients.map((ingredient, index) => (
-                        <li key={index} className="flex items-start gap-2">
-                          <span className="w-2 h-2 bg-primary-500 rounded-full mt-2 flex-shrink-0"></span>
-                          <span className="text-gray-700">{ingredient}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Instructions */}
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-800 mb-3">Instructions</h3>
-                    <ol className="space-y-3">
-                      {selectedRecipe.instructions.map((instruction, index) => (
-                        <li key={index} className="flex gap-3">
-                          <span className="w-6 h-6 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-medium flex-shrink-0">
-                            {index + 1}
-                          </span>
-                          <span className="text-gray-700 pt-1">{instruction}</span>
-                        </li>
-                      ))}
-                    </ol>
+                    {/* Instructions */}
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <ChefHat className="w-6 h-6 text-blue-600" />
+                        Instructions
+                      </h3>
+                      <div className="bg-gray-50 rounded-xl p-6">
+                        <ol className="space-y-4">
+                          {selectedRecipe.instructions.map((instruction, index) => (
+                            <li key={index} className="flex gap-4">
+                              <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                                {index + 1}
+                              </span>
+                              <span className="text-gray-700 pt-1 font-medium">{instruction}</span>
+                            </li>
+                          ))}
+                        </ol>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -201,16 +214,16 @@ export default function RecipesPage() {
 
         {/* Order Feedback Overlay */}
         {orderFeedback.show && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 animate-fade-in">
-            <div className={`bg-white rounded-lg p-6 max-w-sm mx-4 text-center shadow-xl ${orderFeedback.success ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}>
-              <div className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-100' : 'bg-red-100'}`}>
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
+            <div className={`bg-white rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl ${orderFeedback.success ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}>
+              <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-100' : 'bg-red-100'}`}>
                 {orderFeedback.success ? (
-                  <Wine className={`w-8 h-8 ${orderFeedback.success ? 'text-green-600' : 'text-red-600'}`} />
+                  <Wine className={`w-10 h-10 ${orderFeedback.success ? 'text-green-600' : 'text-red-600'}`} />
                 ) : (
-                  <div className="text-red-600 text-2xl">⚠️</div>
+                  <div className="text-red-600 text-3xl">⚠️</div>
                 )}
               </div>
-              <p className={`text-lg font-semibold ${orderFeedback.success ? 'text-green-800' : 'text-red-800'}`}>
+              <p className={`text-xl font-bold ${orderFeedback.success ? 'text-green-800' : 'text-red-800'}`}>
                 {orderFeedback.message}
               </p>
             </div>
@@ -221,77 +234,91 @@ export default function RecipesPage() {
   }
 
   return (
-    <div className="min-h-screen p-4">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Cocktail Recipes</h1>
-            <p className="text-gray-600">Learn to make amazing cocktails with video tutorials</p>
-          </div>
-          <Link href="/" className="btn-outline">
-            <Home className="w-4 h-4 mr-2" />
-            Home
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
 
-        {/* Recipe Grid */}
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading recipes...</p>
+      <div className="relative p-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2">Cocktail Recipes</h1>
+              <p className="text-blue-100 text-lg">Learn to make amazing cocktails with video tutorials</p>
+            </div>
+            <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
+              <Home className="w-4 h-4" />
+              Home
+            </Link>
           </div>
-        ) : recipes.length === 0 ? (
-          <div className="text-center py-12">
-            <Wine className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-gray-600 mb-2">No Recipes Available</h3>
-            <p className="text-gray-500">Check back later for cocktail recipes!</p>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recipes.map((recipe) => (
-            <div key={recipe.id} className="card hover:shadow-xl transition-shadow duration-200 cursor-pointer" onClick={() => setSelectedRecipe(recipe)}>
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                  <Wine className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-semibold text-gray-800">{recipe.name}</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(recipe.difficulty || 'Easy')}`}>
-                      {recipe.difficulty}
-                    </span>
-                    <span className="text-xs text-gray-500">{recipe.prep_time}</span>
-                  </div>
-                </div>
+
+          {/* Recipe Grid */}
+          {loading ? (
+            <div className="text-center py-20">
+              <div className="relative mx-auto mb-6">
+                <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-white/10"></div>
               </div>
-              
-              <p className="text-gray-600 text-sm mb-4">{recipe.description}</p>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4 text-sm text-gray-500">
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    <span>{recipe.prep_time}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Users className="w-4 h-4" />
-                    <span>{recipe.serves}</span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {recipe.video_url && (
-                    <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                      <Play className="w-4 h-4 text-red-600" />
-                    </div>
-                  )}
-                  <span className="text-primary-600 font-medium text-sm">View Recipe →</span>
-                </div>
+              <p className="text-white text-lg font-medium">Loading recipes...</p>
+            </div>
+          ) : recipes.length === 0 ? (
+            <div className="text-center py-20">
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-12 max-w-md mx-auto">
+                <Wine className="w-20 h-20 text-gray-400 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold text-gray-600 mb-4">No Recipes Available</h3>
+                <p className="text-gray-500 text-lg">Check back later for cocktail recipes!</p>
               </div>
             </div>
-          ))}
-          </div>
-        )}
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recipes.map((recipe) => (
+                <div key={recipe.id} className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 hover:shadow-3xl hover:scale-105 transition-all duration-300 cursor-pointer group" onClick={() => setSelectedRecipe(recipe)}>
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                      <Wine className="w-7 h-7 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-gray-800 text-lg mb-1">{recipe.name}</h3>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getDifficultyColor(recipe.difficulty || 'Easy')}`}>
+                          {recipe.difficulty}
+                        </span>
+                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">{recipe.prep_time}</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-600 text-sm mb-6 line-clamp-3">{recipe.description}</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4 text-sm text-gray-500">
+                      <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg">
+                        <Clock className="w-4 h-4 text-blue-600" />
+                        <span className="text-blue-800 font-medium">{recipe.prep_time}</span>
+                      </div>
+                      <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg">
+                        <Users className="w-4 h-4 text-blue-600" />
+                        <span className="text-blue-800 font-medium">{recipe.serves}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {recipe.video_url && (
+                        <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                          <Play className="w-4 h-4 text-red-600" />
+                        </div>
+                      )}
+                      <span className="text-blue-600 font-bold text-sm group-hover:text-blue-700 transition-colors">View Recipe →</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
