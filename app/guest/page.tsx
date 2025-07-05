@@ -116,7 +116,7 @@ export default function GuestDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [drinkMenu, setDrinkMenu] = useState<DrinkWithRecipe[]>([])
-  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean }>({ show: false, message: '', success: false })
+  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; processing?: boolean }>({ show: false, message: '', success: false })
   const [showQuickOrder, setShowQuickOrder] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
 
@@ -339,6 +339,17 @@ export default function GuestDashboard() {
     const tagUid = localStorage.getItem('pous_fest_tag_uid')
     if (!tagUid) return
 
+    // Find the drink name for feedback
+    const drinkName = drinkMenu.find(d => d.id === drinkId)?.name || 'Drink'
+    
+    // Show processing feedback IMMEDIATELY to prevent multiple clicks
+    setOrderFeedback({
+      show: true,
+      message: `Processing ${drinkName} order...`,
+      success: true, // Use success styling for processing state
+      processing: true
+    })
+
     try {
       const response = await fetch('/api/orderDrink', {
         method: 'POST',
@@ -355,21 +366,19 @@ export default function GuestDashboard() {
       if (!response.ok) {
         throw new Error('Failed to order drink')
       }
-
-      // Find the drink name for feedback
-      const drinkName = drinkMenu.find(d => d.id === drinkId)?.name || 'Drink'
       
-      // Show success feedback
+      // Update to success feedback
       setOrderFeedback({
         show: true,
         message: `${drinkName} ordered successfully! 🍻`,
-        success: true
+        success: true,
+        processing: false
       })
 
-      // Auto-hide feedback after 3 seconds
+      // Auto-hide feedback after 2 seconds
       setTimeout(() => {
-        setOrderFeedback({ show: false, message: '', success: false })
-      }, 3000)
+        setOrderFeedback({ show: false, message: '', success: false, processing: false })
+      }, 2000)
 
       // Invalidate cache and refresh dashboard data to show new drink order
       localStorage.removeItem(GUEST_DATA_CACHE_KEY)
@@ -381,12 +390,13 @@ export default function GuestDashboard() {
       setOrderFeedback({
         show: true,
         message: 'Failed to order drink. Please try again.',
-        success: false
+        success: false,
+        processing: false
       })
 
       // Auto-hide feedback after 3 seconds
       setTimeout(() => {
-        setOrderFeedback({ show: false, message: '', success: false })
+        setOrderFeedback({ show: false, message: '', success: false, processing: false })
       }, 3000)
     }
   }
@@ -705,13 +715,15 @@ export default function GuestDashboard() {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className={`bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl ${orderFeedback.success ? 'border-l-4 border-green-400' : 'border-l-4 border-red-400'}`}>
             <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-500/20 backdrop-blur-sm' : 'bg-red-500/20 backdrop-blur-sm'}`}>
-              {orderFeedback.success ? (
-                <Wine className={`w-10 h-10 ${orderFeedback.success ? 'text-green-300' : 'text-red-300'}`} />
+              {orderFeedback.processing ? (
+                <Loader2 className="w-10 h-10 text-green-300 animate-spin" />
+              ) : orderFeedback.success ? (
+                <Wine className="w-10 h-10 text-green-300" />
               ) : (
                 <div className="text-red-300 text-3xl">⚠️</div>
               )}
             </div>
-            <p className={`text-xl font-bold ${orderFeedback.success ? 'text-white' : 'text-white'} drop-shadow-lg`}>
+            <p className="text-xl font-bold text-white drop-shadow-lg">
               {orderFeedback.message}
             </p>
           </div>

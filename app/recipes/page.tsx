@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Wine, Clock, Users, Play, Home, ChefHat, Sparkles } from 'lucide-react'
+import { Wine, Clock, Users, Play, Home, ChefHat, Sparkles, Loader2 } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Recipe } from '@/lib/supabase'
@@ -13,7 +13,7 @@ export default function RecipesPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
-  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; redirecting?: boolean }>({ show: false, message: '', success: false })
+  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; redirecting?: boolean; processing?: boolean }>({ show: false, message: '', success: false })
   const [returnUrl, setReturnUrl] = useState<string>('/recipes')
 
   useEffect(() => {
@@ -68,11 +68,20 @@ export default function RecipesPage() {
       setOrderFeedback({
         show: true,
         message: 'Please scan your NFC tag first to order drinks.',
-        success: false
+        success: false,
+        processing: false
       })
-      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false, processing: false }), 3000)
       return
     }
+
+    // Show processing feedback IMMEDIATELY to prevent multiple clicks
+    setOrderFeedback({
+      show: true,
+      message: `Processing ${recipe.name} order...`,
+      success: true, // Use success styling for processing state
+      processing: true
+    })
 
     try {
       const response = await fetch('/api/orderDrink', {
@@ -91,10 +100,12 @@ export default function RecipesPage() {
         throw new Error('Failed to order drink')
       }
 
+      // Update to success feedback
       setOrderFeedback({
         show: true,
         message: `${recipe.name} ordered successfully! 🍻`,
-        success: true
+        success: true,
+        processing: false
       })
 
       // If we came from guest dashboard, redirect back after showing feedback
@@ -104,23 +115,25 @@ export default function RecipesPage() {
             show: true, 
             message: 'Redirecting back to dashboard...', 
             success: true, 
-            redirecting: true 
+            redirecting: true,
+            processing: false
           })
         }, 1500)
         setTimeout(() => {
           router.push(returnUrl)
         }, 2500)
       } else {
-        setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+        setTimeout(() => setOrderFeedback({ show: false, message: '', success: false, processing: false }), 2000)
       }
     } catch (err) {
       console.error('Failed to order drink:', err)
       setOrderFeedback({
         show: true,
         message: 'Failed to order drink. Please try again.',
-        success: false
+        success: false,
+        processing: false
       })
-      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false, processing: false }), 3000)
     }
   }
 
@@ -262,7 +275,9 @@ export default function RecipesPage() {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
             <div className={`bg-white rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl ${orderFeedback.success ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}>
               <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-100' : 'bg-red-100'}`}>
-                {orderFeedback.redirecting ? (
+                {orderFeedback.processing ? (
+                  <Loader2 className="w-10 h-10 text-green-600 animate-spin" />
+                ) : orderFeedback.redirecting ? (
                   <div className="animate-spin rounded-full h-10 w-10 border-2 border-green-300 border-t-green-600"></div>
                 ) : orderFeedback.success ? (
                   <Wine className="w-10 h-10 text-green-600" />
