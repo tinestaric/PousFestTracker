@@ -4,197 +4,39 @@ import { useState, useEffect } from 'react'
 import { Home, Play, ShoppingCart, Wine, Clock, Users } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import type { DrinkMenuItem } from '@/lib/supabase'
-
-interface Recipe {
-  id: string
-  name: string
-  description: string
-  ingredients: string[]
-  instructions: string[]
-  videoUrl?: string
-  prepTime: string
-  difficulty: 'Easy' | 'Medium' | 'Hard'
-  serves: number
-  drinkId?: string
-}
-
-// Sample cocktail recipes data
-const cocktailRecipes: Recipe[] = [
-  {
-    id: 'mojito',
-    name: 'Classic Mojito',
-    description: 'A refreshing Cuban cocktail with mint, lime, and rum',
-    ingredients: [
-      '2 oz White rum',
-      '1 oz Fresh lime juice',
-      '2 tsp Sugar',
-      '6-8 Fresh mint leaves',
-      'Soda water',
-      'Ice cubes',
-      'Lime wheel and mint sprig for garnish'
-    ],
-    instructions: [
-      'Add mint leaves and sugar to a highball glass',
-      'Gently muddle the mint to release oils (don\'t over-muddle)',
-      'Add lime juice and rum',
-      'Fill glass with ice cubes',
-      'Top with soda water',
-      'Stir gently to combine',
-      'Garnish with lime wheel and fresh mint sprig'
-    ],
-    videoUrl: 'https://www.youtube.com/embed/4oiA7hW8QqQ',
-    prepTime: '5 min',
-    difficulty: 'Easy',
-    serves: 1
-  },
-  {
-    id: 'margarita',
-    name: 'Classic Margarita',
-    description: 'The perfect balance of tequila, lime, and orange liqueur',
-    ingredients: [
-      '2 oz Blanco tequila',
-      '1 oz Fresh lime juice',
-      '1 oz Orange liqueur (Cointreau or Triple Sec)',
-      '1/2 oz Simple syrup (optional)',
-      'Salt for rim',
-      'Ice cubes',
-      'Lime wheel for garnish'
-    ],
-    instructions: [
-      'Rim glass with salt (optional)',
-      'Add all ingredients to a shaker with ice',
-      'Shake vigorously for 10-15 seconds',
-      'Strain into a rocks glass over fresh ice',
-      'Garnish with lime wheel'
-    ],
-    videoUrl: 'https://www.youtube.com/embed/TZlTdFNjAx8',
-    prepTime: '3 min',
-    difficulty: 'Easy',
-    serves: 1
-  },
-  {
-    id: 'old-fashioned',
-    name: 'Old Fashioned',
-    description: 'A timeless whiskey cocktail with bitters and sugar',
-    ingredients: [
-      '2 oz Bourbon or rye whiskey',
-      '1/4 oz Simple syrup',
-      '2-3 dashes Angostura bitters',
-      'Orange peel',
-      'Ice cubes',
-      'Maraschino cherry (optional)'
-    ],
-    instructions: [
-      'Add simple syrup and bitters to a rocks glass',
-      'Add a large ice cube',
-      'Pour whiskey over ice',
-      'Stir gently for 30 seconds',
-      'Express orange peel oils over drink',
-      'Garnish with orange peel and cherry'
-    ],
-    videoUrl: 'https://www.youtube.com/embed/qhoGgKdYWkw',
-    prepTime: '4 min',
-    difficulty: 'Medium',
-    serves: 1
-  },
-  {
-    id: 'cosmopolitan',
-    name: 'Cosmopolitan',
-    description: 'A sophisticated pink cocktail with vodka and cranberry',
-    ingredients: [
-      '1.5 oz Vodka',
-      '1 oz Cointreau or Triple Sec',
-      '0.5 oz Fresh lime juice',
-      '0.5 oz Cranberry juice',
-      'Ice cubes',
-      'Lime wheel for garnish'
-    ],
-    instructions: [
-      'Add all ingredients to a cocktail shaker with ice',
-      'Shake vigorously for 10-15 seconds',
-      'Double strain into a chilled martini glass',
-      'Garnish with lime wheel'
-    ],
-    videoUrl: 'https://www.youtube.com/embed/6Kf3KKaGYSs',
-    prepTime: '3 min',
-    difficulty: 'Medium',
-    serves: 1
-  },
-  {
-    id: 'negroni',
-    name: 'Negroni',
-    description: 'A bitter Italian aperitif with gin, vermouth, and Campari',
-    ingredients: [
-      '1 oz Gin',
-      '1 oz Sweet vermouth',
-      '1 oz Campari',
-      'Ice cubes',
-      'Orange peel for garnish'
-    ],
-    instructions: [
-      'Add all ingredients to a rocks glass with ice',
-      'Stir gently for 30 seconds',
-      'Express orange peel oils over drink',
-      'Garnish with orange peel'
-    ],
-    videoUrl: 'https://www.youtube.com/embed/apb7DYlCJdY',
-    prepTime: '2 min',
-    difficulty: 'Easy',
-    serves: 1
-  },
-  {
-    id: 'whiskey-sour',
-    name: 'Whiskey Sour',
-    description: 'A perfect balance of whiskey, lemon, and sweetness',
-    ingredients: [
-      '2 oz Bourbon whiskey',
-      '1 oz Fresh lemon juice',
-      '0.75 oz Simple syrup',
-      '1 Egg white (optional)',
-      'Ice cubes',
-      'Lemon wheel and cherry for garnish'
-    ],
-    instructions: [
-      'Add all ingredients to a shaker',
-      'Dry shake (without ice) if using egg white',
-      'Add ice and shake vigorously',
-      'Strain into a rocks glass over fresh ice',
-      'Garnish with lemon wheel and cherry'
-    ],
-    videoUrl: 'https://www.youtube.com/embed/QhfHR7MI8Pg',
-    prepTime: '4 min',
-    difficulty: 'Medium',
-    serves: 1
-  }
-]
+import type { DrinkMenuItem, Recipe } from '@/lib/supabase'
 
 export default function RecipesPage() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
+  const [recipes, setRecipes] = useState<Recipe[]>([])
   const [drinkMenu, setDrinkMenu] = useState<DrinkMenuItem[]>([])
   const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean }>({ show: false, message: '', success: false })
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetchDrinkMenu()
+    fetchData()
   }, [])
 
-  const fetchDrinkMenu = async () => {
+  const fetchData = async () => {
     try {
-      const { data, error } = await supabase
-        .from('drink_menu')
-        .select('*')
-        .eq('available', true)
-        .eq('category', 'cocktail')
-        .order('name', { ascending: true })
+      const [recipesData, drinkMenuData] = await Promise.all([
+        supabase.from('recipes').select('*, drink_menu(name, category)').order('name', { ascending: true }),
+        supabase.from('drink_menu').select('*').eq('available', true).eq('category', 'cocktail').order('name', { ascending: true })
+      ])
 
-      if (error) throw error
-      setDrinkMenu(data || [])
+      if (recipesData.error) throw recipesData.error
+      if (drinkMenuData.error) throw drinkMenuData.error
+
+      setRecipes(recipesData.data || [])
+      setDrinkMenu(drinkMenuData.data || [])
     } catch (err) {
-      console.error('Failed to fetch drink menu:', err)
+      console.error('Failed to fetch data:', err)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const orderDrink = async (drinkName: string) => {
+  const orderDrink = async (recipe: Recipe) => {
     const tagUid = localStorage.getItem('pous_fest_tag_uid')
     if (!tagUid) {
       setOrderFeedback({
@@ -206,12 +48,10 @@ export default function RecipesPage() {
       return
     }
 
-    // Find the drink in our menu
-    const drink = drinkMenu.find(d => d.name.toLowerCase().includes(drinkName.toLowerCase()))
-    if (!drink) {
+    if (!recipe.drink_menu_id) {
       setOrderFeedback({
         show: true,
-        message: 'This cocktail is not available for ordering',
+        message: 'This recipe is not linked to a drink in the menu.',
         success: false
       })
       setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
@@ -226,7 +66,7 @@ export default function RecipesPage() {
         },
         body: JSON.stringify({
           tag_uid: tagUid,
-          drink_menu_id: drink.id,
+          drink_menu_id: recipe.drink_menu_id,
           quantity: 1,
         }),
       })
@@ -237,7 +77,7 @@ export default function RecipesPage() {
 
       setOrderFeedback({
         show: true,
-        message: `${drink.name} ordered successfully! 🍻`,
+        message: `${recipe.name} ordered successfully! 🍻`,
         success: true
       })
 
@@ -292,21 +132,21 @@ export default function RecipesPage() {
                 <div className="flex flex-wrap gap-4 mb-6">
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4 text-gray-500" />
-                    <span className="text-sm text-gray-600">{selectedRecipe.prepTime}</span>
+                    <span className="text-sm text-gray-600">{selectedRecipe.prep_time}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Users className="w-4 h-4 text-gray-500" />
                     <span className="text-sm text-gray-600">Serves {selectedRecipe.serves}</span>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(selectedRecipe.difficulty)}`}>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(selectedRecipe.difficulty || 'Easy')}`}>
                     {selectedRecipe.difficulty}
                   </span>
                 </div>
 
-                {selectedRecipe.videoUrl && (
+                {selectedRecipe.video_url && (
                   <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden mb-6">
                     <iframe
-                      src={selectedRecipe.videoUrl}
+                      src={selectedRecipe.video_url}
                       title={`${selectedRecipe.name} Recipe Video`}
                       className="w-full h-full"
                       allowFullScreen
@@ -316,7 +156,7 @@ export default function RecipesPage() {
 
                 {/* Order Button */}
                 <button
-                  onClick={() => orderDrink(selectedRecipe.name)}
+                  onClick={() => orderDrink(selectedRecipe)}
                   className="btn-primary w-full lg:w-auto"
                 >
                   Order This Cocktail
@@ -396,8 +236,20 @@ export default function RecipesPage() {
         </div>
 
         {/* Recipe Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cocktailRecipes.map((recipe) => (
+        {loading ? (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading recipes...</p>
+          </div>
+        ) : recipes.length === 0 ? (
+          <div className="text-center py-12">
+            <Wine className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-600 mb-2">No Recipes Available</h3>
+            <p className="text-gray-500">Check back later for cocktail recipes!</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recipes.map((recipe) => (
             <div key={recipe.id} className="card hover:shadow-xl transition-shadow duration-200 cursor-pointer" onClick={() => setSelectedRecipe(recipe)}>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
@@ -406,10 +258,10 @@ export default function RecipesPage() {
                 <div className="flex-1">
                   <h3 className="font-semibold text-gray-800">{recipe.name}</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(recipe.difficulty)}`}>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(recipe.difficulty || 'Easy')}`}>
                       {recipe.difficulty}
                     </span>
-                    <span className="text-xs text-gray-500">{recipe.prepTime}</span>
+                    <span className="text-xs text-gray-500">{recipe.prep_time}</span>
                   </div>
                 </div>
               </div>
@@ -420,7 +272,7 @@ export default function RecipesPage() {
                 <div className="flex items-center gap-4 text-sm text-gray-500">
                   <div className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
-                    <span>{recipe.prepTime}</span>
+                    <span>{recipe.prep_time}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
@@ -428,7 +280,7 @@ export default function RecipesPage() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {recipe.videoUrl && (
+                  {recipe.video_url && (
                     <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
                       <Play className="w-4 h-4 text-red-600" />
                     </div>
@@ -438,7 +290,8 @@ export default function RecipesPage() {
               </div>
             </div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )

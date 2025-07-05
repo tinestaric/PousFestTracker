@@ -50,4 +50,20 @@ export interface DrinkOrder {
   status: string
   ordered_at: string
   drink_menu?: DrinkMenuItem
+}
+
+export interface Recipe {
+  id: string
+  drink_menu_id: string
+  name: string
+  description: string | null
+  ingredients: string[]
+  instructions: string[]
+  video_url: string | null
+  prep_time: string | null
+  difficulty: 'Easy' | 'Medium' | 'Hard' | null
+  serves: number
+  created_at: string
+  updated_at: string
+  drink_menu?: DrinkMenuItem
 } 

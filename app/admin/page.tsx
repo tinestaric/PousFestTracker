@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Users, Trophy, Wine, BarChart3, Plus, Edit, Trash2, Download, Upload, Home, Save, X } from 'lucide-react'
+import { Users, Trophy, Wine, BarChart3, Plus, Edit, Trash2, Download, Upload, Home, Save, X, BookOpen } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement } from '@/lib/supabase'
+import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement, Recipe } from '@/lib/supabase'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -40,7 +40,7 @@ interface AdminStats {
 
 interface EditingItem {
   id: string | null
-  type: 'guest' | 'achievement' | 'drink' | null
+  type: 'guest' | 'achievement' | 'drink' | 'recipe' | null
   data: any
 }
 
@@ -54,10 +54,11 @@ export default function AdminDashboard() {
   const [guests, setGuests] = useState<Guest[]>([])
   const [achievements, setAchievements] = useState<AchievementTemplate[]>([])
   const [drinks, setDrinks] = useState<DrinkMenuItem[]>([])
+  const [recipes, setRecipes] = useState<Recipe[]>([])
   const [drinkOrders, setDrinkOrders] = useState<DrinkOrder[]>([])
   const [guestAchievements, setGuestAchievements] = useState<GuestAchievement[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'guests' | 'achievements' | 'drinks'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'guests' | 'achievements' | 'drinks' | 'recipes'>('overview')
   const [editing, setEditing] = useState<EditingItem>({ id: null, type: null, data: null })
   const [showAddForm, setShowAddForm] = useState(false)
 
@@ -68,10 +69,11 @@ export default function AdminDashboard() {
   const fetchAdminData = async () => {
     try {
       // Fetch all data
-      const [guestsData, achievementsData, drinksData, drinkOrdersData, guestAchievementsData] = await Promise.all([
+      const [guestsData, achievementsData, drinksData, recipesData, drinkOrdersData, guestAchievementsData] = await Promise.all([
         supabase.from('guests').select('*').order('created_at', { ascending: false }),
         supabase.from('achievement_templates').select('*').order('created_at', { ascending: false }),
         supabase.from('drink_menu').select('*').order('category', { ascending: true }),
+        supabase.from('recipes').select('*, drink_menu(name, category)').order('created_at', { ascending: false }),
         supabase.from('drink_orders').select('*, drink_menu(name, category)').order('ordered_at', { ascending: false }),
         supabase.from('guest_achievements').select('*, achievement_templates(title), guests(name)').order('unlocked_at', { ascending: false })
       ])
@@ -81,6 +83,7 @@ export default function AdminDashboard() {
       setGuests(guestsData.data || [])
       setAchievements(achievementsData.data || [])
       setDrinks(drinksData.data || [])
+      setRecipes(recipesData.data || [])
       setDrinkOrders(drinkOrdersData.data || [])
       setGuestAchievements(guestAchievementsData.data || [])
       setStats({
@@ -102,16 +105,22 @@ export default function AdminDashboard() {
     try {
       if (editing.id) {
         // Update existing
+        const tableName = editing.type === 'guest' ? 'guests' : 
+                         editing.type === 'achievement' ? 'achievement_templates' : 
+                         editing.type === 'recipe' ? 'recipes' : 'drink_menu'
         const { error } = await supabase
-          .from(editing.type === 'guest' ? 'guests' : editing.type === 'achievement' ? 'achievement_templates' : 'drink_menu')
+          .from(tableName)
           .update(editing.data)
           .eq('id', editing.id)
         
         if (error) throw error
       } else {
         // Create new
+        const tableName = editing.type === 'guest' ? 'guests' : 
+                         editing.type === 'achievement' ? 'achievement_templates' : 
+                         editing.type === 'recipe' ? 'recipes' : 'drink_menu'
         const { error } = await supabase
-          .from(editing.type === 'guest' ? 'guests' : editing.type === 'achievement' ? 'achievement_templates' : 'drink_menu')
+          .from(tableName)
           .insert([editing.data])
         
         if (error) throw error
@@ -125,12 +134,15 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleDelete = async (id: string, type: 'guest' | 'achievement' | 'drink') => {
+  const handleDelete = async (id: string, type: 'guest' | 'achievement' | 'drink' | 'recipe') => {
     if (!confirm('Are you sure you want to delete this item?')) return
 
     try {
+      const tableName = type === 'guest' ? 'guests' : 
+                       type === 'achievement' ? 'achievement_templates' : 
+                       type === 'recipe' ? 'recipes' : 'drink_menu'
       const { error } = await supabase
-        .from(type === 'guest' ? 'guests' : type === 'achievement' ? 'achievement_templates' : 'drink_menu')
+        .from(tableName)
         .delete()
         .eq('id', id)
       
@@ -141,11 +153,11 @@ export default function AdminDashboard() {
     }
   }
 
-  const startEdit = (item: any, type: 'guest' | 'achievement' | 'drink') => {
+  const startEdit = (item: any, type: 'guest' | 'achievement' | 'drink' | 'recipe') => {
     setEditing({ id: item.id, type, data: { ...item } })
   }
 
-  const startAdd = (type: 'guest' | 'achievement' | 'drink') => {
+  const startAdd = (type: 'guest' | 'achievement' | 'drink' | 'recipe') => {
     const defaultData = {
       guest: { name: '', tag_uid: '' },
       achievement: { 
@@ -156,7 +168,18 @@ export default function AdminDashboard() {
         from_time: new Date().toISOString().slice(0, 16),
         to_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16)
       },
-      drink: { name: '', description: '', category: 'cocktail', available: true }
+      drink: { name: '', description: '', category: 'cocktail', available: true },
+      recipe: { 
+        drink_menu_id: '', 
+        name: '', 
+        description: '', 
+        ingredients: [''], 
+        instructions: [''], 
+        video_url: '', 
+        prep_time: '', 
+        difficulty: 'Easy', 
+        serves: 1 
+      }
     }
     
     setEditing({ id: null, type, data: defaultData[type] })
@@ -319,6 +342,7 @@ export default function AdminDashboard() {
                 { key: 'guests', label: 'Guests', icon: Users },
                 { key: 'achievements', label: 'Achievements', icon: Trophy },
                 { key: 'drinks', label: 'Drinks', icon: Wine },
+                { key: 'recipes', label: 'Recipes', icon: BookOpen },
               ].map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
@@ -741,6 +765,216 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {activeTab === 'recipes' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Recipe Management</h3>
+              <button onClick={() => startAdd('recipe')} className="btn-primary">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Recipe
+              </button>
+            </div>
+
+            {(showAddForm && editing.type === 'recipe') && (
+              <div className="card">
+                <h4 className="text-md font-semibold mb-4">
+                  {editing.id ? 'Edit Recipe' : 'Add New Recipe'}
+                </h4>
+                <div className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Recipe Name"
+                      value={editing.data?.name || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <select
+                      value={editing.data?.drink_menu_id || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, drink_menu_id: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="">Select Drink</option>
+                      {drinks.map((drink) => (
+                        <option key={drink.id} value={drink.id}>
+                          {drink.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <textarea
+                    placeholder="Recipe Description"
+                    value={editing.data?.description || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    rows={2}
+                  />
+
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Prep Time (e.g., 5 min)"
+                      value={editing.data?.prep_time || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, prep_time: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <select
+                      value={editing.data?.difficulty || 'Easy'}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, difficulty: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="Easy">Easy</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Hard">Hard</option>
+                    </select>
+                    <input
+                      type="number"
+                      placeholder="Serves"
+                      value={editing.data?.serves || 1}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, serves: parseInt(e.target.value) || 1}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                      min="1"
+                    />
+                  </div>
+
+                  <input
+                    type="text"
+                    placeholder="YouTube Video URL (optional)"
+                    value={editing.data?.video_url || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, video_url: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Ingredients</label>
+                    {(editing.data?.ingredients || ['']).map((ingredient: string, index: number) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          placeholder="Ingredient"
+                          value={ingredient}
+                          onChange={(e) => {
+                            const newIngredients = [...(editing.data?.ingredients || [])]
+                            newIngredients[index] = e.target.value
+                            setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
+                          }}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                        />
+                        <button
+                          onClick={() => {
+                            const newIngredients = (editing.data?.ingredients || []).filter((_: string, i: number) => i !== index)
+                            setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
+                          }}
+                          className="text-red-600 hover:text-red-800"
+                          type="button"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const newIngredients = [...(editing.data?.ingredients || []), '']
+                        setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
+                      }}
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                      type="button"
+                    >
+                      + Add Ingredient
+                    </button>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Instructions</label>
+                    {(editing.data?.instructions || ['']).map((instruction: string, index: number) => (
+                      <div key={index} className="flex gap-2 mb-2">
+                        <textarea
+                          placeholder={`Step ${index + 1}`}
+                          value={instruction}
+                          onChange={(e) => {
+                            const newInstructions = [...(editing.data?.instructions || [])]
+                            newInstructions[index] = e.target.value
+                            setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
+                          }}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                          rows={2}
+                        />
+                        <button
+                          onClick={() => {
+                            const newInstructions = (editing.data?.instructions || []).filter((_: string, i: number) => i !== index)
+                            setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
+                          }}
+                          className="text-red-600 hover:text-red-800"
+                          type="button"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => {
+                        const newInstructions = [...(editing.data?.instructions || []), '']
+                        setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
+                      }}
+                      className="text-blue-600 hover:text-blue-800 text-sm"
+                      type="button"
+                    >
+                      + Add Step
+                    </button>
+                  </div>
+                </div>
+                
+                <div className="flex gap-2 mt-6">
+                  <button onClick={handleSave} className="btn-primary">
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </button>
+                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {recipes.map((recipe) => (
+                <div key={recipe.id} className="card">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold">{recipe.name}</h4>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => startEdit(recipe, 'recipe')}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(recipe.id, 'recipe')}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  {recipe.description && (
+                    <p className="text-sm text-gray-600 mb-2">{recipe.description}</p>
+                  )}
+                  <div className="text-xs text-gray-500 space-y-1">
+                    <p><strong>Linked to:</strong> {recipe.drink_menu?.name || 'Unknown Drink'}</p>
+                    <p><strong>Prep time:</strong> {recipe.prep_time || 'N/A'}</p>
+                    <p><strong>Difficulty:</strong> {recipe.difficulty || 'N/A'}</p>
+                    <p><strong>Serves:</strong> {recipe.serves}</p>
+                    <p><strong>Ingredients:</strong> {recipe.ingredients?.length || 0}</p>
+                    <p><strong>Steps:</strong> {recipe.instructions?.length || 0}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Edit Modal */}
         {editing.id && !showAddForm && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -800,6 +1034,63 @@ export default function AdminDashboard() {
                       className="rounded"
                     />
                     <label className="text-sm">Available</label>
+                  </div>
+                </div>
+              )}
+
+              {editing.type === 'recipe' && (
+                <div className="space-y-4 max-h-96 overflow-y-auto">
+                  <input
+                    type="text"
+                    placeholder="Recipe Name"
+                    value={editing.data?.name || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <select
+                    value={editing.data?.drink_menu_id || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, drink_menu_id: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="">Select Drink</option>
+                    {drinks.map((drink) => (
+                      <option key={drink.id} value={drink.id}>
+                        {drink.name}
+                      </option>
+                    ))}
+                  </select>
+                  <textarea
+                    placeholder="Description"
+                    value={editing.data?.description || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    rows={2}
+                  />
+                  <div className="grid grid-cols-3 gap-2">
+                    <input
+                      type="text"
+                      placeholder="Prep Time"
+                      value={editing.data?.prep_time || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, prep_time: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <select
+                      value={editing.data?.difficulty || 'Easy'}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, difficulty: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="Easy">Easy</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Hard">Hard</option>
+                    </select>
+                    <input
+                      type="number"
+                      placeholder="Serves"
+                      value={editing.data?.serves || 1}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, serves: parseInt(e.target.value) || 1}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                      min="1"
+                    />
                   </div>
                 </div>
               )}
