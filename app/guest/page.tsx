@@ -217,29 +217,76 @@ export default function GuestDashboard() {
     }]
   }
 
-  // Create cumulative drinks timeline
-  const sortedOrders = [...guestData.drink_orders].sort((a, b) => new Date(a.ordered_at).getTime() - new Date(b.ordered_at).getTime())
-  let cumulativeCount = 0
-  const cumulativeData = sortedOrders.map(order => {
-    cumulativeCount += order.quantity
-    return {
-      time: new Date(order.ordered_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      count: cumulativeCount,
-      drink: order.drink_menu?.name
-    }
-  })
+  // Create cumulative drinks timeline with 30-minute buckets
+  const drinkTimelineData = (() => {
+    if (guestData.drink_orders.length === 0) return { labels: [], datasets: [] }
 
-  const drinkTimelineData = {
-    labels: cumulativeData.slice(-10).map(item => item.time),
-    datasets: [{
-      label: 'Total Drinks Consumed',
-      data: cumulativeData.slice(-10).map(item => item.count),
-      borderColor: '#3B82F6',
-      backgroundColor: 'rgba(59, 130, 246, 0.1)',
-      fill: true,
-      tension: 0.1,
-    }]
-  }
+    const sortedOrders = [...guestData.drink_orders].sort((a, b) => new Date(a.ordered_at).getTime() - new Date(b.ordered_at).getTime())
+    
+    // Simplified approach: create buckets based on actual order times
+    const buckets: { time: string, count: number }[] = []
+    let cumulativeCount = 0
+    
+    // Get the first order time and create starting point
+    const firstOrderTime = new Date(sortedOrders[0].ordered_at)
+    const firstBucketTime = new Date(firstOrderTime)
+    firstBucketTime.setMinutes(Math.floor(firstBucketTime.getMinutes() / 30) * 30, 0, 0)
+    
+    // Add a starting bucket 30 minutes before the first order with count 0
+    const startTime = new Date(firstBucketTime.getTime() - 30 * 60 * 1000)
+    const startLabel = startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    buckets.push({ time: startLabel, count: 0 })
+    
+    // Create buckets for each order and fill gaps
+    const processedTimes = new Set<string>([startLabel])
+    
+    for (const order of sortedOrders) {
+      const orderTime = new Date(order.ordered_at)
+      const bucketTime = new Date(orderTime)
+      bucketTime.setMinutes(Math.floor(bucketTime.getMinutes() / 30) * 30, 0, 0)
+      
+      const timeLabel = bucketTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      
+      if (!processedTimes.has(timeLabel)) {
+        cumulativeCount += order.quantity
+        buckets.push({ time: timeLabel, count: cumulativeCount })
+        processedTimes.add(timeLabel)
+      } else {
+        // Update the existing bucket
+        const existingBucket = buckets.find(b => b.time === timeLabel)
+        if (existingBucket) {
+          cumulativeCount += order.quantity
+          existingBucket.count = cumulativeCount
+        }
+      }
+    }
+    
+    // If we have very few buckets, add some intermediate ones
+    if (buckets.length < 3) {
+      const lastTime = new Date(sortedOrders[sortedOrders.length - 1].ordered_at)
+      const endTime = new Date(lastTime.getTime() + 60 * 60 * 1000) // Add 1 hour
+      endTime.setMinutes(Math.floor(endTime.getMinutes() / 30) * 30, 0, 0)
+      
+      const endLabel = endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      if (!processedTimes.has(endLabel)) {
+        buckets.push({ time: endLabel, count: cumulativeCount })
+      }
+    }
+    
+    return {
+      labels: buckets.map(b => b.time),
+      datasets: [{
+        label: 'Total Drinks Consumed',
+        data: buckets.map(b => b.count),
+        borderColor: '#3B82F6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.1,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+      }]
+    }
+  })()
 
   return (
     <div className="min-h-screen p-4">
@@ -252,16 +299,10 @@ export default function GuestDashboard() {
             </h1>
             <p className="text-gray-600">Your PousFest dashboard</p>
           </div>
-          <div className="flex gap-2">
-            <Link href="/timetable" className="btn-outline">
-              <Calendar className="w-4 h-4 mr-2" />
-              Schedule
-            </Link>
-            <Link href="/" className="btn-outline">
-              <Home className="w-4 h-4 mr-2" />
-              Home
-            </Link>
-          </div>
+          <Link href="/" className="btn-outline">
+            <Home className="w-4 h-4 mr-2" />
+            Home
+          </Link>
         </div>
 
         {/* Stats Cards */}
@@ -308,10 +349,27 @@ export default function GuestDashboard() {
               <div className="card">
                                  <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                    <Wine className="w-5 h-5" />
-                   Cumulative Drinks Timeline
+                   Drinks Timeline (30-min intervals)
                  </h3>
                 <div className="h-64">
-                  <Line data={drinkTimelineData} options={{ responsive: true, maintainAspectRatio: false }} />
+                  <Line 
+                    data={drinkTimelineData} 
+                    options={{ 
+                      responsive: true, 
+                      maintainAspectRatio: false,
+                      scales: {
+                        y: {
+                          beginAtZero: true,
+                          ticks: {
+                            stepSize: 1,
+                            callback: function(value) {
+                              return Number.isInteger(value) ? value : null;
+                            }
+                          }
+                        }
+                      }
+                    }} 
+                  />
                 </div>
               </div>
             )}
