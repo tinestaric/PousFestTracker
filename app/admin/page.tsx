@@ -266,767 +266,471 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading admin dashboard...</p>
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden flex items-center justify-center">
+        {/* Background patterns */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-white/5" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundSize: '60px 60px'
+          }}></div>
+        </div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
+        
+        <div className="relative z-10 text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto mb-6"></div>
+          <p className="text-white text-xl font-semibold drop-shadow-lg">Loading admin dashboard...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen p-4 bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
-            <p className="text-gray-600">Manage your PousFest event</p>
-          </div>
-          <Link href="/" className="btn-outline">
-            <Home className="w-4 h-4 mr-2" />
-            Home
-          </Link>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+      {/* Background patterns */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-white/5" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: '60px 60px'
+        }}></div>
+      </div>
+      <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
 
-        {/* Stats Cards */}
-        <div className="grid md:grid-cols-4 gap-6 mb-8">
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Guests</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.totalGuests}</p>
-              </div>
-              <Users className="w-8 h-8 text-blue-600" />
+      <div className="relative z-10 p-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Admin Dashboard</h1>
+              <p className="text-white/90 text-lg">Manage your PousFest event</p>
             </div>
+            <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
+              <Home className="w-4 h-4" />
+              Home
+            </Link>
           </div>
 
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Achievements</p>
-                <p className="text-2xl font-bold text-yellow-600">{stats.totalAchievements}</p>
-              </div>
-              <Trophy className="w-8 h-8 text-yellow-600" />
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Drinks Served</p>
-                <p className="text-2xl font-bold text-purple-600">{stats.totalDrinks}</p>
-              </div>
-              <Wine className="w-8 h-8 text-purple-600" />
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Active Guests</p>
-                <p className="text-2xl font-bold text-green-600">{stats.activeGuests}</p>
-              </div>
-              <BarChart3 className="w-8 h-8 text-green-600" />
-            </div>
-          </div>
-        </div>
-
-        {/* Tabs */}
-        <div className="mb-8">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
-              {[
-                { key: 'overview', label: 'Overview', icon: BarChart3 },
-                { key: 'guests', label: 'Guests', icon: Users },
-                { key: 'achievements', label: 'Achievements', icon: Trophy },
-                { key: 'drinks', label: 'Drinks', icon: Wine },
-                { key: 'recipes', label: 'Recipes', icon: BookOpen },
-              ].map(({ key, label, icon: Icon }) => (
-                <button
-                  key={key}
-                  onClick={() => setActiveTab(key as typeof activeTab)}
-                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
-                    activeTab === key
-                      ? 'border-primary-500 text-primary-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                  {label}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <div className="grid lg:grid-cols-2 gap-6">
-              <div className="card">
-                <h3 className="text-lg font-semibold mb-4">Drinks by Category</h3>
-                <div className="h-64">
-                  <Pie data={drinkCategoryData} options={{ responsive: true, maintainAspectRatio: false }} />
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Total Guests</p>
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalGuests}</p>
                 </div>
-              </div>
-              
-              <div className="card">
-                <h3 className="text-lg font-semibold mb-4">Achievement Popularity</h3>
-                <div className="h-64">
-                  <Bar data={achievementData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl shadow-lg">
+                  <Users className="w-8 h-8 text-white" />
                 </div>
               </div>
             </div>
 
-            <div className="card">
-              <h3 className="text-lg font-semibold mb-4">Hourly Activity (Today)</h3>
-              <div className="h-64">
-                <Line data={hourlyActivityData} options={{ responsive: true, maintainAspectRatio: false }} />
+            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Achievements</p>
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalAchievements}</p>
+                </div>
+                <div className="p-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl shadow-lg">
+                  <Trophy className="w-8 h-8 text-yellow-900" />
+                </div>
               </div>
             </div>
 
-            <div className="card">
-              <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
-              <div className="space-y-3">
-                {(() => {
-                  // Combine and sort recent activities
-                  const activities = [
-                    ...guestAchievements.slice(0, 5).map(achievement => ({
-                      id: `achievement-${achievement.id}`,
-                      type: 'achievement' as const,
-                      guestName: achievement.guests?.name || 'Unknown Guest',
-                      description: `unlocked "${achievement.achievement_templates?.title}"`,
-                      timestamp: achievement.unlocked_at,
-                      icon: Trophy,
-                      iconColor: 'text-yellow-500'
-                    })),
-                    ...drinkOrders.slice(0, 5).map(order => ({
-                      id: `drink-${order.id}`,
-                      type: 'drink' as const,
-                      guestName: guests.find(g => g.id === order.guest_id)?.name || 'Unknown Guest',
-                      description: `ordered ${order.quantity}x ${order.drink_menu?.name || 'Unknown Drink'}`,
-                      timestamp: order.ordered_at,
-                      icon: Wine,
-                      iconColor: 'text-purple-500'
-                    }))
-                  ]
-                  
-                  // Sort by timestamp (most recent first)
-                  const sortedActivities = activities
-                    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-                    .slice(0, 10)
-                  
-                  if (sortedActivities.length === 0) {
+            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Drinks Served</p>
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalDrinks}</p>
+                </div>
+                <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-400 rounded-xl shadow-lg">
+                  <Wine className="w-8 h-8 text-white" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-white/80 mb-1">Active Guests</p>
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.activeGuests}</p>
+                </div>
+                <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl shadow-lg">
+                  <BarChart3 className="w-8 h-8 text-white" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="mb-8">
+            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-2 shadow-lg">
+              <nav className="flex space-x-2">
+                {[
+                  { key: 'overview', label: 'Overview', icon: BarChart3 },
+                  { key: 'guests', label: 'Guests', icon: Users },
+                  { key: 'achievements', label: 'Achievements', icon: Trophy },
+                  { key: 'drinks', label: 'Drinks', icon: Wine },
+                  { key: 'recipes', label: 'Recipes', icon: BookOpen },
+                ].map(({ key, label, icon: Icon }) => (
+                  <button
+                    key={key}
+                    onClick={() => setActiveTab(key as typeof activeTab)}
+                    className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
+                      activeTab === key
+                        ? 'bg-white/30 text-white shadow-lg backdrop-blur-sm'
+                        : 'text-white/80 hover:text-white hover:bg-white/20'
+                    }`}
+                  >
+                    <Icon className="w-4 h-4" />
+                    {label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </div>
+
+                    {/* Tab Content */}
+          {activeTab === 'overview' && (
+            <div className="space-y-6">
+              <div className="grid lg:grid-cols-2 gap-6">
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h3 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Drinks by Category</h3>
+                  <div className="h-64 bg-white/10 rounded-xl p-4">
+                    <Pie data={drinkCategoryData} options={{ responsive: true, maintainAspectRatio: false }} />
+                  </div>
+                </div>
+                
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h3 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Achievement Popularity</h3>
+                  <div className="h-64 bg-white/10 rounded-xl p-4">
+                    <Bar data={achievementData} options={{ responsive: true, maintainAspectRatio: false }} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                <h3 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Hourly Activity (Today)</h3>
+                <div className="h-64 bg-white/10 rounded-xl p-4">
+                  <Line data={hourlyActivityData} options={{ responsive: true, maintainAspectRatio: false }} />
+                </div>
+              </div>
+
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                <h3 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Recent Activity</h3>
+                <div className="space-y-3">
+                  {(() => {
+                    // Combine and sort recent activities
+                    const activities = [
+                      ...guestAchievements.slice(0, 5).map(achievement => ({
+                        id: `achievement-${achievement.id}`,
+                        type: 'achievement' as const,
+                        guestName: achievement.guests?.name || 'Unknown Guest',
+                        description: `unlocked "${achievement.achievement_templates?.title}"`,
+                        timestamp: achievement.unlocked_at,
+                        icon: Trophy,
+                        iconColor: 'text-yellow-500'
+                      })),
+                      ...drinkOrders.slice(0, 5).map(order => ({
+                        id: `drink-${order.id}`,
+                        type: 'drink' as const,
+                        guestName: guests.find(g => g.id === order.guest_id)?.name || 'Unknown Guest',
+                        description: `ordered ${order.quantity}x ${order.drink_menu?.name || 'Unknown Drink'}`,
+                        timestamp: order.ordered_at,
+                        icon: Wine,
+                        iconColor: 'text-purple-500'
+                      }))
+                    ]
+                    
+                    // Sort by timestamp (most recent first)
+                    const sortedActivities = activities
+                      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                      .slice(0, 10)
+                    
+                                      if (sortedActivities.length === 0) {
                     return (
-                      <div className="text-center py-8 text-gray-500">
-                        <BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                      <div className="text-center py-8 text-white/80">
+                        <BarChart3 className="w-12 h-12 mx-auto mb-2 text-white/60" />
                         <p>No recent activity yet</p>
                       </div>
                     )
                   }
                   
                   return sortedActivities.map((activity) => (
-                    <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={activity.id} className="flex items-center justify-between p-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl hover:bg-white/20 transition-all duration-300">
                       <div className="flex items-center gap-3">
-                        <activity.icon className={`w-5 h-5 ${activity.iconColor}`} />
+                        <div className="p-2 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-lg">
+                          <activity.icon className="w-5 h-5 text-white" />
+                        </div>
                         <div>
-                          <p className="font-medium">{activity.guestName}</p>
-                          <p className="text-sm text-gray-600">{activity.description}</p>
+                          <p className="font-semibold text-white">{activity.guestName}</p>
+                          <p className="text-sm text-white/80">{activity.description}</p>
                         </div>
                       </div>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-white/70 font-medium">
                         {new Date(activity.timestamp).toLocaleString()}
                       </span>
                     </div>
                   ))
-                })()}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'guests' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Guest Management</h3>
-              <div className="flex gap-2">
-                <button onClick={exportGuestData} className="btn-outline">
-                  <Download className="w-4 h-4 mr-2" />
-                  Export CSV
-                </button>
-                <button onClick={() => startAdd('guest')} className="btn-primary">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Guest
-                </button>
-              </div>
-            </div>
-
-            {(showAddForm && editing.type === 'guest') && (
-              <div className="card">
-                <h4 className="text-md font-semibold mb-4">
-                  {editing.id ? 'Edit Guest' : 'Add New Guest'}
-                </h4>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    placeholder="Guest Name"
-                    value={editing.data?.name || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <input
-                    type="text"
-                    placeholder="NFC Tag UID"
-                    value={editing.data?.tag_uid || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, tag_uid: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                  />
+                  })()}
                 </div>
-                <div className="flex gap-2 mt-4">
-                  <button onClick={handleSave} className="btn-primary">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
+              </div>
+            </div>
+          )}
+
+                    {activeTab === 'guests' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">Guest Management</h3>
+                <div className="flex gap-3">
+                  <button onClick={exportGuestData} className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-4 py-2 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2">
+                    <Download className="w-4 h-4" />
+                    Export CSV
                   </button>
-                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
-                    <X className="w-4 h-4 mr-2" />
-                    Cancel
+                  <button onClick={() => startAdd('guest')} className="bg-gradient-to-r from-blue-500 to-cyan-400 text-white px-4 py-2 rounded-xl font-semibold hover:from-blue-600 hover:to-cyan-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                    <Plus className="w-4 h-4" />
+                    Add Guest
                   </button>
                 </div>
               </div>
-            )}
 
-            <div className="card">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left py-2">Name</th>
-                      <th className="text-left py-2">Tag UID</th>
-                      <th className="text-left py-2">Created</th>
-                      <th className="text-left py-2">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {guests.map((guest) => (
-                      <tr key={guest.id} className="border-b">
-                        <td className="py-2">{guest.name}</td>
-                        <td className="py-2 font-mono text-sm">{guest.tag_uid}</td>
-                        <td className="py-2 text-sm text-gray-600">
-                          {new Date(guest.created_at).toLocaleDateString()}
-                        </td>
-                        <td className="py-2">
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => startEdit(guest, 'guest')}
-                              className="text-blue-600 hover:text-blue-800"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(guest.id, 'guest')}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </td>
+              {(showAddForm && editing.type === 'guest') && (
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">
+                    {editing.id ? 'Edit Guest' : 'Add New Guest'}
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Guest Name"
+                      value={editing.data?.name || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                      className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    />
+                    <input
+                      type="text"
+                      placeholder="NFC Tag UID"
+                      value={editing.data?.tag_uid || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, tag_uid: e.target.value}})}
+                      className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    />
+                  </div>
+                  <div className="flex gap-3 mt-6">
+                    <button onClick={handleSave} className="bg-gradient-to-r from-green-500 to-emerald-400 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                      <Save className="w-4 h-4" />
+                      Save
+                    </button>
+                    <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2">
+                      <X className="w-4 h-4" />
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-white/30">
+                        <th className="text-left py-3 text-white font-bold">Name</th>
+                        <th className="text-left py-3 text-white font-bold">Tag UID</th>
+                        <th className="text-left py-3 text-white font-bold">Created</th>
+                        <th className="text-left py-3 text-white font-bold">Actions</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {guests.map((guest) => (
+                        <tr key={guest.id} className="border-b border-white/20 hover:bg-white/10 transition-all duration-300">
+                          <td className="py-3 text-white font-medium">{guest.name}</td>
+                          <td className="py-3 font-mono text-sm text-white/80">{guest.tag_uid}</td>
+                          <td className="py-3 text-sm text-white/80">
+                            {new Date(guest.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="py-3">
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => startEdit(guest, 'guest')}
+                                className="p-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 hover:text-blue-200 transition-all duration-300"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                              <button
+                                onClick={() => handleDelete(guest.id, 'guest')}
+                                className="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 hover:text-red-200 transition-all duration-300"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === 'achievements' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Achievement Management</h3>
-              <button onClick={() => startAdd('achievement')} className="btn-primary">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Achievement
-              </button>
-            </div>
+                    {activeTab === 'achievements' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">Achievement Management</h3>
+                <button onClick={() => startAdd('achievement')} className="bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-4 py-2 rounded-xl font-semibold hover:from-yellow-500 hover:to-orange-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                  <Plus className="w-4 h-4" />
+                  Add Achievement
+                </button>
+              </div>
 
-            {(showAddForm && editing.type === 'achievement') && (
-              <div className="card">
-                <h4 className="text-md font-semibold mb-4">
-                  {editing.id ? 'Edit Achievement' : 'Add New Achievement'}
-                </h4>
-                <div className="grid gap-4">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <input
-                      type="text"
-                      placeholder="Achievement Type"
-                      value={editing.data?.achievement_type || ''}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, achievement_type: e.target.value}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
+                            {(showAddForm && editing.type === 'achievement') && (
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">
+                    {editing.id ? 'Edit Achievement' : 'Add New Achievement'}
+                  </h4>
+                  <div className="grid gap-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Achievement Type"
+                        value={editing.data?.achievement_type || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, achievement_type: e.target.value}})}
+                        className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                      />
+                      <input
+                        type="text"
+                        placeholder="Title"
+                        value={editing.data?.title || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, title: e.target.value}})}
+                        className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                      className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                      rows={3}
                     />
                     <input
                       type="text"
-                      placeholder="Title"
-                      value={editing.data?.title || ''}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, title: e.target.value}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
+                      placeholder="Logo URL"
+                      value={editing.data?.logo_url || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, logo_url: e.target.value}})}
+                      className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
                     />
-                  </div>
-                  <textarea
-                    placeholder="Description"
-                    value={editing.data?.description || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                    rows={3}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Logo URL"
-                    value={editing.data?.logo_url || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, logo_url: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">From Time</label>
-                      <input
-                        type="datetime-local"
-                        value={editing.data?.from_time?.slice(0, 16) || ''}
-                        onChange={(e) => setEditing({...editing, data: {...editing.data, from_time: e.target.value + ':00+00'}})}
-                        className="px-3 py-2 border border-gray-300 rounded-md w-full"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">To Time</label>
-                      <input
-                        type="datetime-local"
-                        value={editing.data?.to_time?.slice(0, 16) || ''}
-                        onChange={(e) => setEditing({...editing, data: {...editing.data, to_time: e.target.value + ':00+00'}})}
-                        className="px-3 py-2 border border-gray-300 rounded-md w-full"
-                      />
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-white/90 mb-2">From Time</label>
+                        <input
+                          type="datetime-local"
+                          value={editing.data?.from_time?.slice(0, 16) || ''}
+                          onChange={(e) => setEditing({...editing, data: {...editing.data, from_time: e.target.value + ':00+00'}})}
+                          className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300 w-full"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-white/90 mb-2">To Time</label>
+                        <input
+                          type="datetime-local"
+                          value={editing.data?.to_time?.slice(0, 16) || ''}
+                          onChange={(e) => setEditing({...editing, data: {...editing.data, to_time: e.target.value + ':00+00'}})}
+                          className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300 w-full"
+                        />
+                      </div>
                     </div>
                   </div>
+                  <div className="flex gap-3 mt-6">
+                    <button onClick={handleSave} className="bg-gradient-to-r from-green-500 to-emerald-400 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                      <Save className="w-4 h-4" />
+                      Save
+                    </button>
+                    <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2">
+                      <X className="w-4 h-4" />
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-                <div className="flex gap-2 mt-4">
-                  <button onClick={handleSave} className="btn-primary">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </button>
-                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
-                    <X className="w-4 h-4 mr-2" />
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
+              )}
 
-            <div className="grid md:grid-cols-2 gap-6">
-              {achievements.map((achievement) => (
-                <div key={achievement.id} className="card">
-                  <div className="flex items-start justify-between mb-3">
-                    <h4 className="font-semibold">{achievement.title}</h4>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => startEdit(achievement, 'achievement')}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(achievement.id, 'achievement')}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                            <div className="grid md:grid-cols-2 gap-6">
+                {achievements.map((achievement) => (
+                  <div key={achievement.id} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                    <div className="flex items-start justify-between mb-3">
+                      <h4 className="font-bold text-white text-lg">{achievement.title}</h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => startEdit(achievement, 'achievement')}
+                          className="p-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 hover:text-blue-200 transition-all duration-300"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(achievement.id, 'achievement')}
+                          className="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 hover:text-red-200 transition-all duration-300"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded mb-2 inline-block">
-                    {achievement.achievement_type}
-                  </span>
-                  <p className="text-sm text-gray-600 mb-3">{achievement.description}</p>
-                  <div className="text-xs text-gray-500">
-                    <p>From: {new Date(achievement.from_time).toLocaleString()}</p>
-                    <p>To: {new Date(achievement.to_time).toLocaleString()}</p>
-                    <p className="mt-2 font-medium">
-                      Unlocked by: {guestAchievements.filter(ga => ga.achievement_template_id === achievement.id).length} guests
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'drinks' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Drink Menu Management</h3>
-              <button onClick={() => startAdd('drink')} className="btn-primary">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Drink
-              </button>
-            </div>
-
-            {(showAddForm && editing.type === 'drink') && (
-              <div className="card">
-                <h4 className="text-md font-semibold mb-4">
-                  {editing.id ? 'Edit Drink' : 'Add New Drink'}
-                </h4>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <input
-                    type="text"
-                    placeholder="Drink Name"
-                    value={editing.data?.name || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={editing.data?.description || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <select
-                    value={editing.data?.category || 'cocktail'}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
-                    className="px-3 py-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="cocktail">Cocktail</option>
-                    <option value="beer">Beer</option>
-                    <option value="shot">Shot</option>
-                    <option value="non-alcoholic">Non-Alcoholic</option>
-                  </select>
-                </div>
-                <div className="flex items-center gap-2 mt-4">
-                  <input
-                    type="checkbox"
-                    checked={editing.data?.available || false}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, available: e.target.checked}})}
-                    className="rounded"
-                  />
-                  <label className="text-sm">Available</label>
-                </div>
-                <div className="flex gap-2 mt-4">
-                  <button onClick={handleSave} className="btn-primary">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </button>
-                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
-                    <X className="w-4 h-4 mr-2" />
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {drinks.map((drink) => (
-                <div key={drink.id} className="card">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold">{drink.name}</h4>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => startEdit(drink, 'drink')}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(drink.id, 'drink')}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  {drink.description && (
-                    <p className="text-sm text-gray-600 mb-2">{drink.description}</p>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs bg-gray-100 px-2 py-1 rounded capitalize">
-                      {drink.category}
+                    <span className="text-xs bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-3 py-1 rounded-full mb-3 inline-block font-semibold">
+                      {achievement.achievement_type}
                     </span>
-                    <span className={`text-xs px-2 py-1 rounded ${
-                      drink.available
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}>
-                      {drink.available ? 'Available' : 'Unavailable'}
-                    </span>
+                    <p className="text-sm text-white/90 mb-4 leading-relaxed">{achievement.description}</p>
+                    <div className="text-xs text-white/80 space-y-1">
+                      <p><strong>From:</strong> {new Date(achievement.from_time).toLocaleString()}</p>
+                      <p><strong>To:</strong> {new Date(achievement.to_time).toLocaleString()}</p>
+                      <p className="mt-3 font-semibold text-white bg-white/10 px-3 py-1 rounded-lg inline-block">
+                        Unlocked by: {guestAchievements.filter(ga => ga.achievement_template_id === achievement.id).length} guests
+                      </p>
+                    </div>
                   </div>
-                  <div className="mt-2 text-xs text-gray-500">
-                    Orders: {drinkOrders.filter(order => order.drink_menu_id === drink.id).reduce((sum, order) => sum + order.quantity, 0)}
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === 'recipes' && (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Recipe Management</h3>
-              <button onClick={() => startAdd('recipe')} className="btn-primary">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Recipe
-              </button>
-            </div>
+                    {activeTab === 'drinks' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">Drink Menu Management</h3>
+                <button onClick={() => startAdd('drink')} className="bg-gradient-to-r from-purple-500 to-pink-400 text-white px-4 py-2 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                  <Plus className="w-4 h-4" />
+                  Add Drink
+                </button>
+              </div>
 
-            {(showAddForm && editing.type === 'recipe') && (
-              <div className="card">
-                <h4 className="text-md font-semibold mb-4">
-                  {editing.id ? 'Edit Recipe' : 'Add New Recipe'}
-                </h4>
-                <div className="space-y-4">
-                  <div className="grid md:grid-cols-2 gap-4">
+              {(showAddForm && editing.type === 'drink') && (
+                <div className="card">
+                  <h4 className="text-md font-semibold mb-4">
+                    {editing.id ? 'Edit Drink' : 'Add New Drink'}
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-4">
                     <input
                       type="text"
-                      placeholder="Recipe Name"
+                      placeholder="Drink Name"
                       value={editing.data?.name || ''}
                       onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
                       className="px-3 py-2 border border-gray-300 rounded-md"
                     />
-                    <select
-                      value={editing.data?.drink_menu_id || ''}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, drink_menu_id: e.target.value}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
-                    >
-                      <option value="">Select Drink</option>
-                      {drinks.map((drink) => (
-                        <option key={drink.id} value={drink.id}>
-                          {drink.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  
-                  <textarea
-                    placeholder="Recipe Description"
-                    value={editing.data?.description || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    rows={2}
-                  />
-
-                  <div className="grid md:grid-cols-3 gap-4">
                     <input
                       type="text"
-                      placeholder="Prep Time (e.g., 5 min)"
-                      value={editing.data?.prep_time || ''}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, prep_time: e.target.value}})}
+                      placeholder="Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
                       className="px-3 py-2 border border-gray-300 rounded-md"
                     />
                     <select
-                      value={editing.data?.difficulty || 'Easy'}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, difficulty: e.target.value}})}
+                      value={editing.data?.category || 'cocktail'}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
                       className="px-3 py-2 border border-gray-300 rounded-md"
                     >
-                      <option value="Easy">Easy</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Hard">Hard</option>
+                      <option value="cocktail">Cocktail</option>
+                      <option value="beer">Beer</option>
+                      <option value="shot">Shot</option>
+                      <option value="non-alcoholic">Non-Alcoholic</option>
                     </select>
-                    <input
-                      type="number"
-                      placeholder="Serves"
-                      value={editing.data?.serves || 1}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, serves: parseInt(e.target.value) || 1}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
-                      min="1"
-                    />
                   </div>
-
-                  <input
-                    type="text"
-                    placeholder="YouTube Video URL (optional)"
-                    value={editing.data?.video_url || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, video_url: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Ingredients</label>
-                    {(editing.data?.ingredients || ['']).map((ingredient: string, index: number) => (
-                      <div key={index} className="flex gap-2 mb-2">
-                        <input
-                          type="text"
-                          placeholder="Ingredient"
-                          value={ingredient}
-                          onChange={(e) => {
-                            const newIngredients = [...(editing.data?.ingredients || [])]
-                            newIngredients[index] = e.target.value
-                            setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
-                          }}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                        />
-                        <button
-                          onClick={() => {
-                            const newIngredients = (editing.data?.ingredients || []).filter((_: string, i: number) => i !== index)
-                            setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
-                          }}
-                          className="text-red-600 hover:text-red-800"
-                          type="button"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => {
-                        const newIngredients = [...(editing.data?.ingredients || []), '']
-                        setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
-                      }}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                      type="button"
-                    >
-                      + Add Ingredient
-                    </button>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Instructions</label>
-                    {(editing.data?.instructions || ['']).map((instruction: string, index: number) => (
-                      <div key={index} className="flex gap-2 mb-2">
-                        <textarea
-                          placeholder={`Step ${index + 1}`}
-                          value={instruction}
-                          onChange={(e) => {
-                            const newInstructions = [...(editing.data?.instructions || [])]
-                            newInstructions[index] = e.target.value
-                            setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
-                          }}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
-                          rows={2}
-                        />
-                        <button
-                          onClick={() => {
-                            const newInstructions = (editing.data?.instructions || []).filter((_: string, i: number) => i !== index)
-                            setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
-                          }}
-                          className="text-red-600 hover:text-red-800"
-                          type="button"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                    <button
-                      onClick={() => {
-                        const newInstructions = [...(editing.data?.instructions || []), '']
-                        setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
-                      }}
-                      className="text-blue-600 hover:text-blue-800 text-sm"
-                      type="button"
-                    >
-                      + Add Step
-                    </button>
-                  </div>
-                </div>
-                
-                <div className="flex gap-2 mt-6">
-                  <button onClick={handleSave} className="btn-primary">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save
-                  </button>
-                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
-                    <X className="w-4 h-4 mr-2" />
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recipes.map((recipe) => (
-                <div key={recipe.id} className="card">
-                  <div className="flex items-start justify-between mb-2">
-                    <h4 className="font-semibold">{recipe.name}</h4>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => startEdit(recipe, 'recipe')}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(recipe.id, 'recipe')}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  {recipe.description && (
-                    <p className="text-sm text-gray-600 mb-2">{recipe.description}</p>
-                  )}
-                  <div className="text-xs text-gray-500 space-y-1">
-                    <p><strong>Linked to:</strong> {recipe.drink_menu?.name || 'Unknown Drink'}</p>
-                    <p><strong>Prep time:</strong> {recipe.prep_time || 'N/A'}</p>
-                    <p><strong>Difficulty:</strong> {recipe.difficulty || 'N/A'}</p>
-                    <p><strong>Serves:</strong> {recipe.serves}</p>
-                    <p><strong>Ingredients:</strong> {recipe.ingredients?.length || 0}</p>
-                    <p><strong>Steps:</strong> {recipe.instructions?.length || 0}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Edit Modal */}
-        {editing.id && !showAddForm && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 max-w-md w-full m-4">
-              <h3 className="text-lg font-semibold mb-4">Edit {editing.type}</h3>
-              
-              {editing.type === 'guest' && (
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Guest Name"
-                    value={editing.data?.name || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <input
-                    type="text"
-                    placeholder="NFC Tag UID"
-                    value={editing.data?.tag_uid || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, tag_uid: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                </div>
-              )}
-
-              {editing.type === 'drink' && (
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Drink Name"
-                    value={editing.data?.name || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Description"
-                    value={editing.data?.description || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <select
-                    value={editing.data?.category || 'cocktail'}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="cocktail">Cocktail</option>
-                    <option value="beer">Beer</option>
-                    <option value="shot">Shot</option>
-                    <option value="non-alcoholic">Non-Alcoholic</option>
-                  </select>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 mt-4">
                     <input
                       type="checkbox"
                       checked={editing.data?.available || false}
@@ -1035,79 +739,407 @@ export default function AdminDashboard() {
                     />
                     <label className="text-sm">Available</label>
                   </div>
-                </div>
-              )}
-
-              {editing.type === 'recipe' && (
-                <div className="space-y-4 max-h-96 overflow-y-auto">
-                  <input
-                    type="text"
-                    placeholder="Recipe Name"
-                    value={editing.data?.name || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  />
-                  <select
-                    value={editing.data?.drink_menu_id || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, drink_menu_id: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="">Select Drink</option>
-                    {drinks.map((drink) => (
-                      <option key={drink.id} value={drink.id}>
-                        {drink.name}
-                      </option>
-                    ))}
-                  </select>
-                  <textarea
-                    placeholder="Description"
-                    value={editing.data?.description || ''}
-                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                    rows={2}
-                  />
-                  <div className="grid grid-cols-3 gap-2">
-                    <input
-                      type="text"
-                      placeholder="Prep Time"
-                      value={editing.data?.prep_time || ''}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, prep_time: e.target.value}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
-                    />
-                    <select
-                      value={editing.data?.difficulty || 'Easy'}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, difficulty: e.target.value}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
-                    >
-                      <option value="Easy">Easy</option>
-                      <option value="Medium">Medium</option>
-                      <option value="Hard">Hard</option>
-                    </select>
-                    <input
-                      type="number"
-                      placeholder="Serves"
-                      value={editing.data?.serves || 1}
-                      onChange={(e) => setEditing({...editing, data: {...editing.data, serves: parseInt(e.target.value) || 1}})}
-                      className="px-3 py-2 border border-gray-300 rounded-md"
-                      min="1"
-                    />
+                  <div className="flex gap-2 mt-4">
+                    <button onClick={handleSave} className="btn-primary">
+                      <Save className="w-4 h-4 mr-2" />
+                      Save
+                    </button>
+                    <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
+                      <X className="w-4 h-4 mr-2" />
+                      Cancel
+                    </button>
                   </div>
                 </div>
               )}
 
-              <div className="flex gap-2 mt-6">
-                <button onClick={handleSave} className="btn-primary">
-                  <Save className="w-4 h-4 mr-2" />
-                  Save
-                </button>
-                <button onClick={() => setEditing({id: null, type: null, data: null})} className="btn-outline">
-                  <X className="w-4 h-4 mr-2" />
-                  Cancel
-                </button>
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {drinks.map((drink) => (
+                  <div key={drink.id} className="card">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-semibold">{drink.name}</h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => startEdit(drink, 'drink')}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(drink.id, 'drink')}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    {drink.description && (
+                      <p className="text-sm text-gray-600 mb-2">{drink.description}</p>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs bg-gray-100 px-2 py-1 rounded capitalize">
+                        {drink.category}
+                      </span>
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        drink.available
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-red-100 text-red-800'
+                      }`}>
+                        {drink.available ? 'Available' : 'Unavailable'}
+                      </span>
+                    </div>
+                    <div className="mt-2 text-xs text-gray-500">
+                      Orders: {drinkOrders.filter(order => order.drink_menu_id === drink.id).reduce((sum, order) => sum + order.quantity, 0)}
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
-        )}
+          )}
+
+                    {activeTab === 'recipes' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">Recipe Management</h3>
+                <button onClick={() => startAdd('recipe')} className="bg-gradient-to-r from-green-500 to-emerald-400 text-white px-4 py-2 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                  <Plus className="w-4 h-4" />
+                  Add Recipe
+                </button>
+              </div>
+
+              {(showAddForm && editing.type === 'recipe') && (
+                <div className="card">
+                  <h4 className="text-md font-semibold mb-4">
+                    {editing.id ? 'Edit Recipe' : 'Add New Recipe'}
+                  </h4>
+                  <div className="space-y-4">
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Recipe Name"
+                        value={editing.data?.name || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                      <select
+                        value={editing.data?.drink_menu_id || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, drink_menu_id: e.target.value}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="">Select Drink</option>
+                        {drinks.map((drink) => (
+                          <option key={drink.id} value={drink.id}>
+                            {drink.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <textarea
+                      placeholder="Recipe Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      rows={2}
+                    />
+
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <input
+                        type="text"
+                        placeholder="Prep Time (e.g., 5 min)"
+                        value={editing.data?.prep_time || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, prep_time: e.target.value}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                      <select
+                        value={editing.data?.difficulty || 'Easy'}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, difficulty: e.target.value}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                      </select>
+                      <input
+                        type="number"
+                        placeholder="Serves"
+                        value={editing.data?.serves || 1}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, serves: parseInt(e.target.value) || 1}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                        min="1"
+                      />
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder="YouTube Video URL (optional)"
+                      value={editing.data?.video_url || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, video_url: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Ingredients</label>
+                      {(editing.data?.ingredients || ['']).map((ingredient: string, index: number) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <input
+                            type="text"
+                            placeholder="Ingredient"
+                            value={ingredient}
+                            onChange={(e) => {
+                              const newIngredients = [...(editing.data?.ingredients || [])]
+                              newIngredients[index] = e.target.value
+                              setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
+                            }}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                          />
+                          <button
+                            onClick={() => {
+                              const newIngredients = (editing.data?.ingredients || []).filter((_: string, i: number) => i !== index)
+                              setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
+                            }}
+                            className="text-red-600 hover:text-red-800"
+                            type="button"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          const newIngredients = [...(editing.data?.ingredients || []), '']
+                          setEditing({...editing, data: {...editing.data, ingredients: newIngredients}})
+                        }}
+                        className="text-blue-600 hover:text-blue-800 text-sm"
+                        type="button"
+                      >
+                        + Add Ingredient
+                      </button>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Instructions</label>
+                      {(editing.data?.instructions || ['']).map((instruction: string, index: number) => (
+                        <div key={index} className="flex gap-2 mb-2">
+                          <textarea
+                            placeholder={`Step ${index + 1}`}
+                            value={instruction}
+                            onChange={(e) => {
+                              const newInstructions = [...(editing.data?.instructions || [])]
+                              newInstructions[index] = e.target.value
+                              setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
+                            }}
+                            className="flex-1 px-3 py-2 border border-gray-300 rounded-md"
+                            rows={2}
+                          />
+                          <button
+                            onClick={() => {
+                              const newInstructions = (editing.data?.instructions || []).filter((_: string, i: number) => i !== index)
+                              setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
+                            }}
+                            className="text-red-600 hover:text-red-800"
+                            type="button"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() => {
+                          const newInstructions = [...(editing.data?.instructions || []), '']
+                          setEditing({...editing, data: {...editing.data, instructions: newInstructions}})
+                        }}
+                        className="text-blue-600 hover:text-blue-800 text-sm"
+                        type="button"
+                      >
+                        + Add Step
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-2 mt-6">
+                    <button onClick={handleSave} className="btn-primary">
+                      <Save className="w-4 h-4 mr-2" />
+                      Save
+                    </button>
+                    <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
+                      <X className="w-4 h-4 mr-2" />
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {recipes.map((recipe) => (
+                  <div key={recipe.id} className="card">
+                    <div className="flex items-start justify-between mb-2">
+                      <h4 className="font-semibold">{recipe.name}</h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => startEdit(recipe, 'recipe')}
+                          className="text-blue-600 hover:text-blue-800"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(recipe.id, 'recipe')}
+                          className="text-red-600 hover:text-red-800"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    {recipe.description && (
+                      <p className="text-sm text-gray-600 mb-2">{recipe.description}</p>
+                    )}
+                    <div className="text-xs text-gray-500 space-y-1">
+                      <p><strong>Linked to:</strong> {recipe.drink_menu?.name || 'Unknown Drink'}</p>
+                      <p><strong>Prep time:</strong> {recipe.prep_time || 'N/A'}</p>
+                      <p><strong>Difficulty:</strong> {recipe.difficulty || 'N/A'}</p>
+                      <p><strong>Serves:</strong> {recipe.serves}</p>
+                      <p><strong>Ingredients:</strong> {recipe.ingredients?.length || 0}</p>
+                      <p><strong>Steps:</strong> {recipe.instructions?.length || 0}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+                    {/* Edit Modal */}
+          {editing.id && !showAddForm && (
+            <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 max-w-md w-full m-4 shadow-2xl">
+                <h3 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Edit {editing.type}</h3>
+                
+                {editing.type === 'guest' && (
+                  <div className="space-y-4">
+                      <input
+                        type="text"
+                        placeholder="Guest Name"
+                        value={editing.data?.name || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                        className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                      />
+                      <input
+                        type="text"
+                        placeholder="NFC Tag UID"
+                        value={editing.data?.tag_uid || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, tag_uid: e.target.value}})}
+                        className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                      />
+                  </div>
+                )}
+
+                {editing.type === 'drink' && (
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Drink Name"
+                      value={editing.data?.name || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <select
+                      value={editing.data?.category || 'cocktail'}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="cocktail">Cocktail</option>
+                      <option value="beer">Beer</option>
+                      <option value="shot">Shot</option>
+                      <option value="non-alcoholic">Non-Alcoholic</option>
+                    </select>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={editing.data?.available || false}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, available: e.target.checked}})}
+                        className="rounded"
+                      />
+                      <label className="text-sm">Available</label>
+                    </div>
+                  </div>
+                )}
+
+                {editing.type === 'recipe' && (
+                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                    <input
+                      type="text"
+                      placeholder="Recipe Name"
+                      value={editing.data?.name || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <select
+                      value={editing.data?.drink_menu_id || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, drink_menu_id: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                    >
+                      <option value="">Select Drink</option>
+                      {drinks.map((drink) => (
+                        <option key={drink.id} value={drink.id}>
+                          {drink.name}
+                        </option>
+                      ))}
+                    </select>
+                    <textarea
+                      placeholder="Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                      rows={2}
+                    />
+                    <div className="grid grid-cols-3 gap-2">
+                      <input
+                        type="text"
+                        placeholder="Prep Time"
+                        value={editing.data?.prep_time || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, prep_time: e.target.value}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                      />
+                      <select
+                        value={editing.data?.difficulty || 'Easy'}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, difficulty: e.target.value}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                      >
+                        <option value="Easy">Easy</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Hard">Hard</option>
+                      </select>
+                      <input
+                        type="number"
+                        placeholder="Serves"
+                        value={editing.data?.serves || 1}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, serves: parseInt(e.target.value) || 1}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md"
+                        min="1"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                                <div className="flex gap-3 mt-6">
+                  <button onClick={handleSave} className="bg-gradient-to-r from-green-500 to-emerald-400 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                    <Save className="w-4 h-4" />
+                    Save
+                  </button>
+                  <button onClick={() => setEditing({id: null, type: null, data: null})} className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2">
+                    <X className="w-4 h-4" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

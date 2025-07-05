@@ -54,6 +54,25 @@
     box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.25);
   }
   
+  .scroll-mt-20 {
+    scroll-margin-top: 5rem;
+  }
+  
+  /* Touch-friendly button sizing */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  /* Remove text decoration from button-style links */
+  .no-underline {
+    text-decoration: none !important;
+  }
+  
+  .no-underline:hover {
+    text-decoration: none !important;
+  }
+  
   @keyframes fadeIn {
     from {
       opacity: 0;
@@ -63,5 +82,20 @@
       opacity: 1;
       transform: scale(1);
     }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
   }
 } 

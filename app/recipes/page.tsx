@@ -1,20 +1,42 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { Wine, Clock, Users, Play, Home, ChefHat, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Recipe } from '@/lib/supabase'
 
 export default function RecipesPage() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
-  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean }>({ show: false, message: '', success: false })
+  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; redirecting?: boolean }>({ show: false, message: '', success: false })
+  const [returnUrl, setReturnUrl] = useState<string>('/recipes')
 
   useEffect(() => {
     fetchData()
   }, [])
+
+  useEffect(() => {
+    // Handle recipe parameter from URL
+    const recipeId = searchParams.get('recipe')
+    const fromParam = searchParams.get('from')
+    
+    // Set return URL based on 'from' parameter
+    if (fromParam) {
+      setReturnUrl(decodeURIComponent(fromParam))
+    }
+    
+    if (recipeId && recipes.length > 0) {
+      const recipe = recipes.find(r => r.id === recipeId)
+      if (recipe) {
+        setSelectedRecipe(recipe)
+      }
+    }
+  }, [searchParams, recipes])
 
   const fetchData = async () => {
     try {
@@ -75,7 +97,22 @@ export default function RecipesPage() {
         success: true
       })
 
-      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+      // If we came from guest dashboard, redirect back after showing feedback
+      if (returnUrl.includes('guest')) {
+        setTimeout(() => {
+          setOrderFeedback({ 
+            show: true, 
+            message: 'Redirecting back to dashboard...', 
+            success: true, 
+            redirecting: true 
+          })
+        }, 1500)
+        setTimeout(() => {
+          router.push(returnUrl)
+        }, 2500)
+      } else {
+        setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+      }
     } catch (err) {
       console.error('Failed to order drink:', err)
       setOrderFeedback({
@@ -84,6 +121,14 @@ export default function RecipesPage() {
         success: false
       })
       setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+    }
+  }
+
+  const handleBackNavigation = () => {
+    if (returnUrl === '/recipes') {
+      setSelectedRecipe(null)
+    } else {
+      router.push(returnUrl)
     }
   }
 
@@ -111,10 +156,10 @@ export default function RecipesPage() {
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <button
-                onClick={() => setSelectedRecipe(null)}
+                onClick={handleBackNavigation}
                 className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
               >
-                ← Back to Recipes
+                ← Back
               </button>
               <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
                 <Home className="w-4 h-4" />
@@ -217,8 +262,10 @@ export default function RecipesPage() {
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fade-in">
             <div className={`bg-white rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl ${orderFeedback.success ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`}>
               <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-100' : 'bg-red-100'}`}>
-                {orderFeedback.success ? (
-                  <Wine className={`w-10 h-10 ${orderFeedback.success ? 'text-green-600' : 'text-red-600'}`} />
+                {orderFeedback.redirecting ? (
+                  <div className="animate-spin rounded-full h-10 w-10 border-2 border-green-300 border-t-green-600"></div>
+                ) : orderFeedback.success ? (
+                  <Wine className="w-10 h-10 text-green-600" />
                 ) : (
                   <div className="text-red-600 text-3xl">⚠️</div>
                 )}
