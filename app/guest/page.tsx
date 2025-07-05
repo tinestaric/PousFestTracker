@@ -345,7 +345,7 @@ export default function GuestDashboard() {
     // Show processing feedback IMMEDIATELY to prevent multiple clicks
     setOrderFeedback({
       show: true,
-      message: `Processing ${drinkName} order...`,
+              message: `Obdelavam naročilo ${drinkName}...`,
       success: true, // Use success styling for processing state
       processing: true
     })
@@ -370,7 +370,7 @@ export default function GuestDashboard() {
       // Update to success feedback
       setOrderFeedback({
         show: true,
-        message: `${drinkName} ordered successfully! 🍻`,
+        message: `${drinkName} uspešno naročen! 🍻`,
         success: true,
         processing: false
       })
@@ -389,7 +389,7 @@ export default function GuestDashboard() {
       // Show error feedback
       setOrderFeedback({
         show: true,
-        message: 'Failed to order drink. Please try again.',
+        message: 'Naročilo pijače ni uspelo. Prosimo, poskusi znova.',
         success: false,
         processing: false
       })
@@ -428,8 +428,8 @@ export default function GuestDashboard() {
         // Optimized single API call
         fetchDashboardData(storedTagUid)
       } else {
-        setError('No tag UID found. Please scan your NFC tag.')
-        setLoading(false)
+                  setError('Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.')
+          setLoading(false)
       }
     }
   }, [searchParams, fetchDashboardData])
@@ -461,11 +461,11 @@ export default function GuestDashboard() {
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
           <div className="text-red-500 mb-4">
             <User className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold">Access Required</h2>
+            <h2 className="text-2xl font-bold">Potreben dostop</h2>
           </div>
           <p className="text-gray-600 mb-6">{error}</p>
           <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Go Home
+            Domov
           </Link>
         </div>
       </div>
@@ -477,12 +477,12 @@ export default function GuestDashboard() {
       <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
           <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Guest Not Found</h2>
+          <h2 className="text-2xl font-bold mb-4">Gost ni najden</h2>
           <p className="text-gray-600 mb-6">
-            We couldn't find your guest profile. Please contact the event organizer.
+            Nismo mogli najti tvojega profila gosta. Prosimo, kontaktiraj organizatorja dogodka.
           </p>
           <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Go Home
+            Domov
           </Link>
         </div>
       </div>
@@ -517,29 +517,29 @@ export default function GuestDashboard() {
             <div className="flex justify-between items-start mb-6">
               <div className="flex-1 text-left">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                  Welcome, {guestData.guest.name}!
+                  Dobrodošel, {guestData.guest.name}!
                 </h1>
-                <p className="text-white/90 text-lg">Your PousFest dashboard</p>
+                <p className="text-white/90 text-lg">Tvoj Pousfest profil</p>
               </div>
-              <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
+                              <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
                 <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">Home</span>
+                <span className="hidden sm:inline">Domov</span>
               </Link>
             </div>
 
             {/* Quick Order Hero Button */}
             <div className="max-w-md mx-auto">
-              <h2 className="text-xl font-semibold text-white/90 mb-4">Ready for your next drink?</h2>
+              <h2 className="text-xl font-semibold text-white/90 mb-4">Pripravljen na naslednjo pijačo?</h2>
               <a 
                 href="#drink-ordering"
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-400 text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 no-underline"
               >
                 <Wine className="w-6 h-6" />
-                Order a Drink
+                Naroči pijačo
                 <ArrowDown className="w-5 h-5 animate-bounce" />
               </a>
               <div className="flex flex-col items-center gap-2 mt-4 text-white/60">
-                <span className="text-sm">Scroll down to explore</span>
+                <span className="text-sm">Pomikaj se navzdol za raziskovanje</span>
                 <ChevronDown className="w-4 h-4 animate-bounce" />
               </div>
             </div>
@@ -550,9 +550,9 @@ export default function GuestDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">Achievements</h3>
+                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">Dosežki</h3>
                   <p className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">{guestData.total_achievements}</p>
-                  <p className="text-xs md:text-sm text-white/80">badges unlocked</p>
+                  <p className="text-xs md:text-sm text-white/80">značk odklenjenih</p>
                 </div>
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
                   <Trophy className="w-6 h-6 md:w-8 md:h-8 text-white" />
@@ -563,9 +563,9 @@ export default function GuestDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">Drinks</h3>
+                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">Pijače</h3>
                   <p className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">{guestData.total_drinks}</p>
-                  <p className="text-xs md:text-sm text-white/80">drinks logged</p>
+                  <p className="text-xs md:text-sm text-white/80">pijač zabeleženih</p>
                 </div>
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
                   <Wine className="w-6 h-6 md:w-8 md:h-8 text-white" />
@@ -589,7 +589,7 @@ export default function GuestDashboard() {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-lg">
                 <Sparkles className="w-6 h-6" />
-                Your Achievements
+                Tvoji dosežki
               </h2>
               {guestData.achievements.length > 0 ? (
                 <div className="space-y-4">
@@ -607,7 +607,7 @@ export default function GuestDashboard() {
                             {achievement.achievement_templates?.description}
                           </p>
                           <p className="text-sm text-white/70">
-                            Unlocked: {new Date(achievement.unlocked_at).toLocaleDateString()}
+                            Odklenjen: {new Date(achievement.unlocked_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
@@ -617,9 +617,9 @@ export default function GuestDashboard() {
               ) : (
                 <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
                   <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">No achievements yet</h3>
+                  <h3 className="text-xl font-semibold text-white mb-2">Še brez dosežkov</h3>
                   <p className="text-white/80">
-                    Keep participating to unlock badges!
+                    Nadaljuj s sodelovanjem za odklepanje značk!
                   </p>
                 </div>
               )}
@@ -629,7 +629,7 @@ export default function GuestDashboard() {
             <div id="drink-ordering" className="space-y-6 scroll-mt-20">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-lg">
                 <Wine className="w-6 h-6" />
-                Order Drinks
+                Naroči pijače
               </h2>
               {Object.entries(drinksByCategory).map(([category, drinks]) => (
                 <div key={category} className="space-y-3">
@@ -646,7 +646,7 @@ export default function GuestDashboard() {
                               <p className="text-sm text-white/80">{drink.description}</p>
                             )}
                             {drink.recipe && (
-                              <p className="text-xs text-white/60 italic mt-1">Recipe available</p>
+                              <p className="text-xs text-white/60 italic mt-1">Recept na voljo</p>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
@@ -654,7 +654,7 @@ export default function GuestDashboard() {
                               <Link href={`/recipes?recipe=${drink.recipe.id}&from=${encodeURIComponent('/guest' + (typeof window !== 'undefined' ? window.location.search : '') + '#drink-ordering')}`}>
                                 <button className="bg-gradient-to-r from-orange-500 to-red-400 hover:from-orange-600 hover:to-red-500 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm flex items-center gap-1">
                                   <BookOpen className="w-4 h-4" />
-                                  Recipe
+                                  Recept
                                 </button>
                               </Link>
                             )}
@@ -662,7 +662,7 @@ export default function GuestDashboard() {
                               onClick={() => orderDrink(drink.id)}
                               className="bg-gradient-to-r from-purple-500 to-pink-400 hover:from-purple-600 hover:to-pink-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
                             >
-                              Order
+                              Naroči
                             </button>
                           </div>
                         </div>
@@ -675,7 +675,7 @@ export default function GuestDashboard() {
               {/* Recent Drinks */}
               {guestData.drink_orders.length > 0 && (
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-white/90 drop-shadow-lg">Recent Orders</h3>
+                  <h3 className="text-lg font-semibold text-white/90 drop-shadow-lg">Nedavna naročila</h3>
                   <div className="space-y-2">
                     {guestData.drink_orders.slice(0, 5).map((order) => (
                       <div key={order.id} className="flex items-center justify-between p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/30 transition-all duration-300">

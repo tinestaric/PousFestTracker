@@ -53,14 +53,14 @@ export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, g
       {Object.keys(guestData.drink_summary).length > 0 && (
         <Suspense fallback={
           <ChartSkeleton 
-            title="Your Drink Preferences" 
+            title="Tvoje preference pijač" 
             icon={<TrendingUp className="w-6 h-6 text-white" />}
           />
         }>
           <Chart 
             type="pie"
             data={userDrinkCategoryData}
-            title="Your Drink Preferences"
+            title="Tvoje preference pijač"
             icon={<TrendingUp className="w-6 h-6 text-white" />}
           />
         </Suspense>
@@ -69,14 +69,14 @@ export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, g
       {guestData.drink_orders.length > 0 && (
         <Suspense fallback={
           <ChartSkeleton 
-            title="Drinks Timeline" 
+            title="Časovnica pijač" 
             icon={<Wine className="w-6 h-6 text-white" />}
           />
         }>
           <Chart 
             type="line"
             data={drinkTimelineData}
-            title="Drinks Timeline"
+            title="Časovnica pijač"
             icon={<Wine className="w-6 h-6 text-white" />}
           />
         </Suspense>

@@ -45,15 +45,15 @@ export default function Timetable() {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                Event Schedule
+                Urnik dogodka
               </h1>
               <p className="text-white/90 text-lg">
-                Your complete guide to PousFest activities
+                Tvoj popoln vodič za Pousfest aktivnosti
               </p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
               <Home className="w-4 h-4" />
-              Home
+              Domov
             </Link>
           </div>
 
@@ -63,7 +63,7 @@ export default function Timetable() {
               <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl shadow-lg">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-white drop-shadow-lg">Day 1</h2>
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg">Dan 1</h2>
             </div>
             
             <div className="space-y-6">
@@ -112,7 +112,7 @@ export default function Timetable() {
               <div className="p-3 bg-gradient-to-r from-cyan-500 to-blue-400 rounded-xl shadow-lg">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-white drop-shadow-lg">Day 2</h2>
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg">Dan 2</h2>
             </div>
             
             <div className="space-y-6">
@@ -162,54 +162,54 @@ export default function Timetable() {
                 <Trophy className="w-8 h-8 text-yellow-900" />
               </div>
               <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                Achievement Opportunities
+                Priložnosti za dosežke
               </h3>
             </div>
             <p className="text-white/90 mb-6 text-lg leading-relaxed">
-              Participate in these activities to unlock special achievements! 
-              Make sure to scan your NFC tag during the event times.
+              Sodeluj v teh aktivnostih za odklepanje posebnih dosežkov! 
+              Poskrbi, da skeniraš svojo NFC oznako med časi dogodkov.
             </p>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🐦</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Early Bird</span>
-                  <p className="text-white/80">Arrive early to the party</p>
+                  <span className="font-bold text-white text-lg">Zgodnja ptica</span>
+                  <p className="text-white/80">Pridi zgodaj na zabavo</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🏊</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Pool Party Champion</span>
-                  <p className="text-white/80">Join the pool activities</p>
+                  <span className="font-bold text-white text-lg">Prvak bazenskih zabav</span>
+                  <p className="text-white/80">Pridruži se bazenlskim aktivnostim</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🎉</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Party Animal</span>
-                  <p className="text-white/80">Dance the night away</p>
+                  <span className="font-bold text-white text-lg">Zabavna žival</span>
+                  <p className="text-white/80">Pleši celo noč</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🦉</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Night Owl</span>
-                  <p className="text-white/80">Stay up late</p>
+                  <span className="font-bold text-white text-lg">Nočna sova</span>
+                  <p className="text-white/80">Ostani pokonci do pozno</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">☀️</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Morning Warrior</span>
-                  <p className="text-white/80">Early riser for brunch</p>
+                  <span className="font-bold text-white text-lg">Jutraniji vojščak</span>
+                  <p className="text-white/80">Zgodnji vstajač za kosilo</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🦋</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Social Butterfly</span>
-                  <p className="text-white/80">Mingle throughout the day</p>
+                  <span className="font-bold text-white text-lg">Socialni metulj</span>
+                  <p className="text-white/80">Družiti se ves dan</p>
                 </div>
               </div>
             </div>

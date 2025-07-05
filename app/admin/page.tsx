@@ -279,7 +279,7 @@ export default function AdminDashboard() {
         
         <div className="relative z-10 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto mb-6"></div>
-          <p className="text-white text-xl font-semibold drop-shadow-lg">Loading admin dashboard...</p>
+          <p className="text-white text-xl font-semibold drop-shadow-lg">Nalagam admin nadzorno ploščo...</p>
         </div>
       </div>
     )
@@ -302,12 +302,12 @@ export default function AdminDashboard() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Admin Dashboard</h1>
-              <p className="text-white/90 text-lg">Manage your PousFest event</p>
+              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Admin nadzorna plošča</h1>
+              <p className="text-white/90 text-lg">Upravljaj svoj Pousfest dogodek</p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
-              <Home className="w-4 h-4" />
-              Home
+                              <Home className="w-4 h-4" />
+              Domov
             </Link>
           </div>
 
@@ -316,7 +316,7 @@ export default function AdminDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-white/80 mb-1">Total Guests</p>
+                  <p className="text-sm text-white/80 mb-1">Skupaj gostov</p>
                   <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalGuests}</p>
                 </div>
                 <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl shadow-lg">
@@ -328,7 +328,7 @@ export default function AdminDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-white/80 mb-1">Achievements</p>
+                  <p className="text-sm text-white/80 mb-1">Dosežki</p>
                   <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalAchievements}</p>
                 </div>
                 <div className="p-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl shadow-lg">
@@ -340,7 +340,7 @@ export default function AdminDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-white/80 mb-1">Drinks Served</p>
+                  <p className="text-sm text-white/80 mb-1">Postreženih pijač</p>
                   <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalDrinks}</p>
                 </div>
                 <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-400 rounded-xl shadow-lg">
@@ -352,7 +352,7 @@ export default function AdminDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-white/80 mb-1">Active Guests</p>
+                  <p className="text-sm text-white/80 mb-1">Aktivni gostje</p>
                   <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.activeGuests}</p>
                 </div>
                 <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-400 rounded-xl shadow-lg">
@@ -367,11 +367,11 @@ export default function AdminDashboard() {
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-2 shadow-lg">
               <nav className="flex space-x-2">
                 {[
-                  { key: 'overview', label: 'Overview', icon: BarChart3 },
-                  { key: 'guests', label: 'Guests', icon: Users },
-                  { key: 'achievements', label: 'Achievements', icon: Trophy },
-                  { key: 'drinks', label: 'Drinks', icon: Wine },
-                  { key: 'recipes', label: 'Recipes', icon: BookOpen },
+                  { key: 'overview', label: 'Pregled', icon: BarChart3 },
+                  { key: 'guests', label: 'Gostje', icon: Users },
+                  { key: 'achievements', label: 'Dosežki', icon: Trophy },
+                  { key: 'drinks', label: 'Pijače', icon: Wine },
+                  { key: 'recipes', label: 'Recepti', icon: BookOpen },
                 ].map(({ key, label, icon: Icon }) => (
                   <button
                     key={key}

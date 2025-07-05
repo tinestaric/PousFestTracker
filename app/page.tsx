@@ -53,7 +53,7 @@ export default function Home() {
           </div>
           
           <p className="text-lg md:text-xl mb-10 opacity-90 max-w-2xl mx-auto leading-relaxed">
-            Prepare for an unforgettable experience where freedom, music, and friendship unite in one single day. We draw inspiration from the hummingbird – a symbol of lightness, living in the moment, and pure joy. Take your time, breathe, and dance.
+            Pripravi se na nepozabno izkušnjo, kjer se svoboda, glasba in prijateljstvo združijo v enem samem dnevu. Navdihujemo se pri kolibriju – simbolu lahkotnosti, življenja v trenutku in čiste radosti. Vzemi si čas, zadihaj in pleši.
           </p>
           
           {/* CTA Button */}
@@ -63,7 +63,7 @@ export default function Home() {
               className="inline-flex items-center px-8 py-4 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/30"
             >
               <User className="w-5 h-5 mr-2" />
-              Start Your Journey
+              Začni svojo pustolovščino
             </Link>
           </div>
         </div>
@@ -73,10 +73,10 @@ export default function Home() {
       <div className="max-w-5xl mx-auto px-4 py-16">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            What would you like to do?
+            Kaj bi rad naredil?
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Choose your adventure and make the most of Pousfest 2025
+            Izberi svojo pustolovščino in izkoristi Pousfest 2025 na največ!
           </p>
         </div>
         
@@ -88,9 +88,9 @@ export default function Home() {
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
                 <User className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">My Dashboard</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Moj profil</h3>
               <p className="text-gray-600">
-                View your achievements, order drinks, and track your party progress
+                Poglej svoje dosežke, naroči pijačo in spremljaj svoj napredek zabave!
               </p>
             </div>
           </Link>
@@ -101,9 +101,9 @@ export default function Home() {
               <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
                 <BookOpen className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Cocktail Recipes</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Koktajl recepti</h3>
               <p className="text-gray-600">
-                Learn to make amazing cocktails with step-by-step video tutorials
+                Nauči se delati neverjetne koktajle s korak-za-korakom video tutoriali
               </p>
             </div>
           </Link>
@@ -114,9 +114,9 @@ export default function Home() {
               <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
                 <Calendar className="w-10 h-10 text-white" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Event Schedule</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Časovnica</h3>
               <p className="text-gray-600">
-                Check the event timeline and never miss achievement opportunities
+                Preveri časovnico dogodka in nikoli ne zamudi priložnosti za dosežke
               </p>
             </div>
           </Link>
@@ -125,7 +125,7 @@ export default function Home() {
         {/* Quick Features - Simplified */}
         <div className="text-center mb-16">
           <h3 className="text-2xl font-semibold text-gray-800 mb-12">
-            Experience the next chapter of party technology
+            Doživite novo poglavje zabavne tehnologije
           </h3>
           
           <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -133,24 +133,24 @@ export default function Home() {
               <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Trophy className="w-8 h-8 text-white" />
               </div>
-              <h4 className="font-semibold text-gray-800 mb-2">Achievement System</h4>
-              <p className="text-gray-600">Unlock badges throughout the event</p>
+              <h4 className="font-semibold text-gray-800 mb-2">Sistem dosežkov</h4>
+              <p className="text-gray-600">Odkleni značke tekom dogodka</p>
             </div>
             
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Wine className="w-8 h-8 text-white" />
               </div>
-              <h4 className="font-semibold text-gray-800 mb-2">Easy Ordering</h4>
-              <p className="text-gray-600">Order drinks with one tap</p>
+              <h4 className="font-semibold text-gray-800 mb-2">Enostavno naročanje</h4>
+              <p className="text-gray-600">Naroči pijače z enim dotikom</p>
             </div>
             
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                 <Smartphone className="w-8 h-8 text-white" />
               </div>
-              <h4 className="font-semibold text-gray-800 mb-2">NFC Ready</h4>
-              <p className="text-gray-600">Just tap your tag to start</p>
+              <h4 className="font-semibold text-gray-800 mb-2">NFC pripravljen</h4>
+              <p className="text-gray-600">Samo tapni svojo označbo za začetek</p>
             </div>
           </div>
         </div>
@@ -158,10 +158,10 @@ export default function Home() {
         {/* Getting Started - Simplified */}
         <div className="max-w-2xl mx-auto text-center p-8 bg-gradient-to-r from-blue-50 via-sky-50 to-cyan-50 rounded-2xl border border-blue-200">
           <h4 className="text-xl font-semibold text-gray-800 mb-3">
-            Ready to Begin Your Chapter?
+            Pripravljen začeti svoje poglavje?
           </h4>
           <p className="text-gray-600">
-            Simply tap your NFC tag on your phone to access your personal dashboard and start your Pousfest 2025 journey!
+            Preprosto tapni svojo NFC označbo na telefon za dostop do osebne nadzorne plošče in začni svoje Pousfest 2025 potovanje!
           </p>
         </div>
       </div>

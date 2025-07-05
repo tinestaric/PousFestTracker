@@ -67,7 +67,7 @@ export default function RecipesPage() {
     if (!tagUid) {
       setOrderFeedback({
         show: true,
-        message: 'Please scan your NFC tag first to order drinks.',
+        message: 'Prosimo, najprej skeniraj svojo NFC oznako za naročanje pijač.',
         success: false,
         processing: false
       })
@@ -78,7 +78,7 @@ export default function RecipesPage() {
     // Show processing feedback IMMEDIATELY to prevent multiple clicks
     setOrderFeedback({
       show: true,
-      message: `Processing ${recipe.name} order...`,
+      message: `Obdelavam naročilo ${recipe.name}...`,
       success: true, // Use success styling for processing state
       processing: true
     })
@@ -103,7 +103,7 @@ export default function RecipesPage() {
       // Update to success feedback
       setOrderFeedback({
         show: true,
-        message: `${recipe.name} ordered successfully! 🍻`,
+        message: `${recipe.name} uspešno naročen! 🍻`,
         success: true,
         processing: false
       })
@@ -113,7 +113,7 @@ export default function RecipesPage() {
         setTimeout(() => {
           setOrderFeedback({ 
             show: true, 
-            message: 'Redirecting back to dashboard...', 
+            message: 'Preusmerjam nazaj na profil...', 
             success: true, 
             redirecting: true,
             processing: false
@@ -129,7 +129,7 @@ export default function RecipesPage() {
       console.error('Failed to order drink:', err)
       setOrderFeedback({
         show: true,
-        message: 'Failed to order drink. Please try again.',
+        message: 'Naročilo pijače ni uspelo. Prosimo, poskusi znova.',
         success: false,
         processing: false
       })
@@ -172,11 +172,11 @@ export default function RecipesPage() {
                 onClick={handleBackNavigation}
                 className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
               >
-                ← Back
+                ← Nazaj
               </button>
               <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
                 <Home className="w-4 h-4" />
-                Home
+                Domov
               </Link>
             </div>
 
@@ -196,7 +196,7 @@ export default function RecipesPage() {
                     </div>
                     <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
                       <Users className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-800">Serves {selectedRecipe.serves}</span>
+                      <span className="text-sm font-medium text-blue-800">Postreže {selectedRecipe.serves}</span>
                     </div>
                     <span className={`px-3 py-2 rounded-lg text-sm font-medium ${getDifficultyColor(selectedRecipe.difficulty || 'Easy')}`}>
                       {selectedRecipe.difficulty}
@@ -219,7 +219,7 @@ export default function RecipesPage() {
                     onClick={() => orderDrink(selectedRecipe)}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl w-full lg:w-auto text-lg"
                   >
-                    Order This Cocktail
+                    Naroči ta koktajl
                   </button>
                 </div>
 
@@ -230,7 +230,7 @@ export default function RecipesPage() {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <Sparkles className="w-6 h-6 text-blue-600" />
-                        Ingredients
+                        Sestavine
                       </h3>
                       <div className="bg-gray-50 rounded-xl p-6">
                         <ul className="space-y-3">
@@ -248,7 +248,7 @@ export default function RecipesPage() {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <ChefHat className="w-6 h-6 text-blue-600" />
-                        Instructions
+                        Navodila
                       </h3>
                       <div className="bg-gray-50 rounded-xl p-6">
                         <ol className="space-y-4">
@@ -309,12 +309,12 @@ export default function RecipesPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">Cocktail Recipes</h1>
-              <p className="text-blue-100 text-lg">Learn to make amazing cocktails with video tutorials</p>
+              <h1 className="text-4xl font-bold text-white mb-2">Koktajl recepti</h1>
+              <p className="text-blue-100 text-lg">Nauči se delati neverjetne koktajle z video tutoriali</p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
-              <Home className="w-4 h-4" />
-              Home
+                              <Home className="w-4 h-4" />
+              Domov
             </Link>
           </div>
 
@@ -325,14 +325,14 @@ export default function RecipesPage() {
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto"></div>
                 <div className="absolute inset-0 rounded-full border-4 border-white/10"></div>
               </div>
-              <p className="text-white text-lg font-medium">Loading recipes...</p>
+              <p className="text-white text-lg font-medium">Nalagam recepte...</p>
             </div>
           ) : recipes.length === 0 ? (
             <div className="text-center py-20">
               <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-12 max-w-md mx-auto">
                 <Wine className="w-20 h-20 text-gray-400 mx-auto mb-6" />
-                <h3 className="text-2xl font-bold text-gray-600 mb-4">No Recipes Available</h3>
-                <p className="text-gray-500 text-lg">Check back later for cocktail recipes!</p>
+                <h3 className="text-2xl font-bold text-gray-600 mb-4">Ni receptov na voljo</h3>
+                <p className="text-gray-500 text-lg">Vrni se kasneje za koktajl recepte!</p>
               </div>
             </div>
           ) : (
@@ -373,7 +373,7 @@ export default function RecipesPage() {
                           <Play className="w-4 h-4 text-red-600" />
                         </div>
                       )}
-                      <span className="text-blue-600 font-bold text-sm group-hover:text-blue-700 transition-colors">View Recipe →</span>
+                      <span className="text-blue-600 font-bold text-sm group-hover:text-blue-700 transition-colors">Oglej si recept →</span>
                     </div>
                   </div>
                 </div>
