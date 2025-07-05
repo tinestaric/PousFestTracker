@@ -1,0 +1,248 @@
+# Project: NFC Party Tracker (Supabase Edition)
+
+## Overview:
+I'm building a fun 2-day party web app. Each of the 60 guests gets a bracelet with an NFC tag that contains a unique tag UID (hex string). There will be one NFC reader station (portable/mobile), a Jager machine, and phone interactions.
+
+When a guest:
+- **Scans their bracelet at the station**, an HTTP POST request is sent to an API endpoint to log their achievement based on timestamp.
+- **Scans their bracelet at the Jager machine**, it logs a Jager drink consumption.
+- **Taps their bracelet with a phone**, it opens a personal webpage showing:
+  - Their unlocked achievements (with logos)
+  - A "Drink Order" button that shows the preloaded drink menu (for fun tracking - guests make drinks themselves)
+  - An "Event Timetable" button
+  - Drink count stats
+
+**Session Management**: When a guest first opens their personalized page via NFC tap, store their hex code (tag_uid) in browser session/localStorage so they can navigate around the website without losing access to their personal data.
+
+No login/auth is required. Each tag UID acts as a unique identifier and is safe enough for this private event.
+
+---
+
+## 1. Supabase Database Schema
+
+Create 5 tables:
+
+### Table: guests
+- id: UUID (Primary key)
+- name: text
+- tag_uid: text (unique)
+- created_at: timestamp
+
+### Table: achievement_templates
+- id: UUID (Primary key)
+- achievement_type: text (e.g. "early_arrival", "pool_party", "night_owl")
+- title: text (display name)
+- description: text
+- logo_url: text (path to achievement logo/icon)
+- from_time: timestamp (when this achievement becomes available)
+- to_time: timestamp (when this achievement expires)
+- created_at: timestamp
+
+### Table: guest_achievements
+- id: UUID (Primary key)
+- guest_id: UUID (foreign key → guests)
+- achievement_template_id: UUID (foreign key → achievement_templates)
+- unlocked_at: timestamp
+
+### Table: drink_menu
+- id: UUID (Primary key)
+- name: text (e.g. "Mojito", "Beer", "Jager Shot")
+- description: text (optional)
+- category: text (e.g. "cocktail", "beer", "shot")
+- available: boolean (can be toggled on/off)
+- created_at: timestamp
+
+### Table: drink_orders
+- id: UUID
+- guest_id: UUID (foreign key → guests)
+- drink_menu_id: UUID (foreign key → drink_menu)
+- quantity: integer (default 1)
+- status: text (always "logged" - for tracking purposes only)
+- ordered_at: timestamp
+
+---
+
+## 2. Supabase Edge Functions
+
+### Function: `logScan`
+Receives a POST request from the portable NFC reader station. Checks current timestamp against achievement_templates to unlock any available achievements for the user.
+
+```json
+POST /functions/v1/logScan
+{
+  "tag_uid": "ABCD1234"
+}
+```
+
+### Function: `logJager`
+Receives a POST request from the Jager machine. Logs a Jager drink consumption by creating a drink order for the Jager item.
+
+```json
+POST /functions/v1/logJager
+{
+  "tag_uid": "ABCD1234"
+}
+```
+
+### Function: `orderDrink`
+Receives a POST request when a guest "orders" a drink from their personal webpage (for fun tracking - they make it themselves).
+
+```json
+POST /functions/v1/orderDrink
+{
+  "tag_uid": "ABCD1234",
+  "drink_menu_id": "uuid-of-drink",
+  "quantity": 1
+}
+```
+
+### Function: `getGuestData`
+Receives a GET request to fetch guest data (achievements, drink orders, etc.) using stored session tag_uid.
+
+```json
+GET /functions/v1/getGuestData?tag_uid=ABCD1234
+```
+
+---
+
+## 3. Achievement System Logic
+
+1. **Preload achievements**: Insert achievement templates with specific time windows into `achievement_templates` table
+2. **On scan**: When `logScan` receives a request:
+   - Find the guest by `tag_uid`
+   - Check current timestamp against all `achievement_templates` where `from_time <= now <= to_time`
+   - For each matching template, create a record in `guest_achievements` (if not already unlocked)
+3. **Display**: Show unlocked achievements on the personal webpage with logos
+
+Example achievement templates:
+- "Early Bird" (Day 1, 6:00 PM - 8:00 PM) - 🐦 logo
+- "Pool Party" (Day 1, 2:00 PM - 6:00 PM) - 🏊 logo
+- "Night Owl" (Day 1, 11:00 PM - 2:00 AM) - 🦉 logo
+- "Morning After" (Day 2, 8:00 AM - 10:00 AM) - ☀️ logo
+
+---
+
+## 4. Drink System Logic
+
+**Self-Service Tracking**: Guests click drinks they want for fun tracking purposes, then make the drinks themselves.
+
+1. **Preload drink menu**: Organizer provides list of available drinks which get inserted into `drink_menu` table
+2. **Display menu**: Personal webpage shows all available drinks from `drink_menu` where `available = true`
+3. **Track drinks**: When guest clicks a drink, it creates a record in `drink_orders` with status "logged"
+4. **Jager machine**: When someone scans at Jager machine, it automatically creates a drink order for the Jager item
+5. **Stats**: Show drink count stats based on `drink_orders` table for fun social comparison
+
+Example drink menu items:
+- "Mojito" (cocktail)
+- "Heineken" (beer)
+- "Jager Shot" (shot)
+- "Vodka Tonic" (cocktail)
+
+---
+
+## 5. Event Timetable System
+
+**Static Implementation**: The event timetable can be hardcoded in the frontend or read from a JSON file. No database storage needed since it's static information that doesn't change during the event.
+
+**Options**:
+1. **Hardcoded**: Define schedule directly in the component/page
+2. **JSON file**: Store schedule in `public/timetable.json` and fetch on page load
+3. **Environment variables**: Store in config for easy updates
+
+Example timetable structure:
+```json
+{
+  "day1": [
+    {
+      "time": "18:00-20:00",
+      "title": "Welcome Drinks",
+      "description": "Meet and greet with cocktails",
+      "location": "Main Terrace"
+    },
+    {
+      "time": "14:00-18:00", 
+      "title": "Pool Party",
+      "description": "Swimming and games",
+      "location": "Pool Area"
+    }
+  ],
+  "day2": [
+    {
+      "time": "10:00-12:00",
+      "title": "Brunch",
+      "description": "Morning feast",
+      "location": "Dining Room"
+    }
+  ]
+}
+```
+
+---
+
+## 6. Session Management
+
+1. **Initial NFC tap**: When guest taps NFC tag, redirect to personal page with `tag_uid` in URL
+2. **Store session**: JavaScript stores the `tag_uid` in localStorage/sessionStorage
+3. **Navigation**: All subsequent page navigation uses stored `tag_uid` to maintain access
+4. **API calls**: All API calls use the stored `tag_uid` to fetch personalized data
+5. **Fallback**: If session is lost, user can tap NFC tag again to restore access
+
+---
+
+## 7. Admin Interface
+
+**Simple Admin Dashboard** for event management:
+
+### Guest Management
+- **Add/Edit Guests**: Name and tag UID input
+- **CSV Import**: Bulk import guest list
+- **Guest List**: View all registered guests
+- **Guest Stats**: See individual guest achievements and drink counts
+
+### Achievement Management
+- **Add/Edit Achievements**: Title, description, time windows, logo upload
+- **Achievement Templates**: View all available achievements
+- **Achievement Stats**: See which achievements are most popular
+
+### Drink Management
+- **Add/Edit Drinks**: Name, description, category
+- **Toggle Availability**: Turn drinks on/off during event
+- **Drink Stats**: See most popular drinks and consumption patterns
+
+### Real-time Dashboard
+- **Live Stats**: Current active guests, recent scans, drink orders
+- **Achievement Unlocks**: Real-time feed of achievements being unlocked
+- **Event Overview**: Total guests, achievements unlocked, drinks logged
+
+---
+
+## 8. Setup & Management Considerations
+
+### Guest Data Setup
+- **CSV Import**: Simple way to bulk import guest names and tag UIDs before the event
+- **Tag Registration**: Handle unregistered tag UIDs gracefully with helpful error messages
+
+### Achievement Assets
+- **Logo Storage**: Store achievement logos in Supabase Storage or public folder
+- **Icon Guidelines**: Small, colorful icons that display well on mobile (32x32 or 64x64px)
+- **Fallback**: Default icon if logo fails to load
+
+### Error Handling
+- **Unknown Tags**: Show friendly message with organizer contact info
+- **Network Issues**: Cache guest data locally for offline viewing
+- **Duplicate Scans**: Prevent spam by limiting scan frequency (e.g., once per minute)
+
+### Mobile Scanning Station
+- **Portable Setup**: Single NFC reader that can be moved around the venue
+- **Location Flexibility**: Achievements unlock based on time, not station location
+- **Battery Considerations**: Ensure reliable power source for mobile operation
+
+
+
+
+
+
+
+
+
+

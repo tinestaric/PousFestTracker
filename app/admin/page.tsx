@@ -1,0 +1,823 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Users, Trophy, Wine, BarChart3, Plus, Edit, Trash2, Download, Upload, Home, Save, X } from 'lucide-react'
+import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
+import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement } from '@/lib/supabase'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement,
+} from 'chart.js'
+import { Bar, Pie, Line } from 'react-chartjs-2'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  PointElement,
+  LineElement
+)
+
+interface AdminStats {
+  totalGuests: number
+  totalAchievements: number
+  totalDrinks: number
+  activeGuests: number
+}
+
+interface EditingItem {
+  id: string | null
+  type: 'guest' | 'achievement' | 'drink' | null
+  data: any
+}
+
+export default function AdminDashboard() {
+  const [stats, setStats] = useState<AdminStats>({
+    totalGuests: 0,
+    totalAchievements: 0,
+    totalDrinks: 0,
+    activeGuests: 0
+  })
+  const [guests, setGuests] = useState<Guest[]>([])
+  const [achievements, setAchievements] = useState<AchievementTemplate[]>([])
+  const [drinks, setDrinks] = useState<DrinkMenuItem[]>([])
+  const [drinkOrders, setDrinkOrders] = useState<DrinkOrder[]>([])
+  const [guestAchievements, setGuestAchievements] = useState<GuestAchievement[]>([])
+  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'overview' | 'guests' | 'achievements' | 'drinks'>('overview')
+  const [editing, setEditing] = useState<EditingItem>({ id: null, type: null, data: null })
+  const [showAddForm, setShowAddForm] = useState(false)
+
+  useEffect(() => {
+    fetchAdminData()
+  }, [])
+
+  const fetchAdminData = async () => {
+    try {
+      // Fetch all data
+      const [guestsData, achievementsData, drinksData, drinkOrdersData, guestAchievementsData] = await Promise.all([
+        supabase.from('guests').select('*').order('created_at', { ascending: false }),
+        supabase.from('achievement_templates').select('*').order('created_at', { ascending: false }),
+        supabase.from('drink_menu').select('*').order('category', { ascending: true }),
+        supabase.from('drink_orders').select('*, drink_menu(name, category)').order('ordered_at', { ascending: false }),
+        supabase.from('guest_achievements').select('*, achievement_templates(title), guests(name)').order('unlocked_at', { ascending: false })
+      ])
+
+      const totalDrinks = drinkOrdersData.data?.reduce((sum, order) => sum + order.quantity, 0) || 0
+
+      setGuests(guestsData.data || [])
+      setAchievements(achievementsData.data || [])
+      setDrinks(drinksData.data || [])
+      setDrinkOrders(drinkOrdersData.data || [])
+      setGuestAchievements(guestAchievementsData.data || [])
+      setStats({
+        totalGuests: guestsData.data?.length || 0,
+        totalAchievements: guestAchievementsData.data?.length || 0,
+        totalDrinks,
+        activeGuests: guestsData.data?.length || 0
+      })
+    } catch (error) {
+      console.error('Error fetching admin data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    if (!editing.type || !editing.data) return
+
+    try {
+      if (editing.id) {
+        // Update existing
+        const { error } = await supabase
+          .from(editing.type === 'guest' ? 'guests' : editing.type === 'achievement' ? 'achievement_templates' : 'drink_menu')
+          .update(editing.data)
+          .eq('id', editing.id)
+        
+        if (error) throw error
+      } else {
+        // Create new
+        const { error } = await supabase
+          .from(editing.type === 'guest' ? 'guests' : editing.type === 'achievement' ? 'achievement_templates' : 'drink_menu')
+          .insert([editing.data])
+        
+        if (error) throw error
+      }
+
+      setEditing({ id: null, type: null, data: null })
+      setShowAddForm(false)
+      fetchAdminData()
+    } catch (error) {
+      console.error('Error saving:', error)
+    }
+  }
+
+  const handleDelete = async (id: string, type: 'guest' | 'achievement' | 'drink') => {
+    if (!confirm('Are you sure you want to delete this item?')) return
+
+    try {
+      const { error } = await supabase
+        .from(type === 'guest' ? 'guests' : type === 'achievement' ? 'achievement_templates' : 'drink_menu')
+        .delete()
+        .eq('id', id)
+      
+      if (error) throw error
+      fetchAdminData()
+    } catch (error) {
+      console.error('Error deleting:', error)
+    }
+  }
+
+  const startEdit = (item: any, type: 'guest' | 'achievement' | 'drink') => {
+    setEditing({ id: item.id, type, data: { ...item } })
+  }
+
+  const startAdd = (type: 'guest' | 'achievement' | 'drink') => {
+    const defaultData = {
+      guest: { name: '', tag_uid: '' },
+      achievement: { 
+        achievement_type: '', 
+        title: '', 
+        description: '', 
+        logo_url: '/icons/default.png',
+        from_time: new Date().toISOString().slice(0, 16),
+        to_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16)
+      },
+      drink: { name: '', description: '', category: 'cocktail', available: true }
+    }
+    
+    setEditing({ id: null, type, data: defaultData[type] })
+    setShowAddForm(true)
+  }
+
+  const exportGuestData = () => {
+    const csvContent = [
+      ['Name', 'Tag UID', 'Created At'],
+      ...guests.map(guest => [guest.name, guest.tag_uid, guest.created_at])
+    ].map(row => row.join(',')).join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'guests.csv'
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  // Chart data preparation
+  const uniqueCategories = Array.from(new Set(drinkOrders.map(order => order.drink_menu?.category || 'Unknown')))
+  const drinkCategoryData = {
+    labels: uniqueCategories,
+    datasets: [{
+      label: 'Drinks by Category',
+      data: uniqueCategories.map(category =>
+        drinkOrders.filter(order => order.drink_menu?.category === category).reduce((sum, order) => sum + order.quantity, 0)
+      ),
+      backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#F97316'],
+    }]
+  }
+
+  const achievementData = {
+    labels: achievements.map(a => a.title),
+    datasets: [{
+      label: 'Achievements Unlocked',
+      data: achievements.map(a => guestAchievements.filter(ga => ga.achievement_template_id === a.id).length),
+      backgroundColor: '#F59E0B',
+    }]
+  }
+
+  const hourlyActivityData = {
+    labels: Array.from({length: 24}, (_, i) => {
+      const hour = i
+      return `${hour.toString().padStart(2, '0')}:00`
+    }),
+    datasets: [
+      {
+        label: 'Drinks Ordered',
+        data: Array.from({length: 24}, (_, hour) => {
+          const today = new Date()
+          const hourStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hour, 0, 0)
+          const hourEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hour, 59, 59)
+          return drinkOrders.filter(order => {
+            const orderDate = new Date(order.ordered_at)
+            return orderDate >= hourStart && orderDate <= hourEnd
+          }).reduce((sum, order) => sum + order.quantity, 0)
+        }),
+        borderColor: '#3B82F6',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        fill: true,
+        tension: 0.1,
+      },
+      {
+        label: 'Achievements Unlocked',
+        data: Array.from({length: 24}, (_, hour) => {
+          const today = new Date()
+          const hourStart = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hour, 0, 0)
+          const hourEnd = new Date(today.getFullYear(), today.getMonth(), today.getDate(), hour, 59, 59)
+          return guestAchievements.filter(achievement => {
+            const achievementDate = new Date(achievement.unlocked_at)
+            return achievementDate >= hourStart && achievementDate <= hourEnd
+          }).length
+        }),
+        borderColor: '#F59E0B',
+        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+        fill: true,
+        tension: 0.1,
+      }
+    ]
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen p-4 bg-gray-50">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-8">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p className="text-gray-600">Manage your PousFest event</p>
+          </div>
+          <Link href="/" className="btn-outline">
+            <Home className="w-4 h-4 mr-2" />
+            Home
+          </Link>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Total Guests</p>
+                <p className="text-2xl font-bold text-blue-600">{stats.totalGuests}</p>
+              </div>
+              <Users className="w-8 h-8 text-blue-600" />
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Achievements</p>
+                <p className="text-2xl font-bold text-yellow-600">{stats.totalAchievements}</p>
+              </div>
+              <Trophy className="w-8 h-8 text-yellow-600" />
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Drinks Served</p>
+                <p className="text-2xl font-bold text-purple-600">{stats.totalDrinks}</p>
+              </div>
+              <Wine className="w-8 h-8 text-purple-600" />
+            </div>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Active Guests</p>
+                <p className="text-2xl font-bold text-green-600">{stats.activeGuests}</p>
+              </div>
+              <BarChart3 className="w-8 h-8 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div className="mb-8">
+          <div className="border-b border-gray-200">
+            <nav className="flex space-x-8">
+              {[
+                { key: 'overview', label: 'Overview', icon: BarChart3 },
+                { key: 'guests', label: 'Guests', icon: Users },
+                { key: 'achievements', label: 'Achievements', icon: Trophy },
+                { key: 'drinks', label: 'Drinks', icon: Wine },
+              ].map(({ key, label, icon: Icon }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTab(key as typeof activeTab)}
+                  className={`flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm ${
+                    activeTab === key
+                      ? 'border-primary-500 text-primary-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {label}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        {activeTab === 'overview' && (
+          <div className="space-y-6">
+            <div className="grid lg:grid-cols-2 gap-6">
+              <div className="card">
+                <h3 className="text-lg font-semibold mb-4">Drinks by Category</h3>
+                <div className="h-64">
+                  <Pie data={drinkCategoryData} options={{ responsive: true, maintainAspectRatio: false }} />
+                </div>
+              </div>
+              
+              <div className="card">
+                <h3 className="text-lg font-semibold mb-4">Achievement Popularity</h3>
+                <div className="h-64">
+                  <Bar data={achievementData} options={{ responsive: true, maintainAspectRatio: false }} />
+                </div>
+              </div>
+            </div>
+
+            <div className="card">
+              <h3 className="text-lg font-semibold mb-4">Hourly Activity (Today)</h3>
+              <div className="h-64">
+                <Line data={hourlyActivityData} options={{ responsive: true, maintainAspectRatio: false }} />
+              </div>
+            </div>
+
+            <div className="card">
+              <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+              <div className="space-y-3">
+                {(() => {
+                  // Combine and sort recent activities
+                  const activities = [
+                    ...guestAchievements.slice(0, 5).map(achievement => ({
+                      id: `achievement-${achievement.id}`,
+                      type: 'achievement' as const,
+                      guestName: achievement.guests?.name || 'Unknown Guest',
+                      description: `unlocked "${achievement.achievement_templates?.title}"`,
+                      timestamp: achievement.unlocked_at,
+                      icon: Trophy,
+                      iconColor: 'text-yellow-500'
+                    })),
+                    ...drinkOrders.slice(0, 5).map(order => ({
+                      id: `drink-${order.id}`,
+                      type: 'drink' as const,
+                      guestName: guests.find(g => g.id === order.guest_id)?.name || 'Unknown Guest',
+                      description: `ordered ${order.quantity}x ${order.drink_menu?.name || 'Unknown Drink'}`,
+                      timestamp: order.ordered_at,
+                      icon: Wine,
+                      iconColor: 'text-purple-500'
+                    }))
+                  ]
+                  
+                  // Sort by timestamp (most recent first)
+                  const sortedActivities = activities
+                    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                    .slice(0, 10)
+                  
+                  if (sortedActivities.length === 0) {
+                    return (
+                      <div className="text-center py-8 text-gray-500">
+                        <BarChart3 className="w-12 h-12 mx-auto mb-2 text-gray-400" />
+                        <p>No recent activity yet</p>
+                      </div>
+                    )
+                  }
+                  
+                  return sortedActivities.map((activity) => (
+                    <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <activity.icon className={`w-5 h-5 ${activity.iconColor}`} />
+                        <div>
+                          <p className="font-medium">{activity.guestName}</p>
+                          <p className="text-sm text-gray-600">{activity.description}</p>
+                        </div>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {new Date(activity.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                  ))
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'guests' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Guest Management</h3>
+              <div className="flex gap-2">
+                <button onClick={exportGuestData} className="btn-outline">
+                  <Download className="w-4 h-4 mr-2" />
+                  Export CSV
+                </button>
+                <button onClick={() => startAdd('guest')} className="btn-primary">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Guest
+                </button>
+              </div>
+            </div>
+
+            {(showAddForm && editing.type === 'guest') && (
+              <div className="card">
+                <h4 className="text-md font-semibold mb-4">
+                  {editing.id ? 'Edit Guest' : 'Add New Guest'}
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Guest Name"
+                    value={editing.data?.name || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <input
+                    type="text"
+                    placeholder="NFC Tag UID"
+                    value={editing.data?.tag_uid || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, tag_uid: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button onClick={handleSave} className="btn-primary">
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </button>
+                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="card">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2">Name</th>
+                      <th className="text-left py-2">Tag UID</th>
+                      <th className="text-left py-2">Created</th>
+                      <th className="text-left py-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {guests.map((guest) => (
+                      <tr key={guest.id} className="border-b">
+                        <td className="py-2">{guest.name}</td>
+                        <td className="py-2 font-mono text-sm">{guest.tag_uid}</td>
+                        <td className="py-2 text-sm text-gray-600">
+                          {new Date(guest.created_at).toLocaleDateString()}
+                        </td>
+                        <td className="py-2">
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => startEdit(guest, 'guest')}
+                              className="text-blue-600 hover:text-blue-800"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(guest.id, 'guest')}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'achievements' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Achievement Management</h3>
+              <button onClick={() => startAdd('achievement')} className="btn-primary">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Achievement
+              </button>
+            </div>
+
+            {(showAddForm && editing.type === 'achievement') && (
+              <div className="card">
+                <h4 className="text-md font-semibold mb-4">
+                  {editing.id ? 'Edit Achievement' : 'Add New Achievement'}
+                </h4>
+                <div className="grid gap-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Achievement Type"
+                      value={editing.data?.achievement_type || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, achievement_type: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Title"
+                      value={editing.data?.title || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, title: e.target.value}})}
+                      className="px-3 py-2 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <textarea
+                    placeholder="Description"
+                    value={editing.data?.description || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                    rows={3}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Logo URL"
+                    value={editing.data?.logo_url || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, logo_url: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">From Time</label>
+                      <input
+                        type="datetime-local"
+                        value={editing.data?.from_time?.slice(0, 16) || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, from_time: e.target.value + ':00+00'}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md w-full"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">To Time</label>
+                      <input
+                        type="datetime-local"
+                        value={editing.data?.to_time?.slice(0, 16) || ''}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, to_time: e.target.value + ':00+00'}})}
+                        className="px-3 py-2 border border-gray-300 rounded-md w-full"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button onClick={handleSave} className="btn-primary">
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </button>
+                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {achievements.map((achievement) => (
+                <div key={achievement.id} className="card">
+                  <div className="flex items-start justify-between mb-3">
+                    <h4 className="font-semibold">{achievement.title}</h4>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => startEdit(achievement, 'achievement')}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(achievement.id, 'achievement')}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <span className="text-xs bg-gray-100 px-2 py-1 rounded mb-2 inline-block">
+                    {achievement.achievement_type}
+                  </span>
+                  <p className="text-sm text-gray-600 mb-3">{achievement.description}</p>
+                  <div className="text-xs text-gray-500">
+                    <p>From: {new Date(achievement.from_time).toLocaleString()}</p>
+                    <p>To: {new Date(achievement.to_time).toLocaleString()}</p>
+                    <p className="mt-2 font-medium">
+                      Unlocked by: {guestAchievements.filter(ga => ga.achievement_template_id === achievement.id).length} guests
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'drinks' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-semibold">Drink Menu Management</h3>
+              <button onClick={() => startAdd('drink')} className="btn-primary">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Drink
+              </button>
+            </div>
+
+            {(showAddForm && editing.type === 'drink') && (
+              <div className="card">
+                <h4 className="text-md font-semibold mb-4">
+                  {editing.id ? 'Edit Drink' : 'Add New Drink'}
+                </h4>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <input
+                    type="text"
+                    placeholder="Drink Name"
+                    value={editing.data?.name || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={editing.data?.description || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <select
+                    value={editing.data?.category || 'cocktail'}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
+                    className="px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="cocktail">Cocktail</option>
+                    <option value="beer">Beer</option>
+                    <option value="shot">Shot</option>
+                    <option value="non-alcoholic">Non-Alcoholic</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-2 mt-4">
+                  <input
+                    type="checkbox"
+                    checked={editing.data?.available || false}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, available: e.target.checked}})}
+                    className="rounded"
+                  />
+                  <label className="text-sm">Available</label>
+                </div>
+                <div className="flex gap-2 mt-4">
+                  <button onClick={handleSave} className="btn-primary">
+                    <Save className="w-4 h-4 mr-2" />
+                    Save
+                  </button>
+                  <button onClick={() => {setEditing({id: null, type: null, data: null}); setShowAddForm(false)}} className="btn-outline">
+                    <X className="w-4 h-4 mr-2" />
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {drinks.map((drink) => (
+                <div key={drink.id} className="card">
+                  <div className="flex items-start justify-between mb-2">
+                    <h4 className="font-semibold">{drink.name}</h4>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => startEdit(drink, 'drink')}
+                        className="text-blue-600 hover:text-blue-800"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(drink.id, 'drink')}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                  {drink.description && (
+                    <p className="text-sm text-gray-600 mb-2">{drink.description}</p>
+                  )}
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs bg-gray-100 px-2 py-1 rounded capitalize">
+                      {drink.category}
+                    </span>
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      drink.available
+                        ? 'bg-green-100 text-green-800'
+                        : 'bg-red-100 text-red-800'
+                    }`}>
+                      {drink.available ? 'Available' : 'Unavailable'}
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xs text-gray-500">
+                    Orders: {drinkOrders.filter(order => order.drink_menu_id === drink.id).reduce((sum, order) => sum + order.quantity, 0)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Edit Modal */}
+        {editing.id && !showAddForm && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full m-4">
+              <h3 className="text-lg font-semibold mb-4">Edit {editing.type}</h3>
+              
+              {editing.type === 'guest' && (
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Guest Name"
+                    value={editing.data?.name || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <input
+                    type="text"
+                    placeholder="NFC Tag UID"
+                    value={editing.data?.tag_uid || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, tag_uid: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                </div>
+              )}
+
+              {editing.type === 'drink' && (
+                <div className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Drink Name"
+                    value={editing.data?.name || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    value={editing.data?.description || ''}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  />
+                  <select
+                    value={editing.data?.category || 'cocktail'}
+                    onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  >
+                    <option value="cocktail">Cocktail</option>
+                    <option value="beer">Beer</option>
+                    <option value="shot">Shot</option>
+                    <option value="non-alcoholic">Non-Alcoholic</option>
+                  </select>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={editing.data?.available || false}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, available: e.target.checked}})}
+                      className="rounded"
+                    />
+                    <label className="text-sm">Available</label>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-2 mt-6">
+                <button onClick={handleSave} className="btn-primary">
+                  <Save className="w-4 h-4 mr-2" />
+                  Save
+                </button>
+                <button onClick={() => setEditing({id: null, type: null, data: null})} className="btn-outline">
+                  <X className="w-4 h-4 mr-2" />
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+} 

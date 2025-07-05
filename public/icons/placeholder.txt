@@ -1,0 +1,9 @@
+This directory should contain achievement icons:
+- early-bird.png
+- pool-party.png
+- night-owl.png
+- morning-warrior.png
+- social-butterfly.png
+- party-animal.png
+
+Each icon should be 64x64 pixels for best display quality. 

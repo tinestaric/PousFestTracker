@@ -1,0 +1,55 @@
+{
+  "day1": [
+    {
+      "time": "18:00-20:00",
+      "title": "Welcome Drinks",
+      "description": "Meet and greet with cocktails and appetizers",
+      "location": "Main Terrace",
+      "achievement": "early_arrival"
+    },
+    {
+      "time": "14:00-18:00",
+      "title": "Pool Party",
+      "description": "Swimming, games, and poolside drinks",
+      "location": "Pool Area",
+      "achievement": "pool_party"
+    },
+    {
+      "time": "20:00-01:00",
+      "title": "Main Party",
+      "description": "DJ, dancing, and the main event celebration",
+      "location": "Main Hall",
+      "achievement": "party_animal"
+    },
+    {
+      "time": "23:00-02:00",
+      "title": "Late Night Vibes",
+      "description": "Chill music and nightcap drinks",
+      "location": "Lounge Area",
+      "achievement": "night_owl"
+    }
+  ],
+  "day2": [
+    {
+      "time": "08:00-10:00",
+      "title": "Recovery Brunch",
+      "description": "Hearty breakfast and morning beverages",
+      "location": "Dining Room",
+      "achievement": "morning_after"
+    },
+    {
+      "time": "10:00-14:00",
+      "title": "Outdoor Activities",
+      "description": "Games, sports, and fresh air",
+      "location": "Garden & Courtyard",
+      "achievement": "social_butterfly"
+    },
+    {
+      "time": "14:00-18:00",
+      "title": "Farewell Gathering",
+      "description": "Final drinks and goodbyes",
+      "location": "Main Terrace",
+      "achievement": "social_butterfly"
+    }
+  ]
+} 
