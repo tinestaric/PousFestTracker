@@ -1,36 +1,53 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen } from 'lucide-react'
+
+// Simple throttle utility to avoid external dependency
+function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
+  let timeoutId: NodeJS.Timeout | null = null
+  let lastExecTime = 0
+  return ((...args: any[]) => {
+    const currentTime = Date.now()
+    
+    if (currentTime - lastExecTime > delay) {
+      func(...args)
+      lastExecTime = currentTime
+    } else {
+      if (timeoutId) clearTimeout(timeoutId)
+      timeoutId = setTimeout(() => {
+        func(...args)
+        lastExecTime = Date.now()
+      }, delay - (currentTime - lastExecTime))
+    }
+  }) as T
+}
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem, Recipe } from '@/lib/supabase'
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  PointElement,
-  LineElement,
-} from 'chart.js'
-import { Bar, Pie, Line } from 'react-chartjs-2'
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  PointElement,
-  LineElement
-)
+// Lazy load charts component to reduce initial bundle size
+const LazyCharts = dynamic(() => import('./components/LazyCharts'), {
+  ssr: false,
+  loading: () => (
+    <div className="grid lg:grid-cols-2 gap-6">
+      {[1, 2].map(i => (
+        <div key={i} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+          <div className="h-64 bg-white/10 rounded-xl p-4 flex items-center justify-center">
+            <div className="animate-pulse space-y-3 w-full">
+              <div className="h-4 bg-white/20 rounded w-3/4 mx-auto"></div>
+              <div className="h-32 bg-white/20 rounded mx-auto"></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+})
+
+import dynamic from 'next/dynamic'
+import { DashboardSkeleton } from './components/SkeletonLoader'
 
 interface GuestData {
   guest: Guest
@@ -45,6 +62,54 @@ interface DrinkWithRecipe extends DrinkMenuItem {
   recipe?: Recipe
 }
 
+// Cache utilities
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+const DRINK_MENU_CACHE_KEY = 'pous_fest_drink_menu_cache'
+const GUEST_DATA_CACHE_KEY = 'pous_fest_guest_data_cache'
+
+interface CacheItem<T> {
+  data: T
+  timestamp: number
+  tag_uid?: string
+}
+
+function getCachedData<T>(key: string, tag_uid?: string): T | null {
+  if (typeof window === 'undefined') return null
+  
+  try {
+    const cached = localStorage.getItem(key)
+    if (!cached) return null
+    
+    const cacheItem: CacheItem<T> = JSON.parse(cached)
+    const isExpired = Date.now() - cacheItem.timestamp > CACHE_DURATION
+    const isWrongUser = tag_uid && cacheItem.tag_uid !== tag_uid
+    
+    if (isExpired || isWrongUser) {
+      localStorage.removeItem(key)
+      return null
+    }
+    
+    return cacheItem.data
+  } catch {
+    return null
+  }
+}
+
+function setCachedData<T>(key: string, data: T, tag_uid?: string): void {
+  if (typeof window === 'undefined') return
+  
+  try {
+    const cacheItem: CacheItem<T> = {
+      data,
+      timestamp: Date.now(),
+      tag_uid
+    }
+    localStorage.setItem(key, JSON.stringify(cacheItem))
+  } catch {
+    // Ignore cache errors
+  }
+}
+
 export default function GuestDashboard() {
   const searchParams = useSearchParams()
   const [guestData, setGuestData] = useState<GuestData | null>(null)
@@ -55,235 +120,23 @@ export default function GuestDashboard() {
   const [showQuickOrder, setShowQuickOrder] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
 
-  useEffect(() => {
-    const tag_uid = searchParams.get('tag_uid')
-    if (tag_uid) {
-      // Store in localStorage for session management
-      localStorage.setItem('pous_fest_tag_uid', tag_uid)
-      fetchGuestData(tag_uid)
-      fetchDrinkMenu()
-    } else {
-      // Try to get from localStorage
-      const storedTagUid = localStorage.getItem('pous_fest_tag_uid')
-      if (storedTagUid) {
-        fetchGuestData(storedTagUid)
-        fetchDrinkMenu()
-      } else {
-        setError('No tag UID found. Please scan your NFC tag.')
-        setLoading(false)
+  // Memoize expensive category grouping calculation - moved before early returns
+  const drinksByCategory = useMemo(() => {
+    return drinkMenu.reduce((acc, drink) => {
+      if (!acc[drink.category]) {
+        acc[drink.category] = []
       }
-    }
-  }, [searchParams])
+      acc[drink.category].push(drink)
+      return acc
+    }, {} as Record<string, DrinkWithRecipe[]>)
+  }, [drinkMenu])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Calculate scroll progress
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight
-      const currentScroll = window.pageYOffset
-      setScrollProgress((currentScroll / totalScroll) * 100)
-
-      // Show/hide floating action button based on drink ordering section visibility
-      const orderingSection = document.getElementById('drink-ordering')
-      if (orderingSection) {
-        const rect = orderingSection.getBoundingClientRect()
-        setShowQuickOrder(rect.top > window.innerHeight * 0.8)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-
-  useEffect(() => {
-    // Check if we need to scroll to drink ordering section after page load
-    if (typeof window !== 'undefined' && window.location.hash === '#drink-ordering') {
-      // Wait for the component to fully render and data to load
-      const scrollTimer = setTimeout(() => {
-        scrollToOrdering()
-      }, 1000)
-      
-      return () => clearTimeout(scrollTimer)
-    }
-  }, [guestData, drinkMenu]) // Dependencies ensure data is loaded before scrolling
-
-  const scrollToOrdering = () => {
-    const element = document.getElementById('drink-ordering')
-    if (element) {
-      const yOffset = -80 // Account for any fixed headers
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset
-      
-      window.scrollTo({
-        top: y,
-        behavior: 'smooth'
-      })
-    }
-  }
-
-  const fetchGuestData = async (tagUid: string) => {
-    try {
-      const response = await fetch(`/api/getGuestData?tag_uid=${tagUid}`)
-      if (!response.ok) {
-        throw new Error('Failed to fetch guest data')
-      }
-      const data = await response.json()
-      setGuestData(data)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load guest data')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const fetchDrinkMenu = async () => {
-    try {
-      // Fetch drinks
-      const { data: drinks, error: drinksError } = await supabase
-        .from('drink_menu')
-        .select('*')
-        .eq('available', true)
-        .order('category', { ascending: true })
-
-      if (drinksError) throw drinksError
-
-      // Fetch recipes with their linked drinks
-      const { data: recipes, error: recipesError } = await supabase
-        .from('recipes')
-        .select('*')
-
-      if (recipesError) throw recipesError
-
-      // Combine drinks with their recipes
-      const drinksWithRecipes: DrinkWithRecipe[] = (drinks || []).map(drink => {
-        const recipe = recipes?.find(r => r.drink_menu_id === drink.id)
-        return {
-          ...drink,
-          recipe
-        }
-      })
-
-      setDrinkMenu(drinksWithRecipes)
-    } catch (err) {
-      console.error('Failed to fetch drink menu:', err)
-    }
-  }
-
-  const orderDrink = async (drinkId: string, quantity: number = 1) => {
-    const tagUid = localStorage.getItem('pous_fest_tag_uid')
-    if (!tagUid) return
-
-    try {
-      const response = await fetch('/api/orderDrink', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tag_uid: tagUid,
-          drink_menu_id: drinkId,
-          quantity,
-        }),
-      })
-
-      if (!response.ok) {
-        throw new Error('Failed to order drink')
-      }
-
-      // Find the drink name for feedback
-      const drinkName = drinkMenu.find(d => d.id === drinkId)?.name || 'Drink'
-      
-      // Show success feedback
-      setOrderFeedback({
-        show: true,
-        message: `${drinkName} ordered successfully! 🍻`,
-        success: true
-      })
-
-      // Auto-hide feedback after 3 seconds
-      setTimeout(() => {
-        setOrderFeedback({ show: false, message: '', success: false })
-      }, 3000)
-
-      // Refresh guest data to show new drink order
-      fetchGuestData(tagUid)
-    } catch (err) {
-      console.error('Failed to order drink:', err)
-      
-      // Show error feedback
-      setOrderFeedback({
-        show: true,
-        message: 'Failed to order drink. Please try again.',
-        success: false
-      })
-
-      // Auto-hide feedback after 3 seconds
-      setTimeout(() => {
-        setOrderFeedback({ show: false, message: '', success: false })
-      }, 3000)
-    }
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center">
-        <div className="text-center">
-          <div className="relative">
-            <Loader2 className="w-16 h-16 animate-spin text-white mx-auto mb-4" />
-            <div className="absolute inset-0 w-16 h-16 border-4 border-white/20 rounded-full mx-auto"></div>
-          </div>
-          <p className="text-white text-lg font-medium">Loading your dashboard...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
-          <div className="text-red-500 mb-4">
-            <User className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold">Access Required</h2>
-          </div>
-          <p className="text-gray-600 mb-6">{error}</p>
-          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Go Home
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  if (!guestData) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
-        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
-          <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Guest Not Found</h2>
-          <p className="text-gray-600 mb-6">
-            We couldn't find your guest profile. Please contact the event organizer.
-          </p>
-          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Go Home
-          </Link>
-        </div>
-      </div>
-    )
-  }
-
-  const drinksByCategory = drinkMenu.reduce((acc, drink) => {
-    if (!acc[drink.category]) {
-      acc[drink.category] = []
-    }
-    acc[drink.category].push(drink)
-    return acc
-  }, {} as Record<string, DrinkWithRecipe[]>)
-
-  // Enhanced chart styling with blue theme
-  const userDrinkCategoryData = {
-    labels: Object.keys(guestData.drink_summary),
+  // Memoize chart data to prevent unnecessary recalculations - moved before early returns
+  const userDrinkCategoryData = useMemo(() => ({
+    labels: Object.keys(guestData?.drink_summary || {}),
     datasets: [{
       label: 'Drinks Consumed',
-      data: Object.values(guestData.drink_summary),
+      data: Object.values(guestData?.drink_summary || {}),
       backgroundColor: [
         'rgba(59, 130, 246, 0.8)',   // blue-500
         'rgba(14, 165, 233, 0.8)',   // sky-500
@@ -302,11 +155,13 @@ export default function GuestDashboard() {
       ],
       borderWidth: 2,
     }]
-  }
+  }), [guestData?.drink_summary])
 
-  // Create cumulative drinks timeline with 30-minute buckets
-  const drinkTimelineData = (() => {
-    if (guestData.drink_orders.length === 0) return { labels: [], datasets: [] }
+  // Memoize complex timeline calculation - moved before early returns
+  const drinkTimelineData = useMemo(() => {
+    if (!guestData?.drink_orders || guestData.drink_orders.length === 0) {
+      return { labels: [], datasets: [] }
+    }
 
     const sortedOrders = [...guestData.drink_orders].sort((a, b) => new Date(a.ordered_at).getTime() - new Date(b.ordered_at).getTime())
     
@@ -373,7 +228,256 @@ export default function GuestDashboard() {
         pointHoverRadius: 6,
       }]
     }
-  })()
+  }, [guestData?.drink_orders])
+
+  // Memoize and throttle scroll handler for better performance
+  const handleScroll = useCallback(() => {
+    // Calculate scroll progress
+    const totalScroll = document.documentElement.scrollHeight - window.innerHeight
+    const currentScroll = window.pageYOffset
+    setScrollProgress((currentScroll / totalScroll) * 100)
+
+    // Show/hide floating action button based on drink ordering section visibility
+    const orderingSection = document.getElementById('drink-ordering')
+    if (orderingSection) {
+      const rect = orderingSection.getBoundingClientRect()
+      setShowQuickOrder(rect.top > window.innerHeight * 0.8)
+    }
+  }, [])
+
+  const throttledScrollHandler = useMemo(
+    () => throttle(handleScroll, 16), // 60fps for smooth performance
+    [handleScroll]
+  )
+
+  // Optimized function that fetches all data in one call with caching
+  const fetchDashboardData = useCallback(async (tagUid: string) => {
+    try {
+      // Check cache first
+      const cachedGuestData = getCachedData<GuestData>(GUEST_DATA_CACHE_KEY, tagUid)
+      const cachedDrinkMenu = getCachedData<DrinkWithRecipe[]>(DRINK_MENU_CACHE_KEY)
+      
+      if (cachedGuestData && cachedDrinkMenu) {
+        setGuestData(cachedGuestData)
+        setDrinkMenu(cachedDrinkMenu)
+        setLoading(false)
+        return
+      }
+      
+      const response = await fetch(`/api/getDashboardData?tag_uid=${tagUid}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch dashboard data')
+      }
+      const data = await response.json()
+      
+      // Prepare guest data
+      const guestDataToCache: GuestData = {
+        guest: data.guest,
+        achievements: data.achievements,
+        drink_orders: data.drink_orders,
+        drink_summary: data.drink_summary,
+        total_achievements: data.total_achievements,
+        total_drinks: data.total_drinks
+      }
+      
+      // Set data
+      setGuestData(guestDataToCache)
+      setDrinkMenu(data.drink_menu || [])
+      
+      // Cache the data
+      setCachedData(GUEST_DATA_CACHE_KEY, guestDataToCache, tagUid)
+      setCachedData(DRINK_MENU_CACHE_KEY, data.drink_menu || [])
+      
+    } catch (err) {
+      // Fallback to old API if new one fails
+      console.warn('New API failed, falling back to old API:', err)
+      try {
+        await Promise.all([
+          fetchGuestDataFallback(tagUid),
+          fetchDrinkMenuFallback()
+        ])
+      } catch (fallbackErr) {
+        setError(fallbackErr instanceof Error ? fallbackErr.message : 'Failed to load dashboard data')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  // Fallback functions for old API
+  const fetchGuestDataFallback = async (tagUid: string) => {
+    const response = await fetch(`/api/getGuestData?tag_uid=${tagUid}`)
+    if (!response.ok) throw new Error('Failed to fetch guest data')
+    const data = await response.json()
+    setGuestData(data)
+  }
+
+  const fetchDrinkMenuFallback = async () => {
+    const { data: drinks, error: drinksError } = await supabase
+      .from('drink_menu')
+      .select('*')
+      .eq('available', true)
+      .order('category', { ascending: true })
+
+    if (drinksError) throw drinksError
+
+    const { data: recipes, error: recipesError } = await supabase
+      .from('recipes')
+      .select('*')
+
+    if (recipesError) throw recipesError
+
+    const drinksWithRecipes: DrinkWithRecipe[] = (drinks || []).map(drink => {
+      const recipe = recipes?.find(r => r.drink_menu_id === drink.id)
+      return { ...drink, recipe }
+    })
+
+    setDrinkMenu(drinksWithRecipes)
+  }
+
+  const orderDrink = async (drinkId: string, quantity: number = 1) => {
+    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    if (!tagUid) return
+
+    try {
+      const response = await fetch('/api/orderDrink', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tag_uid: tagUid,
+          drink_menu_id: drinkId,
+          quantity,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to order drink')
+      }
+
+      // Find the drink name for feedback
+      const drinkName = drinkMenu.find(d => d.id === drinkId)?.name || 'Drink'
+      
+      // Show success feedback
+      setOrderFeedback({
+        show: true,
+        message: `${drinkName} ordered successfully! 🍻`,
+        success: true
+      })
+
+      // Auto-hide feedback after 3 seconds
+      setTimeout(() => {
+        setOrderFeedback({ show: false, message: '', success: false })
+      }, 3000)
+
+      // Invalidate cache and refresh dashboard data to show new drink order
+      localStorage.removeItem(GUEST_DATA_CACHE_KEY)
+      fetchDashboardData(tagUid)
+    } catch (err) {
+      console.error('Failed to order drink:', err)
+      
+      // Show error feedback
+      setOrderFeedback({
+        show: true,
+        message: 'Failed to order drink. Please try again.',
+        success: false
+      })
+
+      // Auto-hide feedback after 3 seconds
+      setTimeout(() => {
+        setOrderFeedback({ show: false, message: '', success: false })
+      }, 3000)
+    }
+  }
+
+  const scrollToOrdering = () => {
+    const element = document.getElementById('drink-ordering')
+    if (element) {
+      const yOffset = -80 // Account for any fixed headers
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset
+      
+      window.scrollTo({
+        top: y,
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  useEffect(() => {
+    const tag_uid = searchParams.get('tag_uid')
+    if (tag_uid) {
+      // Store in localStorage for session management
+      localStorage.setItem('pous_fest_tag_uid', tag_uid)
+      // Optimized single API call
+      fetchDashboardData(tag_uid)
+    } else {
+      // Try to get from localStorage
+      const storedTagUid = localStorage.getItem('pous_fest_tag_uid')
+      if (storedTagUid) {
+        // Optimized single API call
+        fetchDashboardData(storedTagUid)
+      } else {
+        setError('No tag UID found. Please scan your NFC tag.')
+        setLoading(false)
+      }
+    }
+  }, [searchParams, fetchDashboardData])
+
+  useEffect(() => {
+    window.addEventListener('scroll', throttledScrollHandler, { passive: true })
+    return () => window.removeEventListener('scroll', throttledScrollHandler)
+  }, [throttledScrollHandler])
+
+  useEffect(() => {
+    // Check if we need to scroll to drink ordering section after page load
+    if (typeof window !== 'undefined' && window.location.hash === '#drink-ordering') {
+      // Wait for the component to fully render and data to load
+      const scrollTimer = setTimeout(() => {
+        scrollToOrdering()
+      }, 1000)
+      
+      return () => clearTimeout(scrollTimer)
+    }
+  }, [guestData, drinkMenu]) // Dependencies ensure data is loaded before scrolling
+
+  if (loading) {
+    return <DashboardSkeleton />
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
+          <div className="text-red-500 mb-4">
+            <User className="w-16 h-16 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold">Access Required</h2>
+          </div>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+            Go Home
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  if (!guestData) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
+          <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-4">Guest Not Found</h2>
+          <p className="text-gray-600 mb-6">
+            We couldn't find your guest profile. Please contact the event organizer.
+          </p>
+          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+            Go Home
+          </Link>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
@@ -460,77 +564,15 @@ export default function GuestDashboard() {
             </div>
           </div>
 
-          {/* Personal Statistics Charts */}
-          {(Object.keys(guestData.drink_summary).length > 0 || guestData.achievements.length > 0) && (
-            <div className="grid lg:grid-cols-2 gap-6">
-              {Object.keys(guestData.drink_summary).length > 0 && (
-                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
-                    <TrendingUp className="w-6 h-6 text-white" />
-                    Your Drink Preferences
-                  </h3>
-                  <div className="h-64 bg-white/10 rounded-xl p-4">
-                    <Pie data={userDrinkCategoryData} options={{ 
-                      responsive: true, 
-                      maintainAspectRatio: false,
-                      plugins: {
-                        legend: {
-                          position: 'bottom',
-                          labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            color: '#ffffff'
-                          }
-                        }
-                      }
-                    }} />
-                  </div>
-                </div>
-              )}
-              
-              {guestData.drink_orders.length > 0 && (
-                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
-                    <Wine className="w-6 h-6 text-white" />
-                    Drinks Timeline
-                  </h3>
-                  <div className="h-64 bg-white/10 rounded-xl p-4">
-                    <Line 
-                      data={drinkTimelineData} 
-                      options={{ 
-                        responsive: true, 
-                        maintainAspectRatio: false,
-                        plugins: {
-                          legend: {
-                            display: false
-                          }
-                        },
-                        scales: {
-                          y: {
-                            beginAtZero: true,
-                            ticks: {
-                              stepSize: 1,
-                              callback: function(value) {
-                                return Number.isInteger(value) ? value : null;
-                              }
-                            },
-                            grid: {
-                              color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                          },
-                          x: {
-                            grid: {
-                              color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                          }
-                        }
-                      }} 
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
+          {/* Personal Statistics Charts - Lazy Loaded */}
+          <LazyCharts 
+            userDrinkCategoryData={userDrinkCategoryData}
+            drinkTimelineData={drinkTimelineData}
+            guestData={{
+              drink_summary: guestData.drink_summary,
+              drink_orders: guestData.drink_orders
+            }}
+          />
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Achievements Section */}
