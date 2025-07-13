@@ -597,7 +597,9 @@ export default function GuestDashboard() {
                     <div key={achievement.id} className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
                       <div className="flex items-start gap-4">
                         <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                          <Trophy className="w-7 h-7 text-white" />
+                          <span className="text-2xl">
+                            {achievement.achievement_templates?.logo_url || '🏆'}
+                          </span>
                         </div>
                         <div className="flex-1">
                           <h3 className="font-bold text-white text-lg mb-1 drop-shadow-lg">
