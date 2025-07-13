@@ -1,0 +1,16 @@
+achievement_type,title,description,logo_url,from_time,to_time
+early_arrival,Zgodnja ptica,Pridi zgodaj na festival in začni svoje pustolovščino,/icons/early-bird.png,2025-07-19 10:00:00+00,2025-07-19 11:00:00+00
+activities_master,Mojster aktivnosti,Sodeluj v festivalskih aktivnostih,/icons/activities.png,2025-07-19 11:00:00+00,2025-07-19 12:00:00+00
+music_lover,Ljubitelj glasbe,Uživaj v ogrevalni glasbi,/icons/music.png,2025-07-19 11:00:00+00,2025-07-19 12:00:00+00
+food_explorer,Raziskovalec okusov,Poskusi Pousfest burgerje,/icons/food.png,2025-07-19 12:00:00+00,2025-07-19 13:00:00+00
+pool_party,Bazenski prvak,Pridruži se bazenlski zabavi z DJ Daviia,/icons/pool-party.png,2025-07-19 13:00:00+00,2025-07-19 16:30:00+00
+hot_dog_hero,Junak hot dogov,Okusi vroče hot doge za večerno okrepitev,/icons/hot-dog.png,2025-07-19 16:30:00+00,2025-07-19 17:00:00+00
+party_animal,Zabavna žival,Pleši in se zabavaj med sunset setom,/icons/party-animal.png,2025-07-19 17:00:00+00,2025-07-19 18:00:00+00
+ceremony_witness,Priča slovesnosti,Prisostvuj zaključni slovesnosti,/icons/ceremony.png,2025-07-19 18:00:00+00,2025-07-19 19:00:00+00
+night_owl,Nočna sova,Ostani do pozno v noč na silent disco,/icons/night-owl.png,2025-07-19 19:00:00+00,2025-07-19 23:00:00+00
+social_butterfly,Socialni metulj,Družiti se z vsemi skozi cel dan,/icons/social-butterfly.png,2025-07-19 10:00:00+00,2025-07-20 00:00:00+00
+festival_champion,Prvak festivala,Sodeluj v vseh glavnih aktivnostih,/icons/champion.png,2025-07-19 10:00:00+00,2025-07-20 00:00:00+00
+early_bird_special,Posebna zgodnja ptica,Prvi med prvimi na festivalu,/icons/special-early.png,2025-07-19 10:00:00+00,2025-07-19 10:30:00+00
+midnight_warrior,Polnočni bojevnik,Ostani aktiven do konca nočnega dogajanja,/icons/midnight.png,2025-07-19 23:00:00+00,2025-07-20 00:00:00+00
+camp_survivor,Preživeli kampa,Preživi noč v festivalskem kampu,/icons/camp.png,2025-07-20 00:00:00+00,2025-07-20 06:00:00+00
+dj_fan,Oboževalec DJ Daviia,Uživaj v obeh nastopih DJ Daviia,/icons/dj.png,2025-07-19 13:00:00+00,2025-07-19 18:00:00+00 

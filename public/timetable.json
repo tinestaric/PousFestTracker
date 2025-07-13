@@ -1,55 +1,82 @@
 {
   "day1": [
     {
-      "time": "18:00-20:00",
-      "title": "Welcome Drinks",
-      "description": "Meet and greet with cocktails and appetizers",
-      "location": "Main Terrace",
+      "time": "12:00",
+      "title": "Odprejo se vrata festivala in kamp",
+      "description": "Dobrodošli na Pousfest 2025! Registracija gostov in nastavitev kampa.",
+      "location": "Glavni vhod",
       "achievement": "early_arrival"
     },
     {
-      "time": "14:00-18:00",
-      "title": "Pool Party",
-      "description": "Swimming, games, and poolside drinks",
-      "location": "Pool Area",
+      "time": "13:00",
+      "title": "AKTIVNOSTI",
+      "description": "Različne zabavne aktivnosti za začetek festivala.",
+      "location": "Festivalsko območje",
+      "achievement": "social_butterfly"
+    },
+    {
+      "time": "13:00",
+      "title": "WARM UP MUSIC",
+      "description": "Ogrevalna glasba za pripravo na glavni del festivala.",
+      "location": "Glavna scena",
+      "achievement": null
+    },
+    {
+      "time": "14:00",
+      "title": "FOOD COURT - Pousfest burgers",
+      "description": "Okusni Pousfest burgerji za okrepitev energije.",
+      "location": "Food court",
+      "achievement": null
+    },
+    {
+      "time": "15:00",
+      "title": "POOL PARTY - DJ Daviia",
+      "description": "Bazenska zabava z DJ Daviia - ohladite se in se zabavajte!",
+      "location": "Bazen",
       "achievement": "pool_party"
     },
     {
-      "time": "20:00-01:00",
-      "title": "Main Party",
-      "description": "DJ, dancing, and the main event celebration",
-      "location": "Main Hall",
+      "time": "18:30",
+      "title": "FOOD COURT - Hot dog",
+      "description": "Vroči hot dogi za večerno okrepitev.",
+      "location": "Food court",
+      "achievement": null
+    },
+    {
+      "time": "19:00",
+      "title": "SUNSET SET z DJ Daviia",
+      "description": "Čudovit sunset set z DJ Daviia ob zahodu sonca.",
+      "location": "Glavna scena",
       "achievement": "party_animal"
     },
     {
-      "time": "23:00-02:00",
-      "title": "Late Night Vibes",
-      "description": "Chill music and nightcap drinks",
-      "location": "Lounge Area",
+      "time": "20:00",
+      "title": "Closing ceremony",
+      "description": "Uradna zaključna slovesnost festivala.",
+      "location": "Glavna scena",
+      "achievement": null
+    },
+    {
+      "time": "21:00",
+      "title": "SILENT DISCO",
+      "description": "Tiha diskoteka - potrebujete mobilni telefon in slušalke!",
+      "location": "Silent disco območje",
+      "achievement": "night_owl"
+    },
+    {
+      "time": "01:00",
+      "title": "Konec nočnega dogajanja",
+      "description": "Konec uradnega nočnega programa festivala.",
+      "location": "Festivalsko območje",
+      "achievement": null
+    },
+    {
+      "time": "02:00",
+      "title": "Nočni mir v festivalskem kampu",
+      "description": "Čas za počitek v festivalskem kampu. Dobro noč!",
+      "location": "Kamp",
       "achievement": "night_owl"
     }
   ],
-  "day2": [
-    {
-      "time": "08:00-10:00",
-      "title": "Recovery Brunch",
-      "description": "Hearty breakfast and morning beverages",
-      "location": "Dining Room",
-      "achievement": "morning_after"
-    },
-    {
-      "time": "10:00-14:00",
-      "title": "Outdoor Activities",
-      "description": "Games, sports, and fresh air",
-      "location": "Garden & Courtyard",
-      "achievement": "social_butterfly"
-    },
-    {
-      "time": "14:00-18:00",
-      "title": "Farewell Gathering",
-      "description": "Final drinks and goodbyes",
-      "location": "Main Terrace",
-      "achievement": "social_butterfly"
-    }
-  ]
+  "day2": []
 } 
