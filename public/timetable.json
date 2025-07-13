@@ -2,80 +2,73 @@
   "day1": [
     {
       "time": "12:00",
-      "title": "Odprejo se vrata festivala in kamp",
+      "title": "Prihod in odprtje festivalskega kampa",
       "description": "Dobrodošli na Pousfest 2025! Registracija gostov in nastavitev kampa.",
       "location": "Glavni vhod",
       "achievement": "early_arrival"
     },
     {
       "time": "13:00",
-      "title": "AKTIVNOSTI",
-      "description": "Različne zabavne aktivnosti za začetek festivala.",
-      "location": "Festivalsko območje",
-      "achievement": "social_butterfly"
+      "title": "Turnir v beer pongu 🍻",
+      "description": "Pridruži se turnirju v beer pongu in pokaži svoje spretnosti!",
+      "location": "Turnirski prostor",
+      "achievement": "beer_pong_champion"
     },
     {
-      "time": "13:00",
-      "title": "WARM UP MUSIC",
-      "description": "Ogrevalna glasba za pripravo na glavni del festivala.",
-      "location": "Glavna scena",
-      "achievement": null
-    },
-    {
-      "time": "14:00",
-      "title": "FOOD COURT - Pousfest burgers",
-      "description": "Okusni Pousfest burgerji za okrepitev energije.",
+      "time": "14:30",
+      "title": "Food court odpira vrata",
+      "description": "Okusna hrana za okrepitev energije pred glavnim delom festivala.",
       "location": "Food court",
-      "achievement": null
+      "achievement": "food_explorer"
     },
     {
       "time": "15:00",
-      "title": "POOL PARTY - DJ Daviia",
+      "title": "POOL PARTY z DJ Daviia 🏖",
       "description": "Bazenska zabava z DJ Daviia - ohladite se in se zabavajte!",
       "location": "Bazen",
       "achievement": "pool_party"
     },
     {
       "time": "18:30",
-      "title": "FOOD COURT - Hot dog",
-      "description": "Vroči hot dogi za večerno okrepitev.",
+      "title": "Popoldanski grižljaji",
+      "description": "Okusni grižljaji za večerno okrepitev.",
       "location": "Food court",
-      "achievement": null
+      "achievement": "evening_snacker"
     },
     {
       "time": "19:00",
-      "title": "SUNSET SET z DJ Daviia",
+      "title": "Sunset set z DJ Daviia 🌅",
       "description": "Čudovit sunset set z DJ Daviia ob zahodu sonca.",
       "location": "Glavna scena",
       "achievement": "party_animal"
     },
     {
-      "time": "20:00",
-      "title": "Closing ceremony",
+      "time": "20:30",
+      "title": "Zaključna slovesnost",
       "description": "Uradna zaključna slovesnost festivala.",
       "location": "Glavna scena",
-      "achievement": null
+      "achievement": "ceremony_witness"
     },
     {
       "time": "21:00",
-      "title": "SILENT DISCO",
+      "title": "Silent Disco (s telefonom in slušalkami) 🎧",
       "description": "Tiha diskoteka - potrebujete mobilni telefon in slušalke!",
       "location": "Silent disco območje",
       "achievement": "night_owl"
     },
     {
       "time": "01:00",
-      "title": "Konec nočnega dogajanja",
-      "description": "Konec uradnega nočnega programa festivala.",
+      "title": "Konec glasbenega programa",
+      "description": "Konec uradnega glasbenega programa festivala.",
       "location": "Festivalsko območje",
-      "achievement": null
+      "achievement": "music_marathon"
     },
     {
       "time": "02:00",
-      "title": "Nočni mir v festivalskem kampu",
+      "title": "Nočni mir v kampu",
       "description": "Čas za počitek v festivalskem kampu. Dobro noč!",
       "location": "Kamp",
-      "achievement": "night_owl"
+      "achievement": "camp_survivor"
     }
   ],
   "day2": []
