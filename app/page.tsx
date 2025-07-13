@@ -59,7 +59,7 @@ export default function Home() {
           {/* CTA Button */}
           <div>
             <Link 
-              href="/guest?tag_uid=demo" 
+              href="/guest" 
               className="inline-flex items-center px-8 py-4 bg-white/20 backdrop-blur-sm text-white font-semibold rounded-full hover:bg-white/30 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 border border-white/30"
             >
               <User className="w-5 h-5 mr-2" />
@@ -83,7 +83,7 @@ export default function Home() {
         {/* Main Navigation Cards */}
         <div className="grid gap-8 md:grid-cols-3 mb-20">
           {/* Dashboard */}
-          <Link href="/guest?tag_uid=demo" className="group">
+          <Link href="/guest" className="group">
             <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-200 text-center h-full">
               <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
                 <User className="w-10 h-10 text-white" />
