@@ -7,6 +7,10 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Recipe } from '@/lib/supabase'
 
+// Cache constants to match guest page
+const GUEST_DATA_CACHE_KEY = 'pous_fest_guest_data_cache'
+const DRINK_MENU_CACHE_KEY = 'pous_fest_drink_menu_cache'
+
 export default function RecipesPage() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -108,6 +112,9 @@ export default function RecipesPage() {
         processing: false
       })
 
+      // Invalidate cache so the guest dashboard shows updated data
+      localStorage.removeItem(GUEST_DATA_CACHE_KEY)
+
       // If we came from guest dashboard, redirect back after showing feedback
       if (returnUrl.includes('guest')) {
         setTimeout(() => {
@@ -127,12 +134,16 @@ export default function RecipesPage() {
       }
     } catch (err) {
       console.error('Failed to order drink:', err)
+      
+      // Show error feedback
       setOrderFeedback({
         show: true,
         message: 'Naročilo pijače ni uspelo. Prosimo, poskusi znova.',
         success: false,
         processing: false
       })
+
+      // Auto-hide feedback after 3 seconds
       setTimeout(() => setOrderFeedback({ show: false, message: '', success: false, processing: false }), 3000)
     }
   }
