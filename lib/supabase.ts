@@ -66,4 +66,23 @@ export interface Recipe {
   created_at: string
   updated_at: string
   drink_menu?: DrinkMenuItem
+}
+
+export interface FoodMenuItem {
+  id: string
+  name: string
+  description: string | null
+  category: string
+  available: boolean
+  created_at: string
+}
+
+export interface FoodOrder {
+  id: string
+  guest_id: string
+  food_menu_id: string
+  status: string
+  ordered_at: string
+  food_menu?: FoodMenuItem
+  guests?: { name: string }
 } 

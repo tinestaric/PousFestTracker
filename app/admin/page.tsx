@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Users, Trophy, Wine, BarChart3, Plus, Edit, Trash2, Download, Upload, Home, Save, X, BookOpen } from 'lucide-react'
+import { Users, Trophy, Wine, BarChart3, Plus, Edit, Trash2, Download, Upload, Home, Save, X, BookOpen, UtensilsCrossed } from 'lucide-react'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
-import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement, Recipe } from '@/lib/supabase'
+import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement, Recipe, FoodMenuItem, FoodOrder } from '@/lib/supabase'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -35,12 +35,13 @@ interface AdminStats {
   totalGuests: number
   totalAchievements: number
   totalDrinks: number
+  totalFoodOrders: number
   activeGuests: number
 }
 
 interface EditingItem {
   id: string | null
-  type: 'guest' | 'achievement' | 'drink' | 'recipe' | null
+  type: 'guest' | 'achievement' | 'drink' | 'recipe' | 'food' | null
   data: any
 }
 
@@ -49,6 +50,7 @@ export default function AdminDashboard() {
     totalGuests: 0,
     totalAchievements: 0,
     totalDrinks: 0,
+    totalFoodOrders: 0,
     activeGuests: 0
   })
   const [guests, setGuests] = useState<Guest[]>([])
@@ -57,8 +59,10 @@ export default function AdminDashboard() {
   const [recipes, setRecipes] = useState<Recipe[]>([])
   const [drinkOrders, setDrinkOrders] = useState<DrinkOrder[]>([])
   const [guestAchievements, setGuestAchievements] = useState<GuestAchievement[]>([])
+  const [foodMenu, setFoodMenu] = useState<FoodMenuItem[]>([])
+  const [foodOrders, setFoodOrders] = useState<FoodOrder[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'overview' | 'guests' | 'achievements' | 'drinks' | 'recipes'>('overview')
+  const [activeTab, setActiveTab] = useState<'overview' | 'guests' | 'achievements' | 'drinks' | 'recipes' | 'food'>('overview')
   const [editing, setEditing] = useState<EditingItem>({ id: null, type: null, data: null })
   const [showAddForm, setShowAddForm] = useState(false)
 
@@ -69,13 +73,15 @@ export default function AdminDashboard() {
   const fetchAdminData = async () => {
     try {
       // Fetch all data
-      const [guestsData, achievementsData, drinksData, recipesData, drinkOrdersData, guestAchievementsData] = await Promise.all([
+      const [guestsData, achievementsData, drinksData, recipesData, drinkOrdersData, guestAchievementsData, foodMenuData, foodOrdersData] = await Promise.all([
         supabase.from('guests').select('*').order('created_at', { ascending: false }),
         supabase.from('achievement_templates').select('*').order('created_at', { ascending: false }),
         supabase.from('drink_menu').select('*').order('category', { ascending: true }),
         supabase.from('recipes').select('*, drink_menu(name, category)').order('created_at', { ascending: false }),
         supabase.from('drink_orders').select('*, drink_menu(name, category)').order('ordered_at', { ascending: false }),
-        supabase.from('guest_achievements').select('*, achievement_templates(title), guests(name)').order('unlocked_at', { ascending: false })
+        supabase.from('guest_achievements').select('*, achievement_templates(title), guests(name)').order('unlocked_at', { ascending: false }),
+        supabase.from('food_menu').select('*').order('category', { ascending: true }),
+        supabase.from('food_orders').select('*, food_menu(name, category), guests(name)').order('ordered_at', { ascending: false })
       ])
 
       const totalDrinks = drinkOrdersData.data?.reduce((sum, order) => sum + order.quantity, 0) || 0
@@ -86,10 +92,13 @@ export default function AdminDashboard() {
       setRecipes(recipesData.data || [])
       setDrinkOrders(drinkOrdersData.data || [])
       setGuestAchievements(guestAchievementsData.data || [])
+      setFoodMenu(foodMenuData.data || [])
+      setFoodOrders(foodOrdersData.data || [])
       setStats({
         totalGuests: guestsData.data?.length || 0,
         totalAchievements: guestAchievementsData.data?.length || 0,
         totalDrinks,
+        totalFoodOrders: foodOrdersData.data?.length || 0,
         activeGuests: guestsData.data?.length || 0
       })
     } catch (error) {
@@ -107,7 +116,8 @@ export default function AdminDashboard() {
         // Update existing
         const tableName = editing.type === 'guest' ? 'guests' : 
                          editing.type === 'achievement' ? 'achievement_templates' : 
-                         editing.type === 'recipe' ? 'recipes' : 'drink_menu'
+                         editing.type === 'recipe' ? 'recipes' : 
+                         editing.type === 'food' ? 'food_menu' : 'drink_menu'
         const { error } = await supabase
           .from(tableName)
           .update(editing.data)
@@ -118,7 +128,8 @@ export default function AdminDashboard() {
         // Create new
         const tableName = editing.type === 'guest' ? 'guests' : 
                          editing.type === 'achievement' ? 'achievement_templates' : 
-                         editing.type === 'recipe' ? 'recipes' : 'drink_menu'
+                         editing.type === 'recipe' ? 'recipes' : 
+                         editing.type === 'food' ? 'food_menu' : 'drink_menu'
         const { error } = await supabase
           .from(tableName)
           .insert([editing.data])
@@ -134,13 +145,14 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleDelete = async (id: string, type: 'guest' | 'achievement' | 'drink' | 'recipe') => {
+  const handleDelete = async (id: string, type: 'guest' | 'achievement' | 'drink' | 'recipe' | 'food') => {
     if (!confirm('Are you sure you want to delete this item?')) return
 
     try {
       const tableName = type === 'guest' ? 'guests' : 
                        type === 'achievement' ? 'achievement_templates' : 
-                       type === 'recipe' ? 'recipes' : 'drink_menu'
+                       type === 'recipe' ? 'recipes' : 
+                       type === 'food' ? 'food_menu' : 'drink_menu'
       const { error } = await supabase
         .from(tableName)
         .delete()
@@ -153,11 +165,11 @@ export default function AdminDashboard() {
     }
   }
 
-  const startEdit = (item: any, type: 'guest' | 'achievement' | 'drink' | 'recipe') => {
+  const startEdit = (item: any, type: 'guest' | 'achievement' | 'drink' | 'recipe' | 'food') => {
     setEditing({ id: item.id, type, data: { ...item } })
   }
 
-  const startAdd = (type: 'guest' | 'achievement' | 'drink' | 'recipe') => {
+  const startAdd = (type: 'guest' | 'achievement' | 'drink' | 'recipe' | 'food') => {
     const defaultData = {
       guest: { name: '', tag_uid: '' },
       achievement: { 
@@ -179,7 +191,8 @@ export default function AdminDashboard() {
         prep_time: '', 
         difficulty: 'Easy', 
         serves: 1 
-      }
+      },
+      food: { name: '', description: '', category: 'breakfast', available: true }
     }
     
     setEditing({ id: null, type, data: defaultData[type] })
@@ -312,7 +325,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <div className="grid md:grid-cols-5 gap-4 mb-8">
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
@@ -352,6 +365,18 @@ export default function AdminDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
+                  <p className="text-sm text-white/80 mb-1">Naročila hrane</p>
+                  <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.totalFoodOrders}</p>
+                </div>
+                <div className="p-3 bg-gradient-to-r from-orange-500 to-red-400 rounded-xl shadow-lg">
+                  <UtensilsCrossed className="w-8 h-8 text-white" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+              <div className="flex items-center justify-between">
+                <div>
                   <p className="text-sm text-white/80 mb-1">Aktivni gostje</p>
                   <p className="text-3xl font-bold text-white drop-shadow-lg">{stats.activeGuests}</p>
                 </div>
@@ -372,6 +397,7 @@ export default function AdminDashboard() {
                   { key: 'achievements', label: 'Dosežki', icon: Trophy },
                   { key: 'drinks', label: 'Pijače', icon: Wine },
                   { key: 'recipes', label: 'Recepti', icon: BookOpen },
+                  { key: 'food', label: 'Hrana', icon: UtensilsCrossed },
                 ].map(({ key, label, icon: Icon }) => (
                   <button
                     key={key}
@@ -1004,9 +1030,167 @@ export default function AdminDashboard() {
                 ))}
               </div>
             </div>
+                    )}
+
+          {activeTab === 'food' && (
+            <div className="space-y-6">
+              <div className="flex justify-between items-center">
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">Food Menu Management</h3>
+                <button onClick={() => startAdd('food')} className="bg-gradient-to-r from-orange-500 to-red-400 text-white px-4 py-2 rounded-xl font-semibold hover:from-orange-600 hover:to-red-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
+                  <Plus className="w-4 h-4" />
+                  Add Food Option
+                </button>
+              </div>
+
+              {(showAddForm && editing.type === 'food') && (
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">
+                    {editing.id ? 'Edit Food Option' : 'Add New Food Option'}
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Food Name"
+                      value={editing.data?.name || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                      className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                      className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    />
+                    <select
+                      value={editing.data?.category || 'breakfast'}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
+                      className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    >
+                      <option value="breakfast" className="text-gray-800">Breakfast</option>
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-2 mt-4">
+                    <input
+                      type="checkbox"
+                      checked={editing.data?.available || false}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, available: e.target.checked}})}
+                      className="rounded"
+                    />
+                    <label className="text-white">Available</label>
+                  </div>
+                </div>
+              )}
+
+              <div className="grid lg:grid-cols-2 gap-6">
+                {/* Food Menu Items */}
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Food Menu Items</h4>
+                  <div className="space-y-3">
+                    {foodMenu.map((food) => (
+                      <div key={food.id} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl p-4 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                        <div className="flex items-start justify-between mb-2">
+                          <h5 className="font-semibold text-white">{food.name}</h5>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => startEdit(food, 'food')}
+                              className="p-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 hover:text-blue-200 transition-all duration-300"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(food.id, 'food')}
+                              className="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 hover:text-red-200 transition-all duration-300"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                        {food.description && (
+                          <p className="text-sm text-white/80 mb-2">{food.description}</p>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs bg-gradient-to-r from-orange-400 to-red-400 text-orange-900 px-3 py-1 rounded-full font-semibold capitalize">
+                            {food.category}
+                          </span>
+                          <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
+                            food.available
+                              ? 'bg-green-400/20 text-green-300 border border-green-400/30'
+                              : 'bg-red-400/20 text-red-300 border border-red-400/30'
+                          }`}>
+                            {food.available ? 'Available' : 'Unavailable'}
+                          </span>
+                        </div>
+                        <div className="mt-3 text-sm text-white bg-white/10 px-3 py-1 rounded-lg inline-block">
+                          Orders: {foodOrders.filter(order => order.food_menu_id === food.id).length}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Food Orders Summary */}
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Food Orders Summary</h4>
+                  <div className="space-y-3">
+                    {foodMenu.map((food) => {
+                      const orderCount = foodOrders.filter(order => order.food_menu_id === food.id).length
+                      return (
+                        <div key={food.id} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl p-4">
+                          <div className="flex items-center justify-between">
+                            <h5 className="font-semibold text-white">{food.name}</h5>
+                            <span className="text-2xl font-bold text-white bg-gradient-to-r from-orange-400 to-red-400 text-transparent bg-clip-text">
+                              {orderCount}
+                            </span>
+                          </div>
+                          <p className="text-sm text-white/80">orders</p>
+                        </div>
+                      )
+                    })}
+                    <div className="bg-gradient-to-r from-orange-400/20 to-red-400/20 backdrop-blur-sm border border-orange-300/30 rounded-xl p-4 mt-6">
+                      <div className="flex items-center justify-between">
+                        <h5 className="font-bold text-white">Total Food Orders</h5>
+                        <span className="text-3xl font-bold text-white">
+                          {foodOrders.length}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Food Orders */}
+              {foodOrders.length > 0 && (
+                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                  <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">Recent Food Orders</h4>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="border-b border-white/30">
+                          <th className="text-left py-3 text-white font-bold">Guest</th>
+                          <th className="text-left py-3 text-white font-bold">Food Item</th>
+                          <th className="text-left py-3 text-white font-bold">Ordered At</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {foodOrders.slice(0, 10).map((order) => (
+                          <tr key={order.id} className="border-b border-white/20 hover:bg-white/10 transition-all duration-300">
+                            <td className="py-3 text-white font-medium">{order.guests?.name || 'Unknown Guest'}</td>
+                            <td className="py-3 text-white/80">{order.food_menu?.name || 'Unknown Food'}</td>
+                            <td className="py-3 text-sm text-white/70">
+                              {new Date(order.ordered_at).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
 
-                    {/* Edit Modal */}
+          {/* Edit Modal */}
           {editing.id && !showAddForm && (
             <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
               <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 max-w-md w-full m-4 shadow-2xl">
@@ -1124,9 +1308,44 @@ export default function AdminDashboard() {
                       />
                     </div>
                   </div>
+                                )}
+
+                {editing.type === 'food' && (
+                  <div className="space-y-4">
+                    <input
+                      type="text"
+                      placeholder="Food Name"
+                      value={editing.data?.name || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, name: e.target.value}})}
+                      className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Description"
+                      value={editing.data?.description || ''}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, description: e.target.value}})}
+                      className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    />
+                    <select
+                      value={editing.data?.category || 'breakfast'}
+                      onChange={(e) => setEditing({...editing, data: {...editing.data, category: e.target.value}})}
+                      className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+                    >
+                      <option value="breakfast" className="text-gray-800">Breakfast</option>
+                    </select>
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={editing.data?.available || false}
+                        onChange={(e) => setEditing({...editing, data: {...editing.data, available: e.target.checked}})}
+                        className="rounded"
+                      />
+                      <label className="text-white">Available</label>
+                    </div>
+                  </div>
                 )}
 
-                                <div className="flex gap-3 mt-6">
+                <div className="flex gap-3 mt-6">
                   <button onClick={handleSave} className="bg-gradient-to-r from-green-500 to-emerald-400 text-white px-6 py-3 rounded-xl font-semibold hover:from-green-600 hover:to-emerald-500 transition-all duration-300 flex items-center gap-2 shadow-lg">
                     <Save className="w-4 h-4" />
                     Save

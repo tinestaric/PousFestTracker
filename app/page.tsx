@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Wine, Trophy, Calendar, BookOpen, User, Smartphone } from 'lucide-react'
+import { Wine, Trophy, Calendar, BookOpen, User, Smartphone, UtensilsCrossed } from 'lucide-react'
 import Image from 'next/image'
 
 export default function Home() {
@@ -81,7 +81,7 @@ export default function Home() {
         </div>
         
         {/* Main Navigation Cards */}
-        <div className="grid gap-8 md:grid-cols-3 mb-20">
+        <div className="grid gap-8 md:grid-cols-4 mb-20">
           {/* Dashboard */}
           <Link href="/guest" className="group">
             <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-200 text-center h-full">
@@ -117,6 +117,19 @@ export default function Home() {
               <h3 className="text-xl font-semibold text-gray-800 mb-3">Časovnica</h3>
               <p className="text-gray-600">
                 Preveri časovnico dogodka in nikoli ne zamudi priložnosti za dosežke
+              </p>
+            </div>
+          </Link>
+
+          {/* Food Selection */}
+          <Link href="/food" className="group">
+            <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-orange-200 text-center h-full">
+              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
+                <UtensilsCrossed className="w-10 h-10 text-white" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Zajtrk</h3>
+              <p className="text-gray-600">
+                Izberi svoj zajtrk za sobotno jutro - lahko spreminjaš do 8:45
               </p>
             </div>
           </Link>
