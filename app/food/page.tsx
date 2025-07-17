@@ -118,14 +118,14 @@ export default function FoodPage() {
             </p>
             
             {guestFoodOrder && (
-              <div className="mt-6 p-6 bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl max-w-md mx-auto shadow-xl">
+              <div className="mt-6 p-6 bg-white/30 backdrop-blur-md border border-white/40 rounded-2xl max-w-md mx-auto shadow-xl">
                 <div className="flex items-center justify-center gap-3 text-white">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-green-500/90 rounded-full flex items-center justify-center shadow-lg">
                     <Check className="w-6 h-6 text-white" />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm text-white/80">Trenutna izbira:</p>
-                    <p className="font-bold text-lg">
+                    <p className="text-sm text-white/90 font-medium">Trenutna izbira:</p>
+                    <p className="font-bold text-lg drop-shadow-sm">
                       {guestFoodOrder.food_menu?.name}
                     </p>
                   </div>
