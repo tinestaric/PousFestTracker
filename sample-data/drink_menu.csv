@@ -6,12 +6,16 @@ name,description,category,available,created_at
 "Klasični Gin Tonik","Eleganten in osvežujoč koktajl z botaničnim okusom gina in grenkim tonikom.","koktajl",true,2024-01-01T00:00:00Z
 "Moscow Mule","Osvežujoč koktajl z vodko in ingverjevim pivom. Tradicionalno se postreže v bakreni skodelici.","koktajl",true,2024-01-01T00:00:00Z
 "Rum & Cola (Cuba Libre)","Klasična kombinacija ruma in kole z dodatkom svežega limetnega soka za pristno kubansko izkušnjo.","koktajl",true,2024-01-01T00:00:00Z
-"Tequila Sunrise","Barvit koktajl z lepimi odtenki, ki spominjajo na sončni vzhod. Sladek in osvežujoč.","koktajl",true,2024-01-01T00:00:00Z
-"Mojito","Kubanski klasik s svežo meto, limetami in belim rumom. Popoln za vroče poletne dni.","koktajl",true,2024-01-01T00:00:00Z
-"Whiskey Sour","Klasičen koktajl z whiskyjem, limoninim sokom in sladkorjem. Možna je tudi uporaba beljaka za kremasto teksturo.","koktajl",true,2024-01-01T00:00:00Z
 "Pivo Laško","Legendarno slovensko pivo iz Laškega z več kot 200-letno tradicijo. Svetlo lager pivo z značilno zlato barvo in harmoničnim okusom hmelja.","pivo",true,2024-01-01T00:00:00Z
 "Pivo Union","Kultno ljubljansko pivo z več kot 160-letno tradicijo. Klasično svetlo pivo z zmajevo esenco in osvežujočim okusom.","pivo",true,2024-01-01T00:00:00Z
 "Nord","Prvi slovenski hard seltzer - osvežujoča alkoholna pijača z gazirano vodo in naravnimi okusi. Samo 89 kalorij na pločevinko.","pivo",true,2024-01-01T00:00:00Z
 "Radler Grenivka","Osvežujoča mešanica piva z grenivko (grapefruit). Popolna za vroče poletne dni s cvetličnim okusom citrusa.","pivo",true,2024-01-01T00:00:00Z
-"Radler Isotonic (0.0%)","Inovativna mešanica piva z izotoničnimi minerali. Brezalkoholna različica (0,0%) z okusi pomaranče in melise.","pivo",true,2024-01-01T00:00:00Z
-"Pivo Heineken 0.0","Svetovno znano nizozemsko pivo v brezalkoholni različici. Popoln okus pravega piva brez alkohola.","pivo",true,2024-01-01T00:00:00Z 
+"Radler Isotonic (0.0%)","Inovativna mešanica piva z izotoničnimi minerali. Brezalkoholna različica (0,0%) z okusi pomaranče in melise.","brezalkoholno",true,2024-01-01T00:00:00Z
+"Pivo Heineken 0.0","Svetovno znano nizozemsko pivo v brezalkoholni različici. Popoln okus pravega piva brez alkohola.","brezalkoholno",true,2024-01-01T00:00:00Z
+"Voda","Sveža pitna voda. Osnova življenja in popolna za hidriranje ob katerikoli priložnosti.","brezalkoholno",true,2024-01-01T00:00:00Z
+"Red Bull","Svetovno znana energijska pijača z kofeinom in taurinom. Daje krila in energijo za aktivne trenutke.","brezalkoholno",true,2024-01-01T00:00:00Z
+"Ledeni čaj","Osvežujoč hladen čaj, popoln za poletne dni. Klasična pijača z nežnim okusom čaja in osvežujočim učinkom.","brezalkoholno",true,2024-01-01T00:00:00Z
+"Jägermeister","Nemški zeliščni liker z več kot 56 naravnimi sestavinami. Kompleksen okus z edinstveno kombinacijo zelišč in začimb.","shot",true,2024-01-01T00:00:00Z
+"Borovničke","Slovenski tradicionalni sadni žganje iz domačih borovnic. Intenziven okus divjih gozdnih sadežev z dolgo tradicijo.","shot",true,2024-01-01T00:00:00Z
+"Šamar","Srbska premijska šljivovica z dodatkom dunje. Nežna in pitka rakija z edinstvenimi sadnimi notami in dolgim sazrevanjem.","shot",true,2024-01-01T00:00:00Z
+"Pelinkovec","Slovenski tradicionalni zeliščni liker z dominantno pelin (Artemisia absinthium). Grenki okus z zdravilnimi lastnostmi in stoletno tradicijo.","shot",true,2024-01-01T00:00:00Z 
