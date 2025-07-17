@@ -71,5 +71,13 @@
       "achievement": "camp_survivor"
     }
   ],
-  "day2": []
+  "day2": [
+    {
+      "time": "09:00",
+      "title": "Jutranji zajtrk 🍳",
+      "description": "Zadnji skupni zajtrk pred slovesom. Čas za počasno slovo od festivala.",
+      "location": "Food court",
+      "achievement": "morning_fuel"
+    }
+  ]
 } 
