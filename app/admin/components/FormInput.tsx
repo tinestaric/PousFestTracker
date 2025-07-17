@@ -1,14 +1,28 @@
 import { forwardRef } from 'react'
 import { AlertCircle } from 'lucide-react'
 
-interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface BaseFormInputProps {
   label?: string
   error?: string
   variant?: 'input' | 'textarea' | 'select'
   children?: React.ReactNode
 }
 
-export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
+interface InputFormInputProps extends BaseFormInputProps, React.InputHTMLAttributes<HTMLInputElement> {
+  variant?: 'input'
+}
+
+interface TextareaFormInputProps extends BaseFormInputProps, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+  variant: 'textarea'
+}
+
+interface SelectFormInputProps extends BaseFormInputProps, React.SelectHTMLAttributes<HTMLSelectElement> {
+  variant: 'select'
+}
+
+type FormInputProps = InputFormInputProps | TextareaFormInputProps | SelectFormInputProps
+
+export const FormInput = forwardRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, FormInputProps>(
   ({ label, error, variant = 'input', children, className = '', ...props }, ref) => {
     const baseClasses = "w-full px-4 py-3 bg-white/10 backdrop-blur-sm border rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
     const errorClasses = error ? "border-red-400/60 focus:border-red-400" : "border-white/30"
@@ -20,6 +34,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           return (
             <textarea
               {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
+              ref={ref as React.Ref<HTMLTextAreaElement>}
               className={finalClasses}
             />
           )
@@ -27,6 +42,7 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
           return (
             <select
               {...(props as React.SelectHTMLAttributes<HTMLSelectElement>)}
+              ref={ref as React.Ref<HTMLSelectElement>}
               className={finalClasses}
             >
               {children}
@@ -35,8 +51,8 @@ export const FormInput = forwardRef<HTMLInputElement, FormInputProps>(
         default:
           return (
             <input
-              ref={ref}
-              {...props}
+              {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
+              ref={ref as React.Ref<HTMLInputElement>}
               className={finalClasses}
             />
           )
