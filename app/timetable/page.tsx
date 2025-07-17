@@ -22,6 +22,13 @@ const achievementIcons = {
   morning_after: '☀️',
   social_butterfly: '🦋',
   party_animal: '🎉',
+  morning_fuel: '☀️',
+  beer_pong_champion: '🏆',
+  food_explorer: '🍽️',
+  evening_snacker: '🥨',
+  ceremony_witness: '🎭',
+  music_marathon: '🎵',
+  camp_survivor: '🏕️',
 }
 
 export default function Timetable() {
@@ -105,6 +112,57 @@ export default function Timetable() {
               ))}
             </div>
           </div>
+
+          {/* Day 2 */}
+          {timetable.day2 && timetable.day2.length > 0 && (
+            <div className="mb-12">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-400 rounded-xl shadow-lg">
+                  <Calendar className="w-8 h-8 text-white" />
+                </div>
+                <h2 className="text-3xl font-bold text-white drop-shadow-lg">20. julij 2025</h2>
+              </div>
+              
+              <div className="space-y-6">
+                {timetable.day2.map((event, index) => (
+                  <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <div className="md:w-40 flex-shrink-0">
+                        <div className="flex items-center gap-2 text-white font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-xl shadow-lg">
+                          <Clock className="w-5 h-5" />
+                          {event.time}
+                        </div>
+                      </div>
+                      
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between mb-3">
+                          <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+                            {event.title}
+                          </h3>
+                          {event.achievement && (
+                            <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                              <Trophy className="w-4 h-4" />
+                              <span className="text-lg">{achievementIcons[event.achievement as keyof typeof achievementIcons]}</span>
+                              Dosežek
+                            </div>
+                          )}
+                        </div>
+                        
+                        <p className="text-white/90 mb-4 text-lg leading-relaxed">
+                          {event.description}
+                        </p>
+                        
+                        <div className="flex items-center gap-2 text-white/80">
+                          <MapPin className="w-5 h-5" />
+                          <span className="font-medium">{event.location}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Program note */}
           <div className="mb-12">
