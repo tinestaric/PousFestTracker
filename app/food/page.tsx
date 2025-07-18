@@ -1,47 +1,253 @@
 'use client'
 
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { UtensilsCrossed, User, Home, Loader2, CheckCircle, Clock, ChefHat, Coffee } from 'lucide-react'
 import Link from 'next/link'
-import { UtensilsCrossed, Check, Loader2, Home } from 'lucide-react'
-import { useState, useEffect } from 'react'
-import type { FoodMenuItem, FoodOrder } from '@/lib/supabase'
+
+interface FoodMenuItem {
+  id: string
+  name: string
+  description: string
+  category: string
+  available: boolean
+  created_at: string
+}
+
+interface FoodOrder {
+  id: string
+  guest_id: string
+  food_menu_id: string
+  status: string
+  ordered_at: string
+  food_menu?: FoodMenuItem
+}
+
+interface FoodData {
+  foodMenu: FoodMenuItem[]
+  guestFoodOrder: FoodOrder | null
+}
+
+// Cache utilities
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+const FOOD_DATA_CACHE_KEY = 'pous_fest_food_data_cache'
+
+interface CacheItem<T> {
+  data: T
+  timestamp: number
+  tag_uid?: string
+}
+
+function getCachedData<T>(key: string, tag_uid?: string): T | null {
+  if (typeof window === 'undefined') return null
+  
+  try {
+    const cached = localStorage.getItem(key)
+    if (!cached) return null
+    
+    const cacheItem: CacheItem<T> = JSON.parse(cached)
+    const isExpired = Date.now() - cacheItem.timestamp > CACHE_DURATION
+    const isWrongUser = tag_uid && cacheItem.tag_uid !== tag_uid
+    
+    if (isExpired || isWrongUser) {
+      localStorage.removeItem(key)
+      return null
+    }
+    
+    return cacheItem.data
+  } catch {
+    return null
+  }
+}
+
+function setCachedData<T>(key: string, data: T, tag_uid?: string): void {
+  if (typeof window === 'undefined') return
+  
+  try {
+    const cacheItem: CacheItem<T> = {
+      data,
+      timestamp: Date.now(),
+      tag_uid
+    }
+    localStorage.setItem(key, JSON.stringify(cacheItem))
+  } catch {
+    // Ignore cache errors
+  }
+}
+
+// Skeleton Loaders
+const FoodMenuSkeleton = () => (
+  <div className="space-y-8">
+    {/* Home button skeleton */}
+    <div className="flex justify-end mb-8">
+      <div className="h-12 w-20 bg-white/20 rounded-xl animate-pulse"></div>
+    </div>
+    
+    {/* Header skeleton */}
+    <div className="text-center space-y-6">
+      {/* Title with icon skeleton */}
+      <div className="space-y-4">
+        <div className="w-24 h-24 md:w-32 md:h-32 bg-white/20 rounded-full animate-pulse mx-auto"></div>
+        <div className="h-16 bg-white/20 rounded w-48 mx-auto animate-pulse"></div>
+      </div>
+      
+      {/* Info message skeleton */}
+      <div className="h-6 bg-white/20 rounded w-96 mx-auto animate-pulse"></div>
+      
+      {/* Current selection skeleton */}
+      <div className="h-12 bg-white/20 rounded-2xl w-80 mx-auto animate-pulse"></div>
+    </div>
+    
+    {/* Food tiles skeleton */}
+    <div className="grid md:grid-cols-3 gap-6">
+      {[1, 2, 3].map(food => (
+        <div key={food} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl p-6 text-center">
+          <div className="h-6 bg-white/20 rounded w-3/4 mx-auto mb-4 animate-pulse"></div>
+          <div className="space-y-2 mb-6">
+            <div className="h-4 bg-white/20 rounded w-full animate-pulse"></div>
+            <div className="h-4 bg-white/20 rounded w-5/6 mx-auto animate-pulse"></div>
+            <div className="h-4 bg-white/20 rounded w-4/6 mx-auto animate-pulse"></div>
+          </div>
+          <div className="h-12 bg-white/20 rounded-xl animate-pulse"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+)
+
+const CurrentOrderSkeleton = () => (
+  <div className="space-y-4">
+    <div className="h-8 bg-white/20 rounded w-40 animate-pulse"></div>
+    <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-xl shadow-xl p-6">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 bg-white/20 rounded-xl animate-pulse"></div>
+        <div className="flex-1">
+          <div className="h-6 bg-white/20 rounded w-3/4 mb-2 animate-pulse"></div>
+          <div className="h-4 bg-white/20 rounded w-1/2 animate-pulse"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+)
+
+const FoodPageSkeleton = () => (
+  <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+    {/* Background elements */}
+    <div className="absolute inset-0 opacity-20">
+      <div className="absolute inset-0 bg-white/5"></div>
+    </div>
+    <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
+    <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
+    
+    <div className="relative z-10 p-4">
+      <div className="max-w-4xl mx-auto space-y-8">
+        {/* Header skeleton */}
+        <div className="text-center space-y-6">
+          <div className="flex justify-between items-start mb-6">
+            <div className="flex-1 text-left">
+              <div className="h-8 md:h-10 bg-white/20 rounded w-64 mb-2 animate-pulse"></div>
+              <div className="h-6 bg-white/20 rounded w-48 animate-pulse"></div>
+            </div>
+            <div className="h-12 w-16 md:w-20 bg-white/20 rounded-xl animate-pulse"></div>
+          </div>
+        </div>
+
+        {/* Content skeleton */}
+        <FoodMenuSkeleton />
+      </div>
+    </div>
+  </div>
+)
 
 export default function FoodPage() {
-  const [foodMenu, setFoodMenu] = useState<FoodMenuItem[]>([])
-  const [guestFoodOrder, setGuestFoodOrder] = useState<FoodOrder | null>(null)
-  const [loading, setLoading] = useState(false)
-  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean }>({ show: false, message: '', success: false })
+  const searchParams = useSearchParams()
+  const [foodData, setFoodData] = useState<FoodData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; processing?: boolean }>({ 
+    show: false, 
+    message: '', 
+    success: false 
+  })
 
-  useEffect(() => {
-    fetchFoodData()
-  }, [])
-
-  const fetchFoodData = async () => {
-    try {
-      const tagUid = localStorage.getItem('pous_fest_tag_uid')
-      const response = await fetch(`/api/getFoodData${tagUid ? `?tag_uid=${tagUid}` : ''}`)
-      if (response.ok) {
-        const data = await response.json()
-        setFoodMenu(data.foodMenu || [])
-        setGuestFoodOrder(data.guestFoodOrder)
+  // Memoize food items by category
+  const foodByCategory = useMemo(() => {
+    if (!foodData?.foodMenu) return {}
+    
+    return foodData.foodMenu.reduce((acc, food) => {
+      if (!acc[food.category]) {
+        acc[food.category] = []
       }
-    } catch (error) {
-      console.error('Error fetching food data:', error)
+      acc[food.category].push(food)
+      return acc
+    }, {} as Record<string, FoodMenuItem[]>)
+  }, [foodData?.foodMenu])
+
+  // Get category display name
+  const getCategoryDisplayName = (category: string) => {
+    const categoryMap: Record<string, string> = {
+      breakfast: 'Zajtrk',
+      lunch: 'Kosilo',
+      dinner: 'Večerja',
+      snack: 'Prigrizek'
+    }
+    return categoryMap[category] || category.charAt(0).toUpperCase() + category.slice(1)
+  }
+
+  // Get category icon
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'breakfast': return <Coffee className="w-5 h-5" />
+      case 'lunch': return <UtensilsCrossed className="w-5 h-5" />
+      case 'dinner': return <ChefHat className="w-5 h-5" />
+      default: return <UtensilsCrossed className="w-5 h-5" />
     }
   }
 
-  const orderFood = async (foodId: string) => {
-    const tagUid = localStorage.getItem('pous_fest_tag_uid')
-    if (!tagUid) {
-      setOrderFeedback({
-        show: true,
-        message: 'Prosimo, skeniraj svojo NFC oznako prvo.',
-        success: false
-      })
-      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
-      return
+  const fetchFoodData = useCallback(async (tagUid: string) => {
+    try {
+      // Check cache first
+      const cachedData = getCachedData<FoodData>(FOOD_DATA_CACHE_KEY, tagUid)
+      
+      if (cachedData) {
+        setFoodData(cachedData)
+        setLoading(false)
+        return
+      }
+      
+      const response = await fetch(`/api/getFoodData?tag_uid=${tagUid}`)
+      if (!response.ok) {
+        throw new Error('Failed to fetch food data')
+      }
+      
+      const data = await response.json()
+      setFoodData(data)
+      
+      // Cache the data
+      setCachedData(FOOD_DATA_CACHE_KEY, data, tagUid)
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load food data')
+    } finally {
+      setLoading(false)
     }
+  }, [])
 
-    setLoading(true)
+  const orderFood = async (foodMenuId: string) => {
+    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    if (!tagUid) return
+
+    // Find the food name for feedback
+    const foodName = foodData?.foodMenu.find(f => f.id === foodMenuId)?.name || 'Hrana'
+    
+    // Show processing feedback IMMEDIATELY to prevent multiple clicks
+    setOrderFeedback({
+      show: true,
+      message: `Obdelavam naročilo ${foodName}...`,
+      success: true,
+      processing: true
+    })
+
     try {
       const response = await fetch('/api/orderFood', {
         method: 'POST',
@@ -50,37 +256,89 @@ export default function FoodPage() {
         },
         body: JSON.stringify({
           tag_uid: tagUid,
-          food_menu_id: foodId,
+          food_menu_id: foodMenuId,
         }),
       })
 
-      if (response.ok) {
-        const data = await response.json()
-        const foodName = foodMenu.find(f => f.id === foodId)?.name || 'Food'
-        
-        setOrderFeedback({
-          show: true,
-          message: data.updated 
-            ? `Zajtrk spremenjen na ${foodName}! 🍳`
-            : `${foodName} uspešno naročen! 🍳`,
-          success: true
-        })
-        
-        // Refresh food data to show current order
-        fetchFoodData()
-      } else {
+      if (!response.ok) {
         throw new Error('Failed to order food')
       }
-    } catch (error) {
+      
+      const result = await response.json()
+      
+      // Update to success feedback
+      setOrderFeedback({
+        show: true,
+        message: result.updated 
+          ? `${foodName} naročilo posodobljeno! 🍽️`
+          : `${foodName} uspešno naročen! 🍽️`,
+        success: true,
+        processing: false
+      })
+
+      // Auto-hide feedback after 2 seconds
+      setTimeout(() => {
+        setOrderFeedback({ show: false, message: '', success: false, processing: false })
+      }, 2000)
+
+      // Invalidate cache and refresh food data
+      localStorage.removeItem(FOOD_DATA_CACHE_KEY)
+      fetchFoodData(tagUid)
+    } catch (err) {
+      console.error('Failed to order food:', err)
+      
+      // Show error feedback
       setOrderFeedback({
         show: true,
         message: 'Naročilo hrane ni uspelo. Prosimo, poskusi znova.',
-        success: false
+        success: false,
+        processing: false
       })
-    } finally {
-      setLoading(false)
-      setTimeout(() => setOrderFeedback({ show: false, message: '', success: false }), 3000)
+
+      // Auto-hide feedback after 3 seconds
+      setTimeout(() => {
+        setOrderFeedback({ show: false, message: '', success: false, processing: false })
+      }, 3000)
     }
+  }
+
+  useEffect(() => {
+    const tag_uid = searchParams.get('tag_uid')
+    if (tag_uid) {
+      // Store in localStorage for session management
+      localStorage.setItem('pous_fest_tag_uid', tag_uid)
+      fetchFoodData(tag_uid)
+    } else {
+      // Try to get from localStorage
+      const storedTagUid = localStorage.getItem('pous_fest_tag_uid')
+      if (storedTagUid) {
+        fetchFoodData(storedTagUid)
+      } else {
+        setError('Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.')
+        setLoading(false)
+      }
+    }
+  }, [searchParams, fetchFoodData])
+
+  if (loading) {
+    return <FoodPageSkeleton />
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
+          <div className="text-red-500 mb-4">
+            <User className="w-16 h-16 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold">Potreben dostop</h2>
+          </div>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+            Domov
+          </Link>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -96,87 +354,97 @@ export default function FoodPage() {
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
 
       <div className="relative z-10 p-4">
-        <div className="max-w-5xl mx-auto">
-          {/* Header */}
-          <div className="flex justify-end items-center mb-8">
-            <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Header with Home button */}
+          <div className="flex justify-end mb-8">
+            <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
               <Home className="w-4 h-4" />
-              Domov
+              <span className="hidden sm:inline">Domov</span>
             </Link>
           </div>
 
-          {/* Hero Section */}
-          <div className="text-center mb-12">
-            <div className="w-28 h-28 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl">
-              <UtensilsCrossed className="w-14 h-14 text-white" />
+          {/* Category Title with Icon */}
+          <div className="text-center space-y-6">
+            <div className="space-y-4">
+              <div className="w-24 h-24 md:w-32 md:h-32 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center shadow-xl mx-auto">
+                <UtensilsCrossed className="w-12 h-12 md:w-16 md:h-16 text-white" />
+              </div>
+              <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
+                Zajtrk
+              </h1>
             </div>
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 drop-shadow-lg">
-              Zajtrk
-            </h1>
-            <p className="text-white/90 text-xl max-w-3xl mx-auto leading-relaxed mb-6">
-              Izberi svoj zajtrk za sobotno jutro. Lahko spreminjaš svojo izbiro do 8:45.
-            </p>
             
-            {guestFoodOrder && (
-              <div className="mt-6 p-6 bg-white/30 backdrop-blur-md border border-white/40 rounded-2xl max-w-md mx-auto shadow-xl">
-                <div className="flex items-center justify-center gap-3 text-white">
-                  <div className="w-12 h-12 bg-green-500/90 rounded-full flex items-center justify-center shadow-lg">
-                    <Check className="w-6 h-6 text-white" />
+            {/* Info Message */}
+            <p className="text-white/90 text-xl">
+              Izberi svoj zajtrk za sobotno jutro. Lahko spreminjáš svojo izbiro do 8:45.
+            </p>
+
+            {/* Current Order Section */}
+            {foodData?.guestFoodOrder && (
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 shadow-xl inline-block">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-white" />
                   </div>
-                  <div className="text-left">
-                    <p className="text-sm text-white/90 font-medium">Trenutna izbira:</p>
-                    <p className="font-bold text-lg drop-shadow-sm">
-                      {guestFoodOrder.food_menu?.name}
-                    </p>
-                  </div>
+                  <span className="text-white/90 font-medium">Trenutna izbira:</span>
+                  <span className="font-bold text-white text-lg">{foodData.guestFoodOrder.food_menu?.name}</span>
                 </div>
               </div>
             )}
           </div>
-          
+
           {/* Food Menu */}
-          {foodMenu.length > 0 ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {foodMenu.map((food) => (
-                <div key={food.id} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
-                  <div className="p-8">
-                    <h3 className="text-2xl font-bold text-white mb-4 drop-shadow-lg">{food.name}</h3>
-                    {food.description && (
-                      <p className="text-white/90 mb-6 leading-relaxed">{food.description}</p>
-                    )}
-                    <button
-                      onClick={() => orderFood(food.id)}
-                      disabled={loading}
-                      className={`w-full py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl ${
-                        guestFoodOrder?.food_menu_id === food.id
-                          ? 'bg-green-500 hover:bg-green-600 text-white'
-                          : 'bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white transform hover:scale-105'
-                      }`}
-                    >
-                      {loading ? (
-                        <Loader2 className="w-6 h-6 animate-spin" />
-                      ) : guestFoodOrder?.food_menu_id === food.id ? (
-                        <>
-                          <Check className="w-6 h-6" />
-                          Izbrano
-                        </>
-                      ) : (
-                        'Izberi'
-                      )}
-                    </button>
+          <div className="space-y-6">
+            {foodData?.foodMenu && foodData.foodMenu.length > 0 ? (
+              Object.entries(foodByCategory).map(([category, foods]) => (
+                <div key={category} className="space-y-6">
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {foods.map((food) => {
+                      const isSelected = foodData?.guestFoodOrder?.food_menu_id === food.id
+                      return (
+                        <div key={food.id} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl p-6 hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 text-center flex flex-col h-full">
+                          <h3 className="font-bold text-white text-xl mb-4 drop-shadow-lg">{food.name}</h3>
+                          {food.description && (
+                            <p className="text-white/90 mb-6 leading-relaxed flex-grow">{food.description}</p>
+                          )}
+                          <button
+                            onClick={() => orderFood(food.id)}
+                            disabled={!food.available || orderFeedback.processing}
+                            className={`w-full font-bold py-4 px-6 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl text-lg mt-auto ${
+                              isSelected
+                                ? 'bg-green-500 hover:bg-green-600 text-white flex items-center justify-center gap-2'
+                                : food.available 
+                                  ? 'bg-gradient-to-r from-orange-400 to-orange-600 hover:from-orange-500 hover:to-orange-700 text-white'
+                                  : 'bg-gray-400 text-gray-600 cursor-not-allowed'
+                            }`}
+                          >
+                            {isSelected ? (
+                              <>
+                                <CheckCircle className="w-5 h-5" />
+                                Izbrano
+                              </>
+                            ) : food.available ? (
+                              'Izberi'
+                            ) : (
+                              'Ni na voljo'
+                            )}
+                          </button>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-20">
-              <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <UtensilsCrossed className="w-10 h-10 text-white/60" />
+              ))
+            ) : (
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
+                <UtensilsCrossed className="w-16 h-16 text-white/60 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-white mb-2">Še ni jedilnika</h3>
+                <p className="text-white/80">
+                  Jedilnik bo objavljen kmalu. Vrni se pozneje!
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">Ni razpoložljivih možnosti</h3>
-              <p className="text-white/80 text-lg">Trenutno ni na voljo nobenih možnosti za zajtrk.</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
@@ -184,8 +452,10 @@ export default function FoodPage() {
       {orderFeedback.show && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className={`bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-8 max-w-sm mx-4 text-center shadow-2xl ${orderFeedback.success ? 'border-l-4 border-green-400' : 'border-l-4 border-red-400'}`}>
-            <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
-              {orderFeedback.success ? (
+            <div className={`w-20 h-20 rounded-2xl mx-auto mb-4 flex items-center justify-center ${orderFeedback.success ? 'bg-green-500/20 backdrop-blur-sm' : 'bg-red-500/20 backdrop-blur-sm'}`}>
+              {orderFeedback.processing ? (
+                <Loader2 className="w-10 h-10 text-green-300 animate-spin" />
+              ) : orderFeedback.success ? (
                 <UtensilsCrossed className="w-10 h-10 text-green-300" />
               ) : (
                 <div className="text-red-300 text-3xl">⚠️</div>
@@ -199,4 +469,4 @@ export default function FoodPage() {
       )}
     </div>
   )
-} 
+}
