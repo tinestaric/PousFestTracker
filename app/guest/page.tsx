@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen } from 'lucide-react'
+import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw } from 'lucide-react'
 
 // Simple throttle utility to avoid external dependency
 function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
@@ -58,14 +58,28 @@ interface GuestData {
   total_drinks: number
 }
 
+interface GuestDataWithoutAchievements {
+  guest: Guest
+  drink_orders: DrinkOrder[]
+  drink_summary: Record<string, number>
+  total_drinks: number
+}
+
+interface AchievementData {
+  achievements: GuestAchievement[]
+  total_achievements: number
+}
+
 interface DrinkWithRecipe extends DrinkMenuItem {
   recipe?: Recipe
 }
 
 // Cache utilities
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+const GENERAL_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes for general data
+const ACHIEVEMENT_CACHE_DURATION = 30 * 1000 // 30 seconds for achievements
 const DRINK_MENU_CACHE_KEY = 'pous_fest_drink_menu_cache'
 const GUEST_DATA_CACHE_KEY = 'pous_fest_guest_data_cache'
+const ACHIEVEMENTS_CACHE_KEY = 'pous_fest_achievements_cache'
 
 interface CacheItem<T> {
   data: T
@@ -73,7 +87,7 @@ interface CacheItem<T> {
   tag_uid?: string
 }
 
-function getCachedData<T>(key: string, tag_uid?: string): T | null {
+function getCachedData<T>(key: string, tag_uid?: string, customDuration?: number): T | null {
   if (typeof window === 'undefined') return null
   
   try {
@@ -81,7 +95,8 @@ function getCachedData<T>(key: string, tag_uid?: string): T | null {
     if (!cached) return null
     
     const cacheItem: CacheItem<T> = JSON.parse(cached)
-    const isExpired = Date.now() - cacheItem.timestamp > CACHE_DURATION
+    const cacheDuration = customDuration || GENERAL_CACHE_DURATION
+    const isExpired = Date.now() - cacheItem.timestamp > cacheDuration
     const isWrongUser = tag_uid && cacheItem.tag_uid !== tag_uid
     
     if (isExpired || isWrongUser) {
@@ -119,6 +134,7 @@ export default function GuestDashboard() {
   const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; processing?: boolean }>({ show: false, message: '', success: false })
   const [showQuickOrder, setShowQuickOrder] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [isRefreshing, setIsRefreshing] = useState(false)
 
   // Memoize expensive category grouping calculation - moved before early returns
   const drinksByCategory = useMemo(() => {
@@ -253,39 +269,57 @@ export default function GuestDashboard() {
   // Optimized function that fetches all data in one call with caching
   const fetchDashboardData = useCallback(async (tagUid: string) => {
     try {
-      // Check cache first
-      const cachedGuestData = getCachedData<GuestData>(GUEST_DATA_CACHE_KEY, tagUid)
+      // Check cache first - split achievement and other data
+      const cachedGuestDataWithoutAchievements = getCachedData<GuestDataWithoutAchievements>(GUEST_DATA_CACHE_KEY, tagUid)
+      const cachedAchievements = getCachedData<AchievementData>(ACHIEVEMENTS_CACHE_KEY, tagUid, ACHIEVEMENT_CACHE_DURATION)
       const cachedDrinkMenu = getCachedData<DrinkWithRecipe[]>(DRINK_MENU_CACHE_KEY)
       
-      if (cachedGuestData && cachedDrinkMenu) {
-        setGuestData(cachedGuestData)
+      // If we have all cached data, use it
+      if (cachedGuestDataWithoutAchievements && cachedAchievements && cachedDrinkMenu) {
+        const combinedGuestData: GuestData = {
+          ...cachedGuestDataWithoutAchievements,
+          achievements: cachedAchievements.achievements,
+          total_achievements: cachedAchievements.total_achievements
+        }
+        setGuestData(combinedGuestData)
         setDrinkMenu(cachedDrinkMenu)
         setLoading(false)
         return
       }
       
+      // If we're missing any data, fetch everything fresh
       const response = await fetch(`/api/getDashboardData?tag_uid=${tagUid}`)
       if (!response.ok) {
         throw new Error('Failed to fetch dashboard data')
       }
       const data = await response.json()
       
-      // Prepare guest data
-      const guestDataToCache: GuestData = {
+      // Prepare split data for caching
+      const guestDataWithoutAchievements: GuestDataWithoutAchievements = {
         guest: data.guest,
-        achievements: data.achievements,
         drink_orders: data.drink_orders,
         drink_summary: data.drink_summary,
-        total_achievements: data.total_achievements,
         total_drinks: data.total_drinks
       }
       
+      const achievementData: AchievementData = {
+        achievements: data.achievements,
+        total_achievements: data.total_achievements
+      }
+      
+      const combinedGuestData: GuestData = {
+        ...guestDataWithoutAchievements,
+        achievements: achievementData.achievements,
+        total_achievements: achievementData.total_achievements
+      }
+      
       // Set data
-      setGuestData(guestDataToCache)
+      setGuestData(combinedGuestData)
       setDrinkMenu(data.drink_menu || [])
       
-      // Cache the data
-      setCachedData(GUEST_DATA_CACHE_KEY, guestDataToCache, tagUid)
+      // Cache the data separately
+      setCachedData(GUEST_DATA_CACHE_KEY, guestDataWithoutAchievements, tagUid)
+      setCachedData(ACHIEVEMENTS_CACHE_KEY, achievementData, tagUid)
       setCachedData(DRINK_MENU_CACHE_KEY, data.drink_menu || [])
       
     } catch (err) {
@@ -380,8 +414,9 @@ export default function GuestDashboard() {
         setOrderFeedback({ show: false, message: '', success: false, processing: false })
       }, 2000)
 
-      // Invalidate cache and refresh dashboard data to show new drink order
+      // Invalidate both caches and refresh dashboard data to show new drink order and any new achievements
       localStorage.removeItem(GUEST_DATA_CACHE_KEY)
+      localStorage.removeItem(ACHIEVEMENTS_CACHE_KEY)
       fetchDashboardData(tagUid)
     } catch (err) {
       console.error('Failed to order drink:', err)
@@ -411,6 +446,26 @@ export default function GuestDashboard() {
         top: y,
         behavior: 'smooth'
       })
+    }
+  }
+
+  const handleManualRefresh = async () => {
+    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    if (!tagUid || isRefreshing) return
+
+    setIsRefreshing(true)
+    
+    // Clear all caches
+    localStorage.removeItem(GUEST_DATA_CACHE_KEY)
+    localStorage.removeItem(ACHIEVEMENTS_CACHE_KEY)
+    localStorage.removeItem(DRINK_MENU_CACHE_KEY)
+    
+    try {
+      await fetchDashboardData(tagUid)
+    } catch (error) {
+      console.error('Manual refresh failed:', error)
+    } finally {
+      setIsRefreshing(false)
     }
   }
 
@@ -521,10 +576,20 @@ export default function GuestDashboard() {
                 </h1>
                 <p className="text-white/90 text-lg">Tvoj Pousfest profil</p>
               </div>
-                              <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
-                <Home className="w-4 h-4" />
-                <span className="hidden sm:inline">Domov</span>
-              </Link>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleManualRefresh}
+                  disabled={isRefreshing}
+                  className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-3 rounded-xl transition-all duration-300 flex items-center shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                  title="Osveži podatke"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+                </button>
+                <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
+                  <Home className="w-4 h-4" />
+                  <span className="hidden sm:inline">Domov</span>
+                </Link>
+              </div>
             </div>
 
             {/* Quick Order Hero Button */}
