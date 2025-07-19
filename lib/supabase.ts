@@ -10,6 +10,7 @@ export interface Guest {
   id: string
   name: string
   tag_uid: string
+  gender: 'male' | 'female'
   created_at: string
 }
 

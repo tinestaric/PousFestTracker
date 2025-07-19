@@ -55,7 +55,7 @@ export const useAdminEditing = (onDataChange: () => void) => {
 
   const getDefaultData = (type: EditingItem['type']) => {
     const defaults = {
-      guest: { name: '', tag_uid: '' },
+      guest: { name: '', tag_uid: '', gender: 'male' },
       achievement: { 
         achievement_type: '', 
         title: '', 

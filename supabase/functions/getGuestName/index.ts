@@ -29,7 +29,7 @@ serve(async (req) => {
     // Find the guest by tag_uid
     const { data: guest, error: guestError } = await supabaseClient
       .from('guests')
-      .select('id, name, tag_uid')
+      .select('id, name, tag_uid, gender')
       .eq('tag_uid', tag_uid)
       .single()
 
@@ -46,7 +46,8 @@ serve(async (req) => {
         guest: {
           id: guest.id,
           name: guest.name,
-          tag_uid: guest.tag_uid
+          tag_uid: guest.tag_uid,
+          gender: guest.gender
         }
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -36,6 +36,14 @@ export default function EditModal({ editing, drinks = [], validation, loading, o
               onChange={(e) => onUpdateEditingData({ tag_uid: e.target.value })}
               className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
             />
+            <select
+              value={editing.data?.gender || 'male'}
+              onChange={(e) => onUpdateEditingData({ gender: e.target.value })}
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+            >
+              <option value="male" className="text-gray-800">Male (Dobrodošel)</option>
+              <option value="female" className="text-gray-800">Female (Dobrodošla)</option>
+            </select>
           </div>
         )}
 

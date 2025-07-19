@@ -517,7 +517,7 @@ export default function GuestDashboard() {
             <div className="flex justify-between items-start mb-6">
               <div className="flex-1 text-left">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                  Dobrodošel, {guestData.guest.name}!
+                  {guestData.guest.gender === 'female' ? 'Dobrodošla' : 'Dobrodošel'}, {guestData.guest.name}!
                 </h1>
                 <p className="text-white/90 text-lg">Tvoj Pousfest profil</p>
               </div>
@@ -529,7 +529,7 @@ export default function GuestDashboard() {
 
             {/* Quick Order Hero Button */}
             <div className="max-w-md mx-auto">
-              <h2 className="text-xl font-semibold text-white/90 mb-4">Pripravljen na naslednjo pijačo?</h2>
+              <h2 className="text-xl font-semibold text-white/90 mb-4">{guestData.guest.gender === 'female' ? 'Pripravljena' : 'Pripravljen'} na naslednjo pijačo?</h2>
               <a 
                 href="#drink-ordering"
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-400 text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 no-underline"

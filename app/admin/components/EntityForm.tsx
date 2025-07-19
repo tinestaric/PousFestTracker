@@ -30,23 +30,36 @@ export default function EntityForm({
   const isLoading = loading.isLoading && (loading.operation === 'saving' || loading.operation === 'loading')
 
   const renderGuestForm = () => (
-    <div className="grid md:grid-cols-2 gap-4">
+    <div className="space-y-4">
+      <div className="grid md:grid-cols-2 gap-4">
+        <FormInput
+          label="Guest Name"
+          placeholder="Enter guest name"
+          value={editing.data.name || ''}
+          onChange={(e) => onUpdateData({ name: e.target.value })}
+          error={getFieldError(validation.errors, 'name')}
+          disabled={isLoading}
+        />
+        <FormInput
+          label="NFC Tag UID"
+          placeholder="Enter NFC tag UID"
+          value={editing.data.tag_uid || ''}
+          onChange={(e) => onUpdateData({ tag_uid: e.target.value })}
+          error={getFieldError(validation.errors, 'tag_uid')}
+          disabled={isLoading}
+        />
+      </div>
       <FormInput
-        label="Guest Name"
-        placeholder="Enter guest name"
-        value={editing.data.name || ''}
-        onChange={(e) => onUpdateData({ name: e.target.value })}
-        error={getFieldError(validation.errors, 'name')}
+        label="Gender"
+        variant="select"
+        value={editing.data.gender || 'male'}
+        onChange={(e) => onUpdateData({ gender: e.target.value })}
+        error={getFieldError(validation.errors, 'gender')}
         disabled={isLoading}
-      />
-      <FormInput
-        label="NFC Tag UID"
-        placeholder="Enter NFC tag UID"
-        value={editing.data.tag_uid || ''}
-        onChange={(e) => onUpdateData({ tag_uid: e.target.value })}
-        error={getFieldError(validation.errors, 'tag_uid')}
-        disabled={isLoading}
-      />
+      >
+        <option value="male">Male (Dobrodošel)</option>
+        <option value="female">Female (Dobrodošla)</option>
+      </FormInput>
     </div>
   )
 

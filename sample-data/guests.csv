@@ -1,6 +1,7 @@
 name,tag_uid
 Mastercard,00f873a2
-Masterkey,bc8915a3
+Larsi,bc8915a3
+Ori,8b5d441b
 Matic Povše,04e3be1f6f6180
 Manca Bavdek,0435ac106f6180
 Nina Povše,04a181256f6180
@@ -9,17 +10,17 @@ Darja Prošek,0414be266f6180
 Tilen Galič,04e29a206f6180
 Blaž Marolt,04f34f256f6180
 Kim Ličer,045146355f6180
-Nejc Jakše,04cace265f6181
+Jernej Jakše,04cace265f6181
 Daša Kovačič,0421e8106f6180
 Tanja Gruden,04b6567a8f6180
-Nejc Ekart,044138305f6181
+Nejc Ekart,PLACEHOLDER_006
 Nuša Ferkov,04c30f365f6180
 Aleš Trkov,045aca106f6180
-Brina Gruden,PLACEHOLDER_001
+Brina Gruden,PLACEHOLDER_007
 Luka Marolt,046073116f6180
 Simon Marolt,04de1d6c8f6180
 Nejc Zavrl,04fe976b8f6180
-Vesna Zakrajšek,PLACEHOLDER_002
+Vesna Zakrajšek,PLACEHOLDER_008
 Jurij Tekavec,04bc7b116f6180
 Žan Javornik,04e23e236f6180
 Tine Starič,047a45345f6180
@@ -33,7 +34,7 @@ Marko Gruden,04ede3315f6180
 Mija Starič,04a53b116f6181
 Jure Starič,04ce86315f6180
 Staška Udvanc,042bbf106f6180
-Peter Cof,04e09e246f6180
+Peter Cof,PLACEHOLDER_009
 Andreja Leški,045d2a305f6180
 Ajda Ahačič,0403c41f6f6180
 Jure Čačilo,04805d216f6180
@@ -42,15 +43,17 @@ Tine Petrlin,044cb4365f6180
 Lucija Drnovscek,044bbc6b8f6180
 Maja Železnik,0473c9206f6180
 Ervin Tršelic,047bb0345f6180
-Anže Virant,04f346315f6180
-Natalija Tanodi,048a0d106f6181
+Anže Virant,PLACEHOLDER_010
+Natalija Tanodi,PLACEHOLDER_011
 Nina Zadravec,04f053116f6180
+Miha Ritonja,04f346315f6180
 Pia Požek,0477c5116f6181
-Uršika Holešek,04253a6c8f6181
-Lara Mlakar,0441de6b8f6181
+Maj Valentin Kristan,048a0d106f6181
+Uršika Holešek,PLACEHOLDER_012
+Lara Mlakar,PLACEHOLDER_013
 Maja Podojsteršek,049480236f6180
 Miha Avsenik,04b484216f6180
-Dejan Kralj,PLACEHOLDER_003
-Blaž Žnidarec,PLACEHOLDER_004
-Medeja Žnidarec Kraševec,PLACEHOLDER_005
-Rok Travižan,04d4b4335f6180 
+Dejan Kralj,PLACEHOLDER_014
+Blaž Žnidarec,PLACEHOLDER_015
+Medeja Žnidarec Kraševec,PLACEHOLDER_016
+Rok Travižan,PLACEHOLDER_017 

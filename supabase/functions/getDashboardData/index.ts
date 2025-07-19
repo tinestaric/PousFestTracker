@@ -90,6 +90,7 @@ serve(async (req: Request) => {
           id: guestWithData.id,
           name: guestWithData.name,
           tag_uid: guestWithData.tag_uid,
+          gender: guestWithData.gender,
           created_at: guestWithData.created_at,
           updated_at: guestWithData.updated_at
         },

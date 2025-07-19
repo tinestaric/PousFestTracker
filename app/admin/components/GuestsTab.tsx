@@ -32,8 +32,8 @@ export default function GuestsTab({
 
   const exportGuestData = () => {
     const csvContent = [
-      ['Name', 'Tag UID', 'Created At'],
-      ...guests.map(guest => [guest.name, guest.tag_uid, guest.created_at])
+      ['Name', 'Gender', 'Tag UID', 'Created At'],
+      ...guests.map(guest => [guest.name, guest.gender, guest.tag_uid, guest.created_at])
     ].map(row => row.join(',')).join('\n')
 
     const blob = new Blob([csvContent], { type: 'text/csv' })
@@ -72,21 +72,31 @@ export default function GuestsTab({
           <h4 className="text-xl font-bold text-white mb-4 drop-shadow-lg">
             {editing.id ? 'Edit Guest' : 'Add New Guest'}
           </h4>
-          <div className="grid md:grid-cols-2 gap-4">
-            <input
-              type="text"
-              placeholder="Guest Name"
-              value={editing.data?.name || ''}
-              onChange={(e) => onUpdateEditingData({ name: e.target.value })}
-              className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
-            />
-            <input
-              type="text"
-              placeholder="NFC Tag UID"
-              value={editing.data?.tag_uid || ''}
-              onChange={(e) => onUpdateEditingData({ tag_uid: e.target.value })}
-              className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
-            />
+          <div className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Guest Name"
+                value={editing.data?.name || ''}
+                onChange={(e) => onUpdateEditingData({ name: e.target.value })}
+                className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+              />
+              <input
+                type="text"
+                placeholder="NFC Tag UID"
+                value={editing.data?.tag_uid || ''}
+                onChange={(e) => onUpdateEditingData({ tag_uid: e.target.value })}
+                className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+              />
+            </div>
+            <select
+              value={editing.data?.gender || 'male'}
+              onChange={(e) => onUpdateEditingData({ gender: e.target.value })}
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+            >
+              <option value="male" className="text-gray-800">Male (Dobrodošel)</option>
+              <option value="female" className="text-gray-800">Female (Dobrodošla)</option>
+            </select>
           </div>
           <div className="flex gap-3 mt-6">
             <button 
@@ -113,6 +123,7 @@ export default function GuestsTab({
             <thead>
               <tr className="border-b border-white/30">
                 <th className="text-left py-3 text-white font-bold">Name</th>
+                <th className="text-left py-3 text-white font-bold">Gender</th>
                 <th className="text-left py-3 text-white font-bold">Tag UID</th>
                 <th className="text-left py-3 text-white font-bold">Created</th>
                 <th className="text-left py-3 text-white font-bold">Actions</th>
@@ -122,6 +133,11 @@ export default function GuestsTab({
               {guests.map((guest) => (
                 <tr key={guest.id} className="border-b border-white/20 hover:bg-white/10 transition-all duration-300">
                   <td className="py-3 text-white font-medium">{guest.name}</td>
+                  <td className="py-3 text-sm text-white/80">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${guest.gender === 'female' ? 'bg-pink-500/20 text-pink-200' : 'bg-blue-500/20 text-blue-200'}`}>
+                      {guest.gender === 'female' ? '♀ Female' : '♂ Male'}
+                    </span>
+                  </td>
                   <td className="py-3 font-mono text-sm text-white/80">{guest.tag_uid}</td>
                   <td className="py-3 text-sm text-white/80">
                     {new Date(guest.created_at).toLocaleDateString()}

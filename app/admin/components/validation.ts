@@ -15,6 +15,10 @@ export function validateGuestData(data: any): FormValidation {
     errors.push({ field: 'tag_uid', message: 'Tag UID must be at least 4 characters' })
   }
 
+  if (!data.gender || !['male', 'female'].includes(data.gender)) {
+    errors.push({ field: 'gender', message: 'Valid gender selection is required' })
+  }
+
   return {
     isValid: errors.length === 0,
     errors
