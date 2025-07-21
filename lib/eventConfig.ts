@@ -101,18 +101,28 @@ export function getText(key: string, config: EventConfig): string {
   return typeof value === 'string' ? value : key
 }
 
-export function interpolateText(text: string, config: EventConfig): string {
-  return text
+export function interpolateText(text: string, config: EventConfig, variables?: Record<string, string>): string {
+  let result = text
     .replace(/{eventName}/g, config.event.name)
     .replace(/{year}/g, config.event.year)
     .replace(/{date}/g, config.event.date)
     .replace(/{location}/g, config.event.location)
+  
+  // Replace custom variables if provided
+  if (variables) {
+    Object.entries(variables).forEach(([key, value]) => {
+      const regex = new RegExp(`{${key}}`, 'g')
+      result = result.replace(regex, value)
+    })
+  }
+  
+  return result
 }
 
 // Helper function to get text and interpolate in one step
-export function getInterpolatedText(key: string, config: EventConfig): string {
+export function getInterpolatedText(key: string, config: EventConfig, variables?: Record<string, string>): string {
   const text = getText(key, config)
-  return interpolateText(text, config)
+  return interpolateText(text, config, variables)
 }
 
 export function isFeatureEnabled(feature: string, config: EventConfig): boolean {

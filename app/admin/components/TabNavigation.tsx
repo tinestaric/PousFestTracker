@@ -1,8 +1,5 @@
 import { memo } from 'react'
-import {                 >
-                <IconComponent className="w-4 h-4" />
-                {getText(`admin.${tab.key}`, config)}
-              </button>hart3, Users, Trophy, Wine, BookOpen, UtensilsCrossed } from 'lucide-react'
+import { BarChart3, Users, Trophy, Wine, BookOpen, UtensilsCrossed } from 'lucide-react'
 import { getEventConfig, getEnabledAdminTabs, getText } from '@/lib/eventConfig'
 import type { ActiveTab, TabItem } from './types'
 
@@ -42,7 +39,7 @@ const TabNavigation = memo(function TabNavigation({ activeTab, onTabChange }: Ta
                 }`}
               >
                 <IconComponent className="w-4 h-4" />
-                {tab.label}
+                {getText(`admin.${tab.key}`, config)}
               </button>
             )
           })}

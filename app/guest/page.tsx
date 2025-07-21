@@ -273,15 +273,19 @@ export default function GuestDashboard() {
     try {
       // Check cache first - split achievement and other data
       const cachedGuestDataWithoutAchievements = getCachedData<GuestDataWithoutAchievements>(GUEST_DATA_CACHE_KEY, tagUid)
-      const cachedAchievements = getCachedData<AchievementData>(ACHIEVEMENTS_CACHE_KEY, tagUid, ACHIEVEMENT_CACHE_DURATION)
+      const cachedAchievements = config.features.achievements ? getCachedData<AchievementData>(ACHIEVEMENTS_CACHE_KEY, tagUid, ACHIEVEMENT_CACHE_DURATION) : null
       const cachedDrinkMenu = getCachedData<DrinkWithRecipe[]>(DRINK_MENU_CACHE_KEY)
       
-      // If we have all cached data, use it
-      if (cachedGuestDataWithoutAchievements && cachedAchievements && cachedDrinkMenu) {
+      // If we have all required cached data, use it
+      const hasAllRequiredCache = cachedGuestDataWithoutAchievements && 
+        cachedDrinkMenu && 
+        (!config.features.achievements || cachedAchievements)
+      
+      if (hasAllRequiredCache) {
         const combinedGuestData: GuestData = {
           ...cachedGuestDataWithoutAchievements,
-          achievements: cachedAchievements.achievements,
-          total_achievements: cachedAchievements.total_achievements
+          achievements: cachedAchievements?.achievements || [],
+          total_achievements: cachedAchievements?.total_achievements || 0
         }
         setGuestData(combinedGuestData)
         setDrinkMenu(cachedDrinkMenu)
@@ -304,9 +308,12 @@ export default function GuestDashboard() {
         total_drinks: data.total_drinks
       }
       
-      const achievementData: AchievementData = {
-        achievements: data.achievements,
-        total_achievements: data.total_achievements
+      const achievementData: AchievementData = config.features.achievements ? {
+        achievements: data.achievements || [],
+        total_achievements: data.total_achievements || 0
+      } : {
+        achievements: [],
+        total_achievements: 0
       }
       
       const combinedGuestData: GuestData = {
@@ -321,7 +328,9 @@ export default function GuestDashboard() {
       
       // Cache the data separately
       setCachedData(GUEST_DATA_CACHE_KEY, guestDataWithoutAchievements, tagUid)
-      setCachedData(ACHIEVEMENTS_CACHE_KEY, achievementData, tagUid)
+      if (config.features.achievements) {
+        setCachedData(ACHIEVEMENTS_CACHE_KEY, achievementData, tagUid)
+      }
       setCachedData(DRINK_MENU_CACHE_KEY, data.drink_menu || [])
       
     } catch (err) {
@@ -338,7 +347,7 @@ export default function GuestDashboard() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [config.features.achievements])
 
   // Fallback functions for old API
   const fetchGuestDataFallback = async (tagUid: string) => {
@@ -613,19 +622,21 @@ export default function GuestDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-2 gap-4 md:gap-6">
-            <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">{getText('guest.stats.achievements', config)}</h3>
-                  <p className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">{guestData.total_achievements}</p>
-                  <p className="text-xs md:text-sm text-white/80">{getText('guest.stats.achievementsUnit', config)}</p>
-                </div>
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
-                  <Trophy className="w-6 h-6 md:w-8 md:h-8 text-white" />
+          <div className={`grid gap-4 md:gap-6 ${config.features.achievements ? 'grid-cols-2' : 'grid-cols-1 max-w-sm mx-auto'}`}>
+            {config.features.achievements && (
+              <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">{getText('guest.stats.achievements', config)}</h3>
+                    <p className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">{guestData.total_achievements}</p>
+                    <p className="text-xs md:text-sm text-white/80">{getText('guest.stats.achievementsUnit', config)}</p>
+                  </div>
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
+                    <Trophy className="w-6 h-6 md:w-8 md:h-8 text-white" />
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
@@ -651,48 +662,50 @@ export default function GuestDashboard() {
             }}
           />
 
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className={config.features.achievements ? "grid lg:grid-cols-2 gap-8" : "grid grid-cols-1"}>
             {/* Achievements Section */}
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-lg">
-                <Sparkles className="w-6 h-6" />
-                {getText('guest.sections.yourAchievements', config)}
-              </h2>
-              {guestData.achievements.length > 0 ? (
-                <div className="space-y-4">
-                  {guestData.achievements.map((achievement) => (
-                    <div key={achievement.id} className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-                      <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                          <span className="text-2xl">
-                            {achievement.achievement_templates?.logo_url || '🏆'}
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-white text-lg mb-1 drop-shadow-lg">
-                            {achievement.achievement_templates?.title}
-                          </h3>
-                          <p className="text-white/90 mb-2">
-                            {achievement.achievement_templates?.description}
-                          </p>
-                          <p className="text-sm text-white/70">
-                            {getText('guest.achievements.unlocked', config)}: {new Date(achievement.unlocked_at).toLocaleDateString()}
-                          </p>
+            {config.features.achievements && (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-lg">
+                  <Sparkles className="w-6 h-6" />
+                  {getText('guest.sections.yourAchievements', config)}
+                </h2>
+                {guestData.achievements.length > 0 ? (
+                  <div className="space-y-4">
+                    {guestData.achievements.map((achievement) => (
+                      <div key={achievement.id} className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <div className="flex items-start gap-4">
+                          <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                            <span className="text-2xl">
+                              {achievement.achievement_templates?.logo_url || '🏆'}
+                            </span>
+                          </div>
+                          <div className="flex-1">
+                            <h3 className="font-bold text-white text-lg mb-1 drop-shadow-lg">
+                              {achievement.achievement_templates?.title}
+                            </h3>
+                            <p className="text-white/90 mb-2">
+                              {achievement.achievement_templates?.description}
+                            </p>
+                            <p className="text-sm text-white/70">
+                              {getText('guest.achievements.unlocked', config)}: {new Date(achievement.unlocked_at).toLocaleDateString()}
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
-                  <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">{getText('guest.achievements.noAchievements', config)}</h3>
-                  <p className="text-white/80">
-                    {getText('guest.achievements.noAchievementsMessage', config)}
-                  </p>
-                </div>
-              )}
-            </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
+                    <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-white mb-2">{getText('guest.achievements.noAchievements', config)}</h3>
+                    <p className="text-white/80">
+                      {getText('guest.achievements.noAchievementsMessage', config)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Drinks Section with Scroll Target */}
             <div id="drink-ordering" className="space-y-6 scroll-mt-20">
