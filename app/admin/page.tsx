@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Home } from 'lucide-react'
 import Link from 'next/link'
+import { getEventConfig, interpolateText } from '@/lib/eventConfig'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -48,6 +49,7 @@ ChartJS.register(
 )
 
 export default function AdminDashboard() {
+  const config = getEventConfig()
   const [activeTab, setActiveTab] = useState<ActiveTab>('overview')
   
   // Custom hooks for data management and editing
@@ -93,8 +95,8 @@ export default function AdminDashboard() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Admin nadzorna plošča</h1>
-              <p className="text-white/90 text-lg">Upravljaj svoj Pousfest dogodek</p>
+              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">{config.ui.adminTitle}</h1>
+              <p className="text-white/90 text-lg">{interpolateText(config.ui.adminSubtitle, config)}</p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
               <Home className="w-4 h-4" />

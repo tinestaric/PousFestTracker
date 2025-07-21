@@ -1,14 +1,29 @@
 import Link from 'next/link'
 import { Wine, Trophy, Calendar, BookOpen, User, Smartphone, UtensilsCrossed } from 'lucide-react'
 import Image from 'next/image'
+import { getEventConfig, getEnabledNavigationCards, interpolateText } from '@/lib/eventConfig'
 
 export default function Home() {
+  const config = getEventConfig()
+  const navigationCards = getEnabledNavigationCards(config)
+
+  // Icon mapping
+  const iconMap = {
+    User,
+    BookOpen,
+    Calendar,
+    UtensilsCrossed,
+    Wine,
+    Trophy,
+    Smartphone
+  }
+
   return (
     <div className="min-h-screen">
       {/* Hero Section - Matching Facebook Banner */}
       <div className="relative overflow-hidden min-h-[85vh] flex items-center">
-        {/* Dreamy Blue Gradient Background - matching the banner */}
-        <div className="absolute inset-0 bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300">
+        {/* Dynamic Gradient Background */}
+        <div className={`absolute inset-0 bg-gradient-to-br ${config.ui.heroGradient}`}>
           {/* Overlay texture for depth */}
           <div className="absolute inset-0 bg-gradient-to-t from-blue-600/20 via-transparent to-white/10"></div>
           {/* Soft cloud-like patterns */}
@@ -24,8 +39,8 @@ export default function Home() {
           <div className="mb-10">
             <div className="w-28 h-28 mx-auto mb-8 relative">
               <Image 
-                src="/Logo.png" 
-                alt="Pousfest 2025 Logo" 
+                src={config.event.logo} 
+                alt={`${config.event.name} ${config.event.year} Logo`} 
                 fill
                 className="object-contain drop-shadow-2xl filter brightness-0 invert"
                 priority
@@ -36,24 +51,24 @@ export default function Home() {
           {/* Event Title - Matching banner typography */}
           <div className="mb-10">
             <h1 className="text-6xl md:text-7xl font-bold mb-6 tracking-wide">
-              POUSFEST
+              {config.event.fullTitle}
             </h1>
             
             {/* Date and Location - matching banner style */}
             <div className="text-xl md:text-2xl font-light mb-8 tracking-widest opacity-95">
-              19.7.2025 · DOBRUNJE
+              {config.event.date} · {config.event.location}
             </div>
             
             <div className="relative">
               <h2 className="text-2xl md:text-3xl font-light italic opacity-90 mb-6">
-                The next chapter
+                {config.event.tagline}
               </h2>
               <div className="w-24 h-0.5 bg-white/50 mx-auto"></div>
             </div>
           </div>
           
           <p className="text-lg md:text-xl mb-10 opacity-90 max-w-2xl mx-auto leading-relaxed">
-            Pripravi se na nepozabno izkušnjo, kjer se svoboda, glasba in prijateljstvo združijo v enem samem dnevu. Navdihujemo se pri kolibriju – simbolu lahkotnosti, življenja v trenutku in čiste radosti. Vzemi si čas, zadihaj in pleši.
+            {config.event.description}
           </p>
           
           {/* CTA Button */}
@@ -76,63 +91,36 @@ export default function Home() {
             Kaj bi rad naredil?
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-            Izberi svojo pustolovščino in izkoristi Pousfest 2025 na največ!
+            {interpolateText(config.ui.homeSubtitle, config)}
           </p>
         </div>
         
-        {/* Main Navigation Cards */}
-        <div className="grid gap-8 md:grid-cols-4 mb-20">
-          {/* Dashboard */}
-          <Link href="/guest" className="group">
-            <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-blue-200 text-center h-full">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                <User className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Moj profil</h3>
-              <p className="text-gray-600">
-                Poglej svoje dosežke, naroči pijačo in spremljaj svoj napredek zabave!
-              </p>
-            </div>
-          </Link>
-
-          {/* Recipes */}
-          <Link href="/recipes" className="group">
-            <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-orange-200 text-center h-full">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                <BookOpen className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Koktajl recepti</h3>
-              <p className="text-gray-600">
-                Nauči se delati neverjetne koktajle s korak-za-korakom video tutoriali
-              </p>
-            </div>
-          </Link>
-
-          {/* Schedule */}
-          <Link href="/timetable" className="group">
-            <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-green-200 text-center h-full">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                <Calendar className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Časovnica</h3>
-              <p className="text-gray-600">
-                Preveri časovnico dogodka in nikoli ne zamudi priložnosti za dosežke
-              </p>
-            </div>
-          </Link>
-
-          {/* Food Selection */}
-          <Link href="/food" className="group">
-            <div className="card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-orange-200 text-center h-full">
-              <div className="w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg">
-                <UtensilsCrossed className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Zajtrk</h3>
-              <p className="text-gray-600">
-                Izberi svoj zajtrk za sobotno jutro - lahko spreminjaš do 8:45
-              </p>
-            </div>
-          </Link>
+        {/* Dynamic Navigation Cards */}
+        <div className={`grid gap-8 mb-20 ${
+          navigationCards.length === 4 
+            ? 'md:grid-cols-4' 
+            : navigationCards.length === 3 
+            ? 'md:grid-cols-3' 
+            : navigationCards.length === 2 
+            ? 'md:grid-cols-2 max-w-2xl mx-auto' 
+            : 'md:grid-cols-1 max-w-md mx-auto'
+        }`}>
+          {navigationCards.map((card) => {
+            const IconComponent = iconMap[card.icon as keyof typeof iconMap]
+            return (
+              <Link key={card.key} href={card.href} className="group">
+                <div className={`card hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-${card.borderColor} text-center h-full`}>
+                  <div className={`w-20 h-20 bg-gradient-to-br ${card.gradient} rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-200 shadow-lg`}>
+                    <IconComponent className="w-10 h-10 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3">{card.title}</h3>
+                  <p className="text-gray-600">
+                    {card.description}
+                  </p>
+                </div>
+              </Link>
+            )
+          })}
         </div>
 
         {/* Quick Features - Simplified */}
@@ -174,7 +162,7 @@ export default function Home() {
             Pripravljen začeti svoje poglavje?
           </h4>
           <p className="text-gray-600">
-            Preprosto tapni svojo NFC označbo na telefon za dostop do osebne nadzorne plošče in začni svoje Pousfest 2025 potovanje!
+            {interpolateText(config.ui.footerCta, config)}
           </p>
         </div>
       </div>

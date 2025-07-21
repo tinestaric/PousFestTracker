@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Calendar, Clock, MapPin, Trophy, Home } from 'lucide-react'
 import timetableData from '@/public/timetable.json'
+import { getEventConfig, interpolateText } from '@/lib/eventConfig'
 
 interface EventItem {
   time: string
@@ -32,6 +33,7 @@ const achievementIcons = {
 }
 
 export default function Timetable() {
+  const config = getEventConfig()
   const timetable = timetableData as TimetableData
 
   return (
@@ -55,7 +57,7 @@ export default function Timetable() {
                 Časovnica
               </h1>
               <p className="text-white/90 text-lg">
-                19.7.2025 · Program dogodka Pousfest 2025
+                {interpolateText(config.ui.timetableSubtitle, config)}
               </p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">

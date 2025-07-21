@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw } from 'lucide-react'
+import { getEventConfig, interpolateText } from '@/lib/eventConfig'
 
 // Simple throttle utility to avoid external dependency
 function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
@@ -126,6 +127,7 @@ function setCachedData<T>(key: string, data: T, tag_uid?: string): void {
 }
 
 export default function GuestDashboard() {
+  const config = getEventConfig()
   const searchParams = useSearchParams()
   const [guestData, setGuestData] = useState<GuestData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -574,7 +576,7 @@ export default function GuestDashboard() {
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
                   {guestData.guest.gender === 'female' ? 'Dobrodošla' : 'Dobrodošel'}, {guestData.guest.name}!
                 </h1>
-                <p className="text-white/90 text-lg">Tvoj Pousfest profil</p>
+                <p className="text-white/90 text-lg">{interpolateText(config.ui.guestProfileTitle, config)}</p>
               </div>
               <div className="flex items-center gap-2">
                 <button

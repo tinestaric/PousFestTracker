@@ -1,12 +1,14 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import { getEventConfig } from '@/lib/eventConfig'
 
 const inter = Inter({ subsets: ['latin'] })
+const config = getEventConfig()
 
 export const metadata: Metadata = {
-  title: 'Pousfest 2025',
-  description: 'Track your achievements and drinks at Pousfest 2025',
+  title: `${config.event.name} ${config.event.year}`,
+  description: `Track your achievements and drinks at ${config.event.name} ${config.event.year}`,
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
