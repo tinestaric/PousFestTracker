@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw } from 'lucide-react'
+import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw, BarChart3 } from 'lucide-react'
 import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
 
 // Simple throttle utility to avoid external dependency
@@ -754,25 +754,45 @@ export default function GuestDashboard() {
                 </div>
               ))}
 
-              {/* Recent Drinks */}
-              {guestData.drink_orders.length > 0 && (
+              {/* Recent Drinks and Activity */}
+              {(guestData.drink_orders.length > 0 || config.features.achievements || config.features.food) && (
                 <div className="space-y-3">
-                  <h3 className="text-lg font-semibold text-white/90 drop-shadow-lg">Nedavna naročila</h3>
-                  <div className="space-y-2">
-                    {guestData.drink_orders.slice(0, 5).map((order) => (
-                      <div key={order.id} className="flex items-center justify-between p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/30 transition-all duration-300">
-                        <div>
-                          <span className="font-medium text-white">{order.drink_menu?.name}</span>
-                          {order.quantity > 1 && (
-                            <span className="text-sm text-white/80"> x{order.quantity}</span>
-                          )}
-                        </div>
-                        <span className="text-sm text-white/70">
-                          {new Date(order.ordered_at).toLocaleTimeString()}
-                        </span>
+                  {guestData.drink_orders.length > 0 && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-white/90 drop-shadow-lg">Nedavna naročila</h3>
+                        <Link 
+                          href="/guest/history"
+                          className="text-sm text-white/80 hover:text-white transition-colors duration-200 underline underline-offset-2"
+                        >
+                          View All
+                        </Link>
                       </div>
-                    ))}
-                  </div>
+                      <div className="space-y-2">
+                        {guestData.drink_orders.slice(0, 5).map((order) => (
+                          <div key={order.id} className="flex items-center justify-between p-4 bg-white/20 backdrop-blur-sm rounded-xl border border-white/20 hover:bg-white/30 transition-all duration-300">
+                            <div>
+                              <span className="font-medium text-white">{order.drink_menu?.name}</span>
+                              {order.quantity > 1 && (
+                                <span className="text-sm text-white/80"> x{order.quantity}</span>
+                              )}
+                            </div>
+                            <span className="text-sm text-white/70">
+                              {new Date(order.ordered_at).toLocaleTimeString()}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                  
+                  {/* View Full History Button - Always show if features are enabled */}
+                  <Link href="/guest/history">
+                    <button className="w-full bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                      <BarChart3 className="w-4 h-4" />
+                      {guestData.drink_orders.length > 0 ? getText('guest.history.buttons.viewFullHistory', config) : getText('guest.history.buttons.viewActivity', config)}
+                    </button>
+                  </Link>
                 </div>
               )}
             </div>

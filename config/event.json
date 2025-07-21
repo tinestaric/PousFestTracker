@@ -28,8 +28,8 @@
     "home.readyToStart": "Pripravljen dvigniti sidro?"
   },
   "features": {
-    "achievements": false,
-    "food": false
+    "achievements": true,
+    "food": true
   },
   "ui": {
     "heroGradient": "from-blue-600 via-cyan-500 to-teal-400"

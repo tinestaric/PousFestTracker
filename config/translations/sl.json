@@ -69,6 +69,36 @@
     "charts": {
       "drinkPreferences": "Tvoje preference pijač",
       "drinkTimeline": "Časovnica pijač"
+    },
+    "history": {
+      "title": "{guestName}ova festivalska pot",
+      "subtitle": "Popolna zgodovina naročil",
+      "backToProfile": "Nazaj na profil",
+      "loading": "Nalagam tvojo festivalsko pot...",
+      "error": "Napaka pri nalaganju zgodovine naročil",
+      "stats": {
+        "totalOrders": "Skupaj naročil",
+        "drinks": "Pijače",
+        "foodItems": "Hrana",
+        "achievements": "Dosežki",
+        "peakHour": "Najaktivnejša ura"
+      },
+      "timeline": {
+        "title": "Festivalska časovnica",
+        "items": "predmet",
+        "itemsPlural": "predmeti",
+        "quantity": "Kol",
+        "achievementUnlocked": "🏆 Dosežek odklenjen!"
+      },
+      "empty": {
+        "title": "Še ni aktivnosti",
+        "message": "Tvoja festivalska pot se šele začenja!",
+        "startOrdering": "Začni naročati"
+      },
+      "buttons": {
+        "viewFullHistory": "Poglej celotno festivalsko pot",
+        "viewActivity": "Poglej festivalsko aktivnost"
+      }
     }
   },
   "timetable": {

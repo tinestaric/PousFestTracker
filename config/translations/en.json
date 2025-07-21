@@ -69,6 +69,36 @@
     "charts": {
       "drinkPreferences": "Your Drink Preferences",
       "drinkTimeline": "Drink Timeline"
+    },
+    "history": {
+      "title": "{guestName}'s Festival Journey",
+      "subtitle": "Complete order history",
+      "backToProfile": "Back to Profile",
+      "loading": "Loading your festival journey...",
+      "error": "Failed to load order history",
+      "stats": {
+        "totalOrders": "Total Orders",
+        "drinks": "Drinks",
+        "foodItems": "Food Items",
+        "achievements": "Achievements",
+        "peakHour": "Peak Hour"
+      },
+      "timeline": {
+        "title": "Festival Timeline",
+        "items": "item",
+        "itemsPlural": "items",
+        "quantity": "Qty",
+        "achievementUnlocked": "🏆 Achievement Unlocked!"
+      },
+      "empty": {
+        "title": "No activity yet",
+        "message": "Your festival journey is just beginning!",
+        "startOrdering": "Start Ordering"
+      },
+      "buttons": {
+        "viewFullHistory": "View Complete Festival Journey",
+        "viewActivity": "View Festival Activity"
+      }
     }
   },
   "timetable": {
