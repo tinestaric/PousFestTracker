@@ -64,6 +64,15 @@
     min-height: 44px;
   }
   
+  /* Hide scrollbars while maintaining scroll functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+  }
+  
   /* Remove text decoration from button-style links */
   .no-underline {
     text-decoration: none !important;

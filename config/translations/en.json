@@ -1,0 +1,152 @@
+{
+  "navigation": {
+    "whatWouldYouLike": "What would you like to do?",
+    "guest": "My Profile",
+    "guestDescription": "View your achievements, order drinks, and track your party progress!",
+    "profile": "My Profile",
+    "profileDescription": "View your achievements, order drinks, and track your party progress!",
+    "recipes": "Cocktail Recipes",
+    "recipesDescription": "Learn to make amazing cocktails with step-by-step video tutorials",
+    "timetable": "Schedule",
+    "timetableDescription": "Check the event schedule and never miss achievement opportunities",
+    "food": "Breakfast",
+    "foodDescription": "Choose your breakfast for Saturday morning - you can change it until 8:45"
+  },
+  "buttons": {
+    "startAdventure": "Start your adventure",
+    "home": "Home",
+    "refresh": "Refresh data",
+    "back": "Back",
+    "order": "Order",
+    "recipe": "Recipe"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "Manage your {eventName} event",
+    "overview": "Overview",
+    "guests": "Guests",
+    "drinks": "Drinks",
+    "recipes": "Recipes",
+    "achievements": "Achievements",
+    "food": "Food"
+  },
+  "guest": {
+    "profileTitle": "Your {eventName} profile",
+    "welcome": "Welcome",
+    "welcomeFemale": "Welcome",
+    "welcomeMale": "Welcome",
+    "errors": {
+      "accessRequired": "Access Required",
+      "guestNotFound": "Guest Not Found",
+      "guestNotFoundMessage": "We couldn't find your guest profile. Please contact the event organizer.",
+      "noTagUid": "No tag UID found. Please scan your NFC tag.",
+      "orderFailed": "Drink order failed. Please try again."
+    },
+    "stats": {
+      "achievements": "Achievements",
+      "achievementsUnit": "badges unlocked",
+      "drinks": "Drinks",
+      "drinksUnit": "drinks logged"
+    },
+    "sections": {
+      "yourAchievements": "Your Achievements",
+      "orderDrinks": "Order Drinks",
+      "recentOrders": "Recent Orders"
+    },
+    "orderSection": {
+      "readyForNext": "Ready for the next drink?",
+      "readyForNextFemale": "Ready for the next drink?",
+      "readyForNextMale": "Ready for the next drink?",
+      "orderDrink": "Order Drink",
+      "scrollDown": "Scroll down to explore",
+      "recipeAvailable": "Recipe available"
+    },
+    "achievements": {
+      "noAchievements": "No achievements yet",
+      "noAchievementsMessage": "Keep participating to unlock badges!",
+      "unlocked": "Unlocked"
+    },
+    "charts": {
+      "drinkPreferences": "Your Drink Preferences",
+      "drinkTimeline": "Drink Timeline"
+    }
+  },
+  "timetable": {
+    "subtitle": "{date} · {eventName} {year} program",
+    "programNote": "*program subject to change",
+    "achievement": "Achievement",
+    "achievementOpportunities": "Achievement Opportunities",
+    "achievementOpportunitiesMessage": "Participate in these activities to unlock special achievements! Make sure to scan your NFC tag during event times.",
+    "achievements": {
+      "earlyBird": "Early Bird",
+      "earlyBirdDesc": "Arrive early to the festival",
+      "poolChampion": "Pool Champion", 
+      "poolChampionDesc": "Join the pool party",
+      "partyAnimal": "Party Animal",
+      "partyAnimalDesc": "Dance and have fun",
+      "nightOwl": "Night Owl",
+      "nightOwlDesc": "Stay up late into the night",
+      "socialButterfly": "Social Butterfly",
+      "socialButterflyDesc": "Socialize with everyone"
+    }
+  },
+  "home": {
+    "subtitle": "Choose your adventure and make the most of {eventName} {year}!",
+    "footerCta": "Simply tap your NFC tag on your phone to access your personal dashboard and start your {eventName} {year} journey!",
+    "readyToStart": "Ready to start your chapter?",
+    "quickFeatures": "Experience the new chapter of party technology"
+  },
+  "features": {
+    "achievementSystem": "Achievement System",
+    "achievementDescription": "Unlock badges throughout the event",
+    "easyOrdering": "Easy Ordering",
+    "easyOrderingDescription": "Order drinks with one touch",
+    "nfcReady": "NFC Ready",
+    "nfcDescription": "Just tap your tag to get started"
+  },
+  "recipes": {
+    "title": "Cocktail Recipes",
+    "subtitle": "Learn to make incredible cocktails with video tutorials",
+    "loading": "Loading recipes...",
+    "noRecipes": "No recipes available",
+    "noRecipesMessage": "Come back later for cocktail recipes!",
+    "viewRecipe": "View recipe →",
+    "orderCocktail": "Order this cocktail",
+    "serves": "Serves",
+    "ingredients": "Ingredients",
+    "instructions": "Instructions",
+    "feedback": {
+      "processingOrder": "Processing order for {drinkName}...",
+      "orderSuccess": "Successfully ordered {drinkName}!",
+      "redirecting": "Redirecting back to profile..."
+    },
+    "errors": {
+      "scanNfcFirst": "Please scan your NFC tag first."
+    }
+  },
+  "food": {
+    "categories": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch", 
+      "dinner": "Dinner",
+      "snack": "Snack"
+    },
+    "updateSuccess": "{foodName} order updated! 🍽️",
+    "orderSuccess": "{foodName} successfully ordered! 🍽️",
+    "processing": "Processing order for {foodName}...",
+    "noTag": "No tag UID found. Please scan your NFC tag.",
+    "accessRequired": "Access Required",
+    "noMenu": "No Menu Yet",
+    "noMenuMessage": "The menu will be published soon. Check back later!",
+    "chooseBreakfast": "Choose your breakfast for Saturday morning. You can change your selection until 8:45.",
+    "currentChoice": "Current choice:",
+    "select": "Select",
+    "selected": "Selected",
+    "notAvailable": "Not available",
+    "title": "Breakfast"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error"
+  }
+}

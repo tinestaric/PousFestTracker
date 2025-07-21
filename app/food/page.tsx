@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo, useCallback } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { UtensilsCrossed, User, Home, Loader2, CheckCircle, Clock, ChefHat, Coffee } from 'lucide-react'
 import Link from 'next/link'
+import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
 
 interface FoodMenuItem {
   id: string
@@ -131,7 +132,7 @@ const CurrentOrderSkeleton = () => (
 )
 
 const FoodPageSkeleton = () => (
-  <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+  <div className={`min-h-screen bg-gradient-to-br ${getEventConfig().ui.heroGradient} relative overflow-hidden`}>
     {/* Background elements */}
     <div className="absolute inset-0 opacity-20">
       <div className="absolute inset-0 bg-white/5"></div>
@@ -169,6 +170,7 @@ export default function FoodPage() {
     message: '', 
     success: false 
   })
+  const config = getEventConfig()
 
   // Memoize food items by category
   const foodByCategory = useMemo(() => {
@@ -186,10 +188,10 @@ export default function FoodPage() {
   // Get category display name
   const getCategoryDisplayName = (category: string) => {
     const categoryMap: Record<string, string> = {
-      breakfast: 'Zajtrk',
-      lunch: 'Kosilo',
-      dinner: 'Večerja',
-      snack: 'Prigrizek'
+      breakfast: getText('food.categories.breakfast', config),
+      lunch: getText('food.categories.lunch', config),
+      dinner: getText('food.categories.dinner', config),
+      snack: getText('food.categories.snack', config)
     }
     return categoryMap[category] || category.charAt(0).toUpperCase() + category.slice(1)
   }
@@ -243,7 +245,7 @@ export default function FoodPage() {
     // Show processing feedback IMMEDIATELY to prevent multiple clicks
     setOrderFeedback({
       show: true,
-      message: `Obdelavam naročilo ${foodName}...`,
+      message: getInterpolatedText('food.processing', config, { foodName }),
       success: true,
       processing: true
     })
@@ -270,8 +272,8 @@ export default function FoodPage() {
       setOrderFeedback({
         show: true,
         message: result.updated 
-          ? `${foodName} naročilo posodobljeno! 🍽️`
-          : `${foodName} uspešno naročen! 🍽️`,
+          ? getInterpolatedText('food.updateSuccess', config, { foodName })
+          : getInterpolatedText('food.orderSuccess', config, { foodName }),
         success: true,
         processing: false
       })
@@ -290,7 +292,7 @@ export default function FoodPage() {
       // Show error feedback
       setOrderFeedback({
         show: true,
-        message: 'Naročilo hrane ni uspelo. Prosimo, poskusi znova.',
+        message: getText('food.orderFailed', config),
         success: false,
         processing: false
       })
@@ -314,7 +316,7 @@ export default function FoodPage() {
       if (storedTagUid) {
         fetchFoodData(storedTagUid)
       } else {
-        setError('Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.')
+        setError(getText('food.noTag', config))
         setLoading(false)
       }
     }
@@ -326,15 +328,15 @@ export default function FoodPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} flex items-center justify-center p-4`}>
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
           <div className="text-red-500 mb-4">
             <User className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold">Potreben dostop</h2>
+            <h2 className="text-2xl font-bold">{getText('food.accessRequired', config)}</h2>
           </div>
           <p className="text-gray-600 mb-6">{error}</p>
           <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Domov
+            {getText('buttons.home', config)}
           </Link>
         </div>
       </div>
@@ -342,7 +344,7 @@ export default function FoodPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-white/5" style={{
@@ -359,7 +361,7 @@ export default function FoodPage() {
           <div className="flex justify-end mb-8">
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
               <Home className="w-4 h-4" />
-              <span className="hidden sm:inline">Domov</span>
+              <span className="hidden sm:inline">{getText('buttons.home', config)}</span>
             </Link>
           </div>
 
@@ -370,13 +372,13 @@ export default function FoodPage() {
                 <UtensilsCrossed className="w-12 h-12 md:w-16 md:h-16 text-white" />
               </div>
               <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
-                Zajtrk
+                {getText('food.title', config)}
               </h1>
             </div>
             
             {/* Info Message */}
             <p className="text-white/90 text-xl">
-              Izberi svoj zajtrk za sobotno jutro. Lahko spreminjáš svojo izbiro do 8:45.
+              {getText('food.chooseBreakfast', config)}
             </p>
 
             {/* Current Order Section */}
@@ -386,7 +388,7 @@ export default function FoodPage() {
                   <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                     <CheckCircle className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-white/90 font-medium">Trenutna izbira:</span>
+                  <span className="text-white/90 font-medium">{getText('food.currentChoice', config)}</span>
                   <span className="font-bold text-white text-lg">{foodData.guestFoodOrder.food_menu?.name}</span>
                 </div>
               </div>
@@ -421,12 +423,12 @@ export default function FoodPage() {
                             {isSelected ? (
                               <>
                                 <CheckCircle className="w-5 h-5" />
-                                Izbrano
+                                {getText('food.selected', config)}
                               </>
                             ) : food.available ? (
-                              'Izberi'
+                              getText('food.select', config)
                             ) : (
-                              'Ni na voljo'
+                              getText('food.notAvailable', config)
                             )}
                           </button>
                         </div>
@@ -438,9 +440,9 @@ export default function FoodPage() {
             ) : (
               <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
                 <UtensilsCrossed className="w-16 h-16 text-white/60 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-white mb-2">Še ni jedilnika</h3>
+                <h3 className="text-xl font-semibold text-white mb-2">{getText('food.noMenu', config)}</h3>
                 <p className="text-white/80">
-                  Jedilnik bo objavljen kmalu. Vrni se pozneje!
+                  {getText('food.noMenuMessage', config)}
                 </p>
               </div>
             )}

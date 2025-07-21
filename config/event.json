@@ -1,75 +1,78 @@
 {
   "event": {
-    "name": "Pousfest",
+    "name": "Yacht week",
     "year": "2025",
-    "fullTitle": "POUSFEST", 
-    "date": "19.7.2025",
-    "location": "DOBRUNJE",
-    "description": "Pripravi se na nepozabno izkušnjo, kjer se svoboda, glasba in prijateljstvo združijo v enem samem dnevu. Navdihujemo se pri kolibriju – simbolu lahkotnosti, življenja v trenutku in čiste radosti. Vzemi si čas, zadihaj in pleši.",
-    "tagline": "The next chapter",
+    "fullTitle": "YACHTWEEK", 
+    "date": "2.8.2025",
+    "location": "Croatia",
+    "description": "Pripravi se na nepozabno plovbo, kjer se kristalno modro morje, luksuz in nezaustavljiva zabava združijo v eno samo izkušnjo. Navdihujemo se pri svobodi odprtega morja – simbolu brezskrbnih dni, neomejenih horizontov in popolnega življenjskega užitka. Dvigni sidro, občuti vetrček in živi trenutek.",
+    "tagline": "Set sail for adventure",
     "logo": "/Logo.png",
     "logoSquare": "/LogoSquare.png"
   },
+  "language": "sl",
+  "translations": {
+    "navigation.guest": "Kapitanov Dnevnik",
+    "navigation.guestDescription": "Sledi svojim morskim dosežkom, naroči pijače in navigiraj skozi tvojo jadralno pustolovščino!",
+    "navigation.profile": "Kapitanov Dnevnik", 
+    "navigation.profileDescription": "Sledi svojim morskim dosežkom, naroči pijače in navigiraj skozi tvojo jadralno pustolovščino!",
+    "navigation.recipes": "Ladijski Bar Vodič",
+    "navigation.recipesDescription": "Obvladaj umetnost mešanja koktejlov z našimi navodili ladijskega barmana",
+    "navigation.timetable": "Jadralni Urnik",
+    "navigation.timetableDescription": "Preveri urnik jadrne tedna in nikoli ne zamudi pristanišča ali zabave",
+    "buttons.startAdventure": "Dvigni Sidro!",
+    "admin.subtitle": "Navigiraj svojo {eventName} floto",
+    "guest.profileTitle": "Tvoje {eventName} potovanje",
+    "home.subtitle": "Načrtuj svojo pot in izvleci največ iz {eventName} {year}!",
+    "home.footerCta": "Preprosto tapni svojo posadko na telefon, da dostopaš do svojega kapitanovega dnevnika in začneš svojo {eventName} {year} pustolovščino!",
+    "home.readyToStart": "Pripravljen dvigniti sidro?"
+  },
   "features": {
-    "achievements": true,
-    "food": true
+    "achievements": false,
+    "food": false
   },
   "ui": {
-    "heroGradient": "from-sky-400 via-blue-500 to-cyan-300",
-    "adminTitle": "Admin nadzorna plošča",
-    "adminSubtitle": "Upravljaj svoj {eventName} dogodek",
-    "guestProfileTitle": "Tvoj {eventName} profil",
-    "homeSubtitle": "Izberi svojo pustolovščino in izkoristi {eventName} {year} na največ!",
-    "timetableSubtitle": "{date} · Program dogodka {eventName} {year}",
-    "footerCta": "Preprosto tapni svojo NFC označbo na telefon za dostop do osebne nadzorne plošče in začni svoje {eventName} {year} potovanje!"
+    "heroGradient": "from-blue-600 via-cyan-500 to-teal-400"
   },
   "navigation": {
     "cards": [
       {
         "key": "guest",
-        "title": "Moj profil", 
-        "description": "Poglej svoje dosežke, naroči pijačo in spremljaj svoj napredek zabave!",
         "href": "/guest",
         "icon": "User",
-        "gradient": "from-blue-500 to-cyan-600",
-        "borderColor": "blue-200"
+        "gradient": "from-blue-600 to-cyan-500",
+        "borderColor": "cyan-200"
       },
       {
         "key": "recipes",
-        "title": "Koktajl recepti",
-        "description": "Nauči se delati neverjetne koktajle s korak-za-korakom video tutoriali", 
         "href": "/recipes",
         "icon": "BookOpen",
-        "gradient": "from-orange-500 to-red-600",
+        "gradient": "from-orange-500 to-red-500",
         "borderColor": "orange-200"
       },
       {
         "key": "timetable", 
-        "title": "Časovnica",
-        "description": "Preveri časovnico dogodka in nikoli ne zamudi priložnosti za dosežke",
         "href": "/timetable",
         "icon": "Calendar", 
-        "gradient": "from-green-500 to-teal-600",
+        "gradient": "from-green-500 to-blue-500",
         "borderColor": "green-200"
       },
       {
         "key": "food",
-        "title": "Zajtrk", 
-        "description": "Izberi svoj zajtrk za sobotno jutro - lahko spreminjaš do 8:45",
         "href": "/food",
         "icon": "UtensilsCrossed",
-        "gradient": "from-orange-500 to-amber-600", 
-        "borderColor": "orange-200",
+        "gradient": "from-indigo-500 to-blue-500", 
+        "borderColor": "indigo-200",
         "feature": "food"
       }
     ]
   },
   "adminTabs": [
-    { "key": "overview", "label": "Pregled", "icon": "BarChart3" },
-    { "key": "guests", "label": "Gostje", "icon": "Users" },
-    { "key": "drinks", "label": "Pijače", "icon": "Wine" },
-    { "key": "recipes", "label": "Recepti", "icon": "BookOpen" },
-    { "key": "achievements", "label": "Dosežki", "icon": "Trophy", "feature": "achievements" },
-    { "key": "food", "label": "Hrana", "icon": "UtensilsCrossed", "feature": "food" }
+    { "key": "overview", "icon": "BarChart3" },
+    { "key": "guests", "icon": "Users" },
+    { "key": "drinks", "icon": "Wine" },
+    { "key": "recipes", "icon": "BookOpen" },
+    { "key": "achievements", "icon": "Trophy", "feature": "achievements" },
+    { "key": "food", "icon": "UtensilsCrossed", "feature": "food" }
   ]
 }

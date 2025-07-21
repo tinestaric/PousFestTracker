@@ -59,12 +59,12 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
 
   if (loading || !ChartComponent) {
     return (
-      <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
-        <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
+      <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+        <h3 className="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
           {icon}
           {title}
         </h3>
-        <div className="h-64 bg-white/10 rounded-xl p-4 flex items-center justify-center">
+        <div className="h-64 bg-white/10 rounded-xl p-2 sm:p-4 flex items-center justify-center overflow-hidden">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
         </div>
       </div>
@@ -116,12 +116,12 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
       }
 
   return (
-    <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
-      <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
+    <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+      <h3 className="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
         {icon}
         {title}
       </h3>
-      <div className="h-64 bg-white/10 rounded-xl p-4">
+      <div className="h-64 bg-white/10 rounded-xl p-2 sm:p-4 overflow-hidden">
         <ChartComponent data={data} options={chartOptions} />
       </div>
     </div>

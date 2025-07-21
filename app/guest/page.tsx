@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw } from 'lucide-react'
-import { getEventConfig, interpolateText } from '@/lib/eventConfig'
+import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
 
 // Simple throttle utility to avoid external dependency
 function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
@@ -32,10 +32,10 @@ import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem, Recipe } from 
 const LazyCharts = dynamic(() => import('./components/LazyCharts'), {
   ssr: false,
   loading: () => (
-    <div className="grid lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
       {[1, 2].map(i => (
-        <div key={i} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
-          <div className="h-64 bg-white/10 rounded-xl p-4 flex items-center justify-center">
+        <div key={i} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+          <div className="h-64 bg-white/10 rounded-xl p-2 sm:p-4 flex items-center justify-center overflow-hidden">
             <div className="animate-pulse space-y-3 w-full">
               <div className="h-4 bg-white/20 rounded w-3/4 mx-auto"></div>
               <div className="h-32 bg-white/20 rounded mx-auto"></div>
@@ -514,15 +514,15 @@ export default function GuestDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} flex items-center justify-center p-4`}>
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
           <div className="text-red-500 mb-4">
             <User className="w-16 h-16 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold">Potreben dostop</h2>
+            <h2 className="text-2xl font-bold">{getText('guest.errors.accessRequired', config)}</h2>
           </div>
           <p className="text-gray-600 mb-6">{error}</p>
           <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Domov
+            {getText('buttons.home', config)}
           </Link>
         </div>
       </div>
@@ -531,15 +531,15 @@ export default function GuestDashboard() {
 
   if (!guestData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 flex items-center justify-center p-4">
+      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} flex items-center justify-center p-4`}>
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl text-center max-w-md p-8">
           <User className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-4">Gost ni najden</h2>
+          <h2 className="text-2xl font-bold mb-4">{getText('guest.errors.guestNotFound', config)}</h2>
           <p className="text-gray-600 mb-6">
-            Nismo mogli najti tvojega profila gosta. Prosimo, kontaktiraj organizatorja dogodka.
+            {getText('guest.errors.guestNotFoundMessage', config)}
           </p>
           <Link href="/" className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
-            Domov
+            {getText('buttons.home', config)}
           </Link>
         </div>
       </div>
@@ -547,7 +547,7 @@ export default function GuestDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
       {/* Scroll Progress Bar */}
       <div className="fixed top-0 left-0 w-full h-1 bg-white/20 z-50">
         <div 
@@ -566,7 +566,7 @@ export default function GuestDashboard() {
       <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
 
-      <div className="relative z-10 p-4">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Hero Section with Header and Quick Order */}
           <div className="text-center space-y-6">
@@ -574,9 +574,9 @@ export default function GuestDashboard() {
             <div className="flex justify-between items-start mb-6">
               <div className="flex-1 text-left">
                 <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                  {guestData.guest.gender === 'female' ? 'Dobrodošla' : 'Dobrodošel'}, {guestData.guest.name}!
+                  {guestData.guest.gender === 'female' ? getText('guest.welcomeFemale', config) : getText('guest.welcomeMale', config)}, {guestData.guest.name}!
                 </h1>
-                <p className="text-white/90 text-lg">{interpolateText(config.ui.guestProfileTitle, config)}</p>
+                <p className="text-white/90 text-lg">{getInterpolatedText('guest.profileTitle', config)}</p>
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -589,24 +589,24 @@ export default function GuestDashboard() {
                 </button>
                 <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-4 md:px-6 rounded-xl transition-all duration-300 flex items-center gap-2 shadow-lg">
                   <Home className="w-4 h-4" />
-                  <span className="hidden sm:inline">Domov</span>
+                  <span className="hidden sm:inline">{getText('buttons.home', config)}</span>
                 </Link>
               </div>
             </div>
 
             {/* Quick Order Hero Button */}
             <div className="max-w-md mx-auto">
-              <h2 className="text-xl font-semibold text-white/90 mb-4">{guestData.guest.gender === 'female' ? 'Pripravljena' : 'Pripravljen'} na naslednjo pijačo?</h2>
+              <h2 className="text-xl font-semibold text-white/90 mb-4">{guestData.guest.gender === 'female' ? getText('guest.orderSection.readyForNextFemale', config) : getText('guest.orderSection.readyForNextMale', config)}</h2>
               <a 
                 href="#drink-ordering"
                 className="w-full bg-gradient-to-r from-purple-500 to-pink-400 text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 no-underline"
               >
                 <Wine className="w-6 h-6" />
-                Naroči pijačo
+                {getText('guest.orderSection.orderDrink', config)}
                 <ArrowDown className="w-5 h-5 animate-bounce" />
               </a>
               <div className="flex flex-col items-center gap-2 mt-4 text-white/60">
-                <span className="text-sm">Pomikaj se navzdol za raziskovanje</span>
+                <span className="text-sm">{getText('guest.orderSection.scrollDown', config)}</span>
                 <ChevronDown className="w-4 h-4 animate-bounce" />
               </div>
             </div>
@@ -617,9 +617,9 @@ export default function GuestDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">Dosežki</h3>
+                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">{getText('guest.stats.achievements', config)}</h3>
                   <p className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">{guestData.total_achievements}</p>
-                  <p className="text-xs md:text-sm text-white/80">značk odklenjenih</p>
+                  <p className="text-xs md:text-sm text-white/80">{getText('guest.stats.achievementsUnit', config)}</p>
                 </div>
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
                   <Trophy className="w-6 h-6 md:w-8 md:h-8 text-white" />
@@ -630,9 +630,9 @@ export default function GuestDashboard() {
             <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">Pijače</h3>
+                  <h3 className="text-sm md:text-lg font-semibold text-white/90 mb-1 md:mb-2">{getText('guest.stats.drinks', config)}</h3>
                   <p className="text-2xl md:text-4xl font-bold text-white mb-1 drop-shadow-lg">{guestData.total_drinks}</p>
-                  <p className="text-xs md:text-sm text-white/80">pijač zabeleženih</p>
+                  <p className="text-xs md:text-sm text-white/80">{getText('guest.stats.drinksUnit', config)}</p>
                 </div>
                 <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg">
                   <Wine className="w-6 h-6 md:w-8 md:h-8 text-white" />
@@ -656,7 +656,7 @@ export default function GuestDashboard() {
             <div className="space-y-6">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-lg">
                 <Sparkles className="w-6 h-6" />
-                Tvoji dosežki
+                {getText('guest.sections.yourAchievements', config)}
               </h2>
               {guestData.achievements.length > 0 ? (
                 <div className="space-y-4">
@@ -676,7 +676,7 @@ export default function GuestDashboard() {
                             {achievement.achievement_templates?.description}
                           </p>
                           <p className="text-sm text-white/70">
-                            Odklenjen: {new Date(achievement.unlocked_at).toLocaleDateString()}
+                            {getText('guest.achievements.unlocked', config)}: {new Date(achievement.unlocked_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>
@@ -686,9 +686,9 @@ export default function GuestDashboard() {
               ) : (
                 <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
                   <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-white mb-2">Še brez dosežkov</h3>
+                  <h3 className="text-xl font-semibold text-white mb-2">{getText('guest.achievements.noAchievements', config)}</h3>
                   <p className="text-white/80">
-                    Nadaljuj s sodelovanjem za odklepanje značk!
+                    {getText('guest.achievements.noAchievementsMessage', config)}
                   </p>
                 </div>
               )}
@@ -698,7 +698,7 @@ export default function GuestDashboard() {
             <div id="drink-ordering" className="space-y-6 scroll-mt-20">
               <h2 className="text-2xl font-bold text-white flex items-center gap-2 drop-shadow-lg">
                 <Wine className="w-6 h-6" />
-                Naroči pijače
+                {getText('guest.sections.orderDrinks', config)}
               </h2>
               {Object.entries(drinksByCategory).map(([category, drinks]) => (
                 <div key={category} className="space-y-3">
@@ -715,7 +715,7 @@ export default function GuestDashboard() {
                               <p className="text-sm text-white/80">{drink.description}</p>
                             )}
                             {drink.recipe && (
-                              <p className="text-xs text-white/60 italic mt-1">Recept na voljo</p>
+                              <p className="text-xs text-white/60 italic mt-1">{getText('guest.orderSection.recipeAvailable', config)}</p>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
@@ -723,7 +723,7 @@ export default function GuestDashboard() {
                               <Link href={`/recipes?recipe=${drink.recipe.id}&from=${encodeURIComponent('/guest' + (typeof window !== 'undefined' ? window.location.search : '') + '#drink-ordering')}`}>
                                 <button className="bg-gradient-to-r from-orange-500 to-red-400 hover:from-orange-600 hover:to-red-500 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm flex items-center gap-1">
                                   <BookOpen className="w-4 h-4" />
-                                  Recept
+                                  {getText('buttons.recipe', config)}
                                 </button>
                               </Link>
                             )}

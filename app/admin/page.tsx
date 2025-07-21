@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Home } from 'lucide-react'
 import Link from 'next/link'
-import { getEventConfig, interpolateText } from '@/lib/eventConfig'
+import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -59,7 +59,7 @@ export default function AdminDashboard() {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden flex items-center justify-center">
+      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden flex items-center justify-center`}>
         {/* Background patterns */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0 bg-white/5" style={{
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
       {/* Background patterns */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-white/5" style={{
@@ -90,17 +90,17 @@ export default function AdminDashboard() {
       <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
 
-      <div className="relative z-10 p-4">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">{config.ui.adminTitle}</h1>
-              <p className="text-white/90 text-lg">{interpolateText(config.ui.adminSubtitle, config)}</p>
+              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">{getText('admin.title', config)}</h1>
+              <p className="text-white/90 text-lg">{getInterpolatedText('admin.subtitle', config)}</p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
               <Home className="w-4 h-4" />
-              Domov
+              {getText('buttons.home', config)}
             </Link>
           </div>
 

@@ -1,0 +1,160 @@
+{
+  "navigation": {
+    "whatWouldYouLike": "Kaj bi rad naredil?",
+    "guest": "Moj profil",
+    "guestDescription": "Poglej svoje dosežke, naroči pijačo in spremljaj svoj napredek zabave!",
+    "profile": "Moj profil",
+    "profileDescription": "Poglej svoje dosežke, naroči pijačo in spremljaj svoj napredek zabave!",
+    "recipes": "Koktajl recepti",
+    "recipesDescription": "Nauči se delati neverjetne koktajle s korak-za-korakom video tutoriali",
+    "timetable": "Časovnica",
+    "timetableDescription": "Preveri časovnico dogodka in nikoli ne zamudi priložnosti za dosežke",
+    "food": "Zajtrk",
+    "foodDescription": "Izberi svoj zajtrk za sobotno jutro - lahko spreminjaš do 8:45"
+  },
+  "buttons": {
+    "startAdventure": "Začni svojo pustolovščino",
+    "home": "Domov",
+    "refresh": "Osveži podatke",
+    "back": "Nazaj",
+    "order": "Naroči",
+    "recipe": "Recept"
+  },
+  "admin": {
+    "title": "Admin nadzorna plošča",
+    "subtitle": "Upravljaj svoj {eventName} dogodek",
+    "overview": "Pregled",
+    "guests": "Gostje",
+    "drinks": "Pijače",
+    "recipes": "Recepti",
+    "achievements": "Dosežki",
+    "food": "Hrana"
+  },
+  "guest": {
+    "profileTitle": "Tvoj {eventName} profil",
+    "welcome": "Dobrodošel",
+    "welcomeFemale": "Dobrodošla",
+    "welcomeMale": "Dobrodošel",
+    "errors": {
+      "accessRequired": "Potreben dostop",
+      "guestNotFound": "Gost ni najden",
+      "guestNotFoundMessage": "Nismo mogli najti tvojega profila gosta. Prosimo, kontaktiraj organizatorja dogodka.",
+      "noTagUid": "Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.",
+      "orderFailed": "Naročilo pijače ni uspelo. Prosimo, poskusi znova."
+    },
+    "stats": {
+      "achievements": "Dosežki",
+      "achievementsUnit": "značk odklenjenih",
+      "drinks": "Pijače",
+      "drinksUnit": "pijač zabeleženih"
+    },
+    "sections": {
+      "yourAchievements": "Tvoji dosežki",
+      "orderDrinks": "Naroči pijače",
+      "recentOrders": "Nedavna naročila"
+    },
+    "orderSection": {
+      "readyForNext": "Pripravljen na naslednjo pijačo?",
+      "readyForNextFemale": "Pripravljena na naslednjo pijačo?",
+      "readyForNextMale": "Pripravljen na naslednjo pijačo?",
+      "orderDrink": "Naroči pijačo",
+      "scrollDown": "Pomikaj se navzdol za raziskovanje",
+      "recipeAvailable": "Recept na voljo"
+    },
+    "achievements": {
+      "noAchievements": "Še brez dosežkov",
+      "noAchievementsMessage": "Nadaljuj s sodelovanjem za odklepanje značk!",
+      "unlocked": "Odklenjen"
+    },
+    "charts": {
+      "drinkPreferences": "Tvoje preference pijač",
+      "drinkTimeline": "Časovnica pijač"
+    }
+  },
+  "timetable": {
+    "subtitle": "{date} · Program dogodka {eventName} {year}",
+    "programNote": "*program se lahko spremeni",
+    "achievement": "Dosežek",
+    "achievementOpportunities": "Priložnosti za dosežke",
+    "achievementOpportunitiesMessage": "Sodeluj v teh aktivnostih za odklepanje posebnih dosežkov! Poskrbi, da skeniraš svojo NFC oznako med časi dogodkov.",
+    "achievements": {
+      "earlyBird": "Zgodnja ptica",
+      "earlyBirdDesc": "Pridi zgodaj na festival",
+      "poolChampion": "Bazenski prvak", 
+      "poolChampionDesc": "Pridruži se bazenlski zabavi",
+      "partyAnimal": "Zabavna žival",
+      "partyAnimalDesc": "Pleši in se zabavaj",
+      "nightOwl": "Nočna sova",
+      "nightOwlDesc": "Ostani do pozno v noč",
+      "socialButterfly": "Socialni metulj",
+      "socialButterflyDesc": "Družiti se z vsemi"
+    },
+    "noEvents": "Ni dogodkov na urniku."
+  },
+  "home": {
+    "subtitle": "Izberi svojo pustolovščino in izkoristi {eventName} {year} na največ!",
+    "footerCta": "Preprosto tapni svojo NFC označbo na telefon za dostop do osebne nadzorne plošče in začni svoje {eventName} {year} potovanje!",
+    "readyToStart": "Pripravljen začeti svoje poglavje?",
+    "quickFeatures": "Doživite novo poglavje zabavne tehnologije"
+  },
+  "features": {
+    "achievementSystem": "Sistem dosežkov",
+    "achievementDescription": "Odkleni značke tekom dogodka",
+    "easyOrdering": "Enostavno naročanje",
+    "easyOrderingDescription": "Naroči pijače z enim dotikom",
+    "nfcReady": "NFC pripravljen",
+    "nfcDescription": "Samo tapni svojo označbo za začetek"
+  },
+  "recipes": {
+    "title": "Koktajl recepti",
+    "subtitle": "Nauči se delati neverjetne koktajle z video tutoriali",
+    "loading": "Nalagam recepte...",
+    "noRecipes": "Ni receptov na voljo",
+    "noRecipesMessage": "Vrni se kasneje za koktajl recepte!",
+    "viewRecipe": "Oglej si recept →",
+    "orderCocktail": "Naroči ta koktajl",
+    "serves": "Postreže",
+    "ingredients": "Sestavine",
+    "instructions": "Navodila",
+    "orderFailed": "Naročilo koktajla ni uspelo. Prosimo, poskusi znova.",
+    "back": "Nazaj",
+    "home": "Domov",
+    "feedback": {
+      "processingOrder": "Obdelujem naročilo za {drinkName}...",
+      "orderSuccess": "Naročilo za {drinkName} uspešno oddano!",
+      "redirecting": "Preusmerjam nazaj na profil..."
+    },
+    "errors": {
+      "scanNfcFirst": "Najprej skeniraj svojo NFC oznako."
+    }
+  },
+  "food": {
+    "noOptions": "Trenutno ni možnosti hrane.",
+    "orderFood": "Naroči hrano",
+    "orderFailed": "Naročilo hrane ni uspelo. Prosimo, poskusi znova.",
+    "ordered": "Naročeno",
+    "updateSuccess": "{foodName} naročilo posodobljeno! 🍽️",
+    "orderSuccess": "{foodName} uspešno naročen! 🍽️",
+    "processing": "Obdelujem naročilo za {foodName}...",
+    "noTag": "Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.",
+    "accessRequired": "Potreben dostop",
+    "noMenu": "Še ni jedilnika",
+    "noMenuMessage": "Jedilnik bo objavljen kmalu. Vrni se pozneje!",
+    "chooseBreakfast": "Izberi svoj zajtrk za sobotno jutro. Lahko spreminjaš svojo izbiro do 8:45.",
+    "currentChoice": "Trenutna izbira:",
+    "select": "Izberi",
+    "selected": "Izbrano",
+    "notAvailable": "Ni na voljo",
+    "title": "Zajtrk",
+    "categories": {
+      "breakfast": "Zajtrk",
+      "lunch": "Kosilo", 
+      "dinner": "Večerja",
+      "snack": "Prigrizek"
+    }
+  },
+  "common": {
+    "loading": "Nalagam...",
+    "error": "Napaka"
+  }
+}

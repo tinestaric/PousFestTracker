@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Calendar, Clock, MapPin, Trophy, Home } from 'lucide-react'
 import timetableData from '@/public/timetable.json'
-import { getEventConfig, interpolateText } from '@/lib/eventConfig'
+import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
 
 interface EventItem {
   time: string
@@ -11,9 +11,14 @@ interface EventItem {
   achievement?: string | null
 }
 
+interface DayData {
+  caption: string
+  events: EventItem[]
+}
+
 interface TimetableData {
-  day1: EventItem[]
-  day2: EventItem[]
+  day1: DayData
+  day2: DayData
 }
 
 const achievementIcons = {
@@ -35,9 +40,10 @@ const achievementIcons = {
 export default function Timetable() {
   const config = getEventConfig()
   const timetable = timetableData as TimetableData
+  const achievementsEnabled = config.features.achievements
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
       {/* Background patterns */}
       <div className="absolute inset-0 opacity-20">
         <div className="absolute inset-0 bg-white/5" style={{
@@ -54,15 +60,15 @@ export default function Timetable() {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
-                Časovnica
+                {getText('navigation.timetable', config)}
               </h1>
               <p className="text-white/90 text-lg">
-                {interpolateText(config.ui.timetableSubtitle, config)}
+                {getInterpolatedText('timetable.subtitle', config)}
               </p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white px-6 py-3 rounded-xl font-semibold hover:bg-white/30 transition-all duration-300 flex items-center gap-2 shadow-lg">
               <Home className="w-4 h-4" />
-              Domov
+              {getText('buttons.home', config)}
             </Link>
           </div>
 
@@ -72,11 +78,11 @@ export default function Timetable() {
               <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl shadow-lg">
                 <Calendar className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-white drop-shadow-lg">19. julij 2025</h2>
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg">{timetable.day1.caption}</h2>
             </div>
             
             <div className="space-y-6">
-              {timetable.day1.map((event, index) => (
+              {timetable.day1.events.map((event, index) => (
                 <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="md:w-40 flex-shrink-0">
@@ -91,11 +97,11 @@ export default function Timetable() {
                         <h3 className="text-2xl font-bold text-white drop-shadow-lg">
                           {event.title}
                         </h3>
-                        {event.achievement && (
+                        {achievementsEnabled && event.achievement && (
                           <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                             <Trophy className="w-4 h-4" />
                             <span className="text-lg">{achievementIcons[event.achievement as keyof typeof achievementIcons]}</span>
-                            Dosežek
+                            {getText('timetable.achievement', config)}
                           </div>
                         )}
                       </div>
@@ -116,17 +122,17 @@ export default function Timetable() {
           </div>
 
           {/* Day 2 */}
-          {timetable.day2 && timetable.day2.length > 0 && (
+          {timetable.day2 && timetable.day2.events && timetable.day2.events.length > 0 && (
             <div className="mb-12">
               <div className="flex items-center gap-3 mb-6">
                 <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-400 rounded-xl shadow-lg">
                   <Calendar className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-3xl font-bold text-white drop-shadow-lg">20. julij 2025</h2>
+                <h2 className="text-3xl font-bold text-white drop-shadow-lg">{timetable.day2.caption}</h2>
               </div>
               
               <div className="space-y-6">
-                {timetable.day2.map((event, index) => (
+                {timetable.day2.events.map((event, index) => (
                   <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
                     <div className="flex flex-col md:flex-row gap-4">
                       <div className="md:w-40 flex-shrink-0">
@@ -141,11 +147,11 @@ export default function Timetable() {
                           <h3 className="text-2xl font-bold text-white drop-shadow-lg">
                             {event.title}
                           </h3>
-                          {event.achievement && (
+                          {achievementsEnabled && event.achievement && (
                             <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                               <Trophy className="w-4 h-4" />
                               <span className="text-lg">{achievementIcons[event.achievement as keyof typeof achievementIcons]}</span>
-                              Dosežek
+                              {getText('timetable.achievement', config)}
                             </div>
                           )}
                         </div>
@@ -170,63 +176,64 @@ export default function Timetable() {
           <div className="mb-12">
             <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 shadow-xl">
               <p className="text-white/90 text-center text-lg italic">
-                *program se lahko spremeni
+                {getText('timetable.programNote', config)}
               </p>
             </div>
           </div>
 
           {/* Achievement Legend */}
-          <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-8 shadow-2xl">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl shadow-lg">
-                <Trophy className="w-8 h-8 text-yellow-900" />
+          {achievementsEnabled && (
+            <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-8 shadow-2xl">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl shadow-lg">
+                  <Trophy className="w-8 h-8 text-yellow-900" />
+                </div>
+                <h3 className="text-2xl font-bold text-white drop-shadow-lg">
+                  {getText('timetable.achievementOpportunities', config)}
+                </h3>
               </div>
-              <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                Priložnosti za dosežke
-              </h3>
-            </div>
-            <p className="text-white/90 mb-6 text-lg leading-relaxed">
-              Sodeluj v teh aktivnostih za odklepanje posebnih dosežkov! 
-              Poskrbi, da skeniraš svojo NFC oznako med časi dogodkov.
-            </p>
+              <p className="text-white/90 mb-6 text-lg leading-relaxed">
+                {getText('timetable.achievementOpportunitiesMessage', config)}
+              </p>
             <div className="grid md:grid-cols-2 gap-6">
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🐦</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Zgodnja ptica</span>
-                  <p className="text-white/80">Pridi zgodaj na festival</p>
+                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.earlyBird', config)}</span>
+                  <p className="text-white/80">{getText('timetable.achievements.earlyBirdDesc', config)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🏊</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Bazenski prvak</span>
-                  <p className="text-white/80">Pridruži se bazenlski zabavi</p>
+                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.poolChampion', config)}</span>
+                  <p className="text-white/80">{getText('timetable.achievements.poolChampionDesc', config)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🎉</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Zabavna žival</span>
-                  <p className="text-white/80">Pleši in se zabavaj</p>
+                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.partyAnimal', config)}</span>
+                  <p className="text-white/80">{getText('timetable.achievements.partyAnimalDesc', config)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🦉</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Nočna sova</span>
-                  <p className="text-white/80">Ostani do pozno v noč</p>
+                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.nightOwl', config)}</span>
+                  <p className="text-white/80">{getText('timetable.achievements.nightOwlDesc', config)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
                 <span className="text-3xl">🦋</span>
                 <div>
-                  <span className="font-bold text-white text-lg">Socialni metulj</span>
-                  <p className="text-white/80">Družiti se z vsemi</p>
+                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.socialButterfly', config)}</span>
+                  <p className="text-white/80">{getText('timetable.achievements.socialButterflyDesc', config)}</p>
                 </div>
               </div>
             </div>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

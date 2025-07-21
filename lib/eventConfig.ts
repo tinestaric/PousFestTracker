@@ -12,6 +12,8 @@ export interface EventConfig {
     logo: string
     logoSquare: string
   }
+  language: string
+  translations?: Record<string, string>
   features: {
     achievements: boolean
     food: boolean
@@ -19,12 +21,6 @@ export interface EventConfig {
   }
   ui: {
     heroGradient: string
-    adminTitle: string
-    adminSubtitle: string
-    guestProfileTitle: string
-    homeSubtitle: string
-    timetableSubtitle: string
-    footerCta: string
   }
   navigation: {
     cards: NavigationCard[]
@@ -34,8 +30,6 @@ export interface EventConfig {
 
 export interface NavigationCard {
   key: string
-  title: string
-  description: string
   href: string
   icon: string
   gradient: string
@@ -45,7 +39,6 @@ export interface NavigationCard {
 
 export interface AdminTab {
   key: string
-  label: string
   icon: string
   feature?: string // Optional - only for features that can be disabled
 }
@@ -54,12 +47,72 @@ export function getEventConfig(): EventConfig {
   return eventConfig as EventConfig
 }
 
+// Load base translations from file
+async function loadBaseTranslations(language: string): Promise<Record<string, any>> {
+  try {
+    const translations = await import(`@/config/translations/${language}.json`)
+    return translations.default
+  } catch (error) {
+    console.warn(`Could not load translations for language: ${language}, falling back to English`)
+    const fallback = await import('@/config/translations/en.json')
+    return fallback.default
+  }
+}
+
+// Cache for loaded translations
+let translationsCache: Record<string, any> = {}
+
+export function getText(key: string, config: EventConfig): string {
+  // 1. Check event-specific overrides first
+  if (config.translations?.[key]) {
+    return config.translations[key]
+  }
+  
+  // 2. Check cached base translations
+  if (!translationsCache[config.language]) {
+    // For now, we'll use a synchronous approach by importing directly
+    // In a real app, you might want to preload these
+    try {
+      if (config.language === 'sl') {
+        const slTranslations = require('@/config/translations/sl.json')
+        translationsCache['sl'] = slTranslations
+      } else {
+        const enTranslations = require('@/config/translations/en.json')
+        translationsCache['en'] = enTranslations
+      }
+    } catch (error) {
+      console.warn(`Could not load translations for ${config.language}`)
+      return key
+    }
+  }
+  
+  // Navigate nested object using dot notation
+  const keys = key.split('.')
+  let value = translationsCache[config.language]
+  
+  for (const k of keys) {
+    if (value && typeof value === 'object' && k in value) {
+      value = value[k]
+    } else {
+      return key // Return key if translation not found
+    }
+  }
+  
+  return typeof value === 'string' ? value : key
+}
+
 export function interpolateText(text: string, config: EventConfig): string {
   return text
     .replace(/{eventName}/g, config.event.name)
     .replace(/{year}/g, config.event.year)
     .replace(/{date}/g, config.event.date)
     .replace(/{location}/g, config.event.location)
+}
+
+// Helper function to get text and interpolate in one step
+export function getInterpolatedText(key: string, config: EventConfig): string {
+  const text = getText(key, config)
+  return interpolateText(text, config)
 }
 
 export function isFeatureEnabled(feature: string, config: EventConfig): boolean {

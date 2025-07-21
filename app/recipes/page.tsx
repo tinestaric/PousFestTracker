@@ -6,6 +6,7 @@ import { Wine, Clock, Users, Play, Home, ChefHat, Sparkles, Loader2 } from 'luci
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Recipe } from '@/lib/supabase'
+import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
 
 // Cache constants to match guest page
 const GUEST_DATA_CACHE_KEY = 'pous_fest_guest_data_cache'
@@ -19,6 +20,7 @@ export default function RecipesPage() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null)
   const [orderFeedback, setOrderFeedback] = useState<{ show: boolean; message: string; success: boolean; redirecting?: boolean; processing?: boolean }>({ show: false, message: '', success: false })
   const [returnUrl, setReturnUrl] = useState<string>('/recipes')
+  const config = getEventConfig()
 
   useEffect(() => {
     fetchData()
@@ -71,7 +73,7 @@ export default function RecipesPage() {
     if (!tagUid) {
       setOrderFeedback({
         show: true,
-        message: 'Prosimo, najprej skeniraj svojo NFC oznako za naročanje pijač.',
+        message: getText('recipes.errors.scanNfcFirst', config),
         success: false,
         processing: false
       })
@@ -82,7 +84,7 @@ export default function RecipesPage() {
     // Show processing feedback IMMEDIATELY to prevent multiple clicks
     setOrderFeedback({
       show: true,
-      message: `Obdelavam naročilo ${recipe.name}...`,
+      message: getInterpolatedText('recipes.feedback.processingOrder', config, { drinkName: recipe.name }),
       success: true, // Use success styling for processing state
       processing: true
     })
@@ -107,7 +109,7 @@ export default function RecipesPage() {
       // Update to success feedback
       setOrderFeedback({
         show: true,
-        message: `${recipe.name} uspešno naročen! 🍻`,
+        message: getInterpolatedText('recipes.feedback.orderSuccess', config, { drinkName: recipe.name }),
         success: true,
         processing: false
       })
@@ -120,7 +122,7 @@ export default function RecipesPage() {
         setTimeout(() => {
           setOrderFeedback({ 
             show: true, 
-            message: 'Preusmerjam nazaj na profil...', 
+            message: getText('recipes.feedback.redirecting', config), 
             success: true, 
             redirecting: true,
             processing: false
@@ -138,7 +140,7 @@ export default function RecipesPage() {
       // Show error feedback
       setOrderFeedback({
         show: true,
-        message: 'Naročilo pijače ni uspelo. Prosimo, poskusi znova.',
+        message: getText('recipes.orderFailed', config),
         success: false,
         processing: false
       })
@@ -167,7 +169,7 @@ export default function RecipesPage() {
 
   if (selectedRecipe) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300">
+      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient}`}>
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -183,11 +185,11 @@ export default function RecipesPage() {
                 onClick={handleBackNavigation}
                 className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200"
               >
-                ← Nazaj
+                ← {getText('buttons.back', config)}
               </button>
               <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
                 <Home className="w-4 h-4" />
-                Domov
+                {getText('buttons.home', config)}
               </Link>
             </div>
 
@@ -207,7 +209,7 @@ export default function RecipesPage() {
                     </div>
                     <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
                       <Users className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-800">Postreže {selectedRecipe.serves}</span>
+                      <span className="text-sm font-medium text-blue-800">{getText('recipes.serves', config)} {selectedRecipe.serves}</span>
                     </div>
                     <span className={`px-3 py-2 rounded-lg text-sm font-medium ${getDifficultyColor(selectedRecipe.difficulty || 'Easy')}`}>
                       {selectedRecipe.difficulty}
@@ -230,7 +232,7 @@ export default function RecipesPage() {
                     onClick={() => orderDrink(selectedRecipe)}
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl w-full lg:w-auto text-lg"
                   >
-                    Naroči ta koktajl
+                    {getText('recipes.orderCocktail', config)}
                   </button>
                 </div>
 
@@ -241,7 +243,7 @@ export default function RecipesPage() {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <Sparkles className="w-6 h-6 text-blue-600" />
-                        Sestavine
+                        {getText('recipes.ingredients', config)}
                       </h3>
                       <div className="bg-gray-50 rounded-xl p-6">
                         <ul className="space-y-3">
@@ -259,7 +261,7 @@ export default function RecipesPage() {
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <ChefHat className="w-6 h-6 text-blue-600" />
-                        Navodila
+                        {getText('recipes.instructions', config)}
                       </h3>
                       <div className="bg-gray-50 rounded-xl p-6">
                         <ol className="space-y-4">
@@ -307,7 +309,7 @@ export default function RecipesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300">
+    <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient}`}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -320,12 +322,12 @@ export default function RecipesPage() {
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">Koktajl recepti</h1>
-              <p className="text-blue-100 text-lg">Nauči se delati neverjetne koktajle z video tutoriali</p>
+              <h1 className="text-4xl font-bold text-white mb-2">{getText('recipes.title', config)}</h1>
+              <p className="text-blue-100 text-lg">{getText('recipes.subtitle', config)}</p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
                               <Home className="w-4 h-4" />
-              Domov
+              {getText('buttons.home', config)}
             </Link>
           </div>
 
@@ -336,14 +338,14 @@ export default function RecipesPage() {
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto"></div>
                 <div className="absolute inset-0 rounded-full border-4 border-white/10"></div>
               </div>
-              <p className="text-white text-lg font-medium">Nalagam recepte...</p>
+              <p className="text-white text-lg font-medium">{getText('recipes.loading', config)}</p>
             </div>
           ) : recipes.length === 0 ? (
             <div className="text-center py-20">
               <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-12 max-w-md mx-auto">
                 <Wine className="w-20 h-20 text-gray-400 mx-auto mb-6" />
-                <h3 className="text-2xl font-bold text-gray-600 mb-4">Ni receptov na voljo</h3>
-                <p className="text-gray-500 text-lg">Vrni se kasneje za koktajl recepte!</p>
+                <h3 className="text-2xl font-bold text-gray-600 mb-4">{getText('recipes.noRecipes', config)}</h3>
+                <p className="text-gray-500 text-lg">{getText('recipes.noRecipesMessage', config)}</p>
               </div>
             </div>
           ) : (
@@ -384,7 +386,7 @@ export default function RecipesPage() {
                           <Play className="w-4 h-4 text-red-600" />
                         </div>
                       )}
-                      <span className="text-blue-600 font-bold text-sm group-hover:text-blue-700 transition-colors">Oglej si recept →</span>
+                      <span className="text-blue-600 font-bold text-sm group-hover:text-blue-700 transition-colors">{getText('recipes.viewRecipe', config)}</span>
                     </div>
                   </div>
                 </div>
