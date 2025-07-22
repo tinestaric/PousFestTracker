@@ -99,6 +99,48 @@
         "viewFullHistory": "Poglej celotno festivalsko pot",
         "viewActivity": "Poglej festivalsko aktivnost"
       }
+    },
+    "social": {
+      "title": "Utrip Zabave",
+      "subtitle": "Živa aktivnost zabave in lestvice",
+      "backToProfile": "Nazaj na profil",
+      "loading": "Nalagam aktivnost zabave...",
+      "error": "Napaka pri nalaganju socialnih podatkov",
+      "highlights": {
+        "partyLeader": "🏆 Vodja zabave",
+        "partyLeaderDesc": "{name} vodi z {count} pijačami to uro",
+        "hydrationCheck": "💧 Preverjanje hidratacije",
+        "hydrationCheckDesc": "{time} od zadnje vode - ostani močan!",
+        "hydrationCheckGeneral": "Ostani hidriran med zabavo!",
+        "trending": "🔥 Trenutno v trendu",
+        "trendingDesc": "{drink} v vzponu - {count} naročenih v {timeframe}",
+        "trendingGeneral": "Zabava se segreva - pridruži se zabavi!",
+        "yourRank": "📊 Tvoj rang na zabavi",
+        "yourRankDesc": "Si #{rank} danes - plezaj višje!",
+        "yourRankParticipant": "Imel si {count} pijač - nadaljuj!",
+        "noData": "Zabava se šele začenja!",
+        "partyPulse": "Pripravi se na neverjetno zabavo!"
+      },
+      "leaderboards": {
+        "title": "Žive lestvice",
+        "hourly": "To uro",
+        "allTime": "Ves čas",
+        "noOrders": "Še ni naročil"
+      },
+      "trending": {
+        "title": "Trending pijače",
+        "subtitle": "Kar vsi naročajo ravno zdaj",
+        "lastHour": "Zadnja ura",
+        "orderedCount": "{count} naročenih"
+      },
+      "activity": {
+        "title": "Živa aktivnost",
+        "justOrdered": "je pravkar naročil",
+        "minutesAgo": "pred {minutes}m"
+      },
+      "buttons": {
+        "viewPartyPulse": "Poglej utrip zabave"
+      }
     }
   },
   "timetable": {

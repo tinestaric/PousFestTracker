@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw, BarChart3 } from 'lucide-react'
+import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw, BarChart3, Crown, Droplets, Flame, Users } from 'lucide-react'
 import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
 
 // Simple throttle utility to avoid external dependency
@@ -75,6 +75,13 @@ interface DrinkWithRecipe extends DrinkMenuItem {
   recipe?: Recipe
 }
 
+interface SocialHighlight {
+  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'yourRank'
+  title: string
+  description: string
+  data?: any
+}
+
 // Cache utilities
 const GENERAL_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes for general data
 const ACHIEVEMENT_CACHE_DURATION = 30 * 1000 // 30 seconds for achievements
@@ -137,6 +144,8 @@ export default function GuestDashboard() {
   const [showQuickOrder, setShowQuickOrder] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [socialHighlights, setSocialHighlights] = useState<SocialHighlight[]>([])
+  const [socialLoading, setSocialLoading] = useState(false)
 
   // Memoize expensive category grouping calculation - moved before early returns
   const drinksByCategory = useMemo(() => {
@@ -268,6 +277,24 @@ export default function GuestDashboard() {
     [handleScroll]
   )
 
+  const fetchSocialHighlights = useCallback(async (tagUid: string) => {
+    if (!config.features.social) return
+    
+    try {
+      setSocialLoading(true)
+      const response = await fetch(`/api/getSocialData?tag_uid=${tagUid}`)
+      if (!response.ok) throw new Error('Failed to fetch social data')
+      
+      const data = await response.json()
+      setSocialHighlights(data.highlights || [])
+    } catch (error) {
+      console.error('Error fetching social highlights:', error)
+      // Silently fail - social features are optional
+    } finally {
+      setSocialLoading(false)
+    }
+  }, [config.features.social])
+
   // Optimized function that fetches all data in one call with caching
   const fetchDashboardData = useCallback(async (tagUid: string) => {
     try {
@@ -290,6 +317,9 @@ export default function GuestDashboard() {
         setGuestData(combinedGuestData)
         setDrinkMenu(cachedDrinkMenu)
         setLoading(false)
+        
+        // Fetch social highlights (non-blocking)
+        fetchSocialHighlights(tagUid)
         return
       }
       
@@ -333,6 +363,9 @@ export default function GuestDashboard() {
       }
       setCachedData(DRINK_MENU_CACHE_KEY, data.drink_menu || [])
       
+      // Fetch social highlights (non-blocking)
+      fetchSocialHighlights(tagUid)
+      
     } catch (err) {
       // Fallback to old API if new one fails
       console.warn('New API failed, falling back to old API:', err)
@@ -347,7 +380,7 @@ export default function GuestDashboard() {
     } finally {
       setLoading(false)
     }
-  }, [config.features.achievements])
+  }, [config.features.achievements, fetchSocialHighlights])
 
   // Fallback functions for old API
   const fetchGuestDataFallback = async (tagUid: string) => {
@@ -651,6 +684,45 @@ export default function GuestDashboard() {
               </div>
             </div>
           </div>
+
+          {/* Social Highlights */}
+          {config.features.social && socialHighlights.length > 0 && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {socialHighlights.map((highlight, index) => (
+                <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h3 className="text-sm md:text-base font-semibold text-white/90 mb-1">{highlight.title}</h3>
+                      <p className="text-xs md:text-sm text-white/80">{highlight.description}</p>
+                    </div>
+                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg ${
+                      highlight.type === 'partyLeader' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' :
+                      highlight.type === 'hydrationCheck' ? 'bg-gradient-to-br from-blue-400 to-cyan-500' :
+                      highlight.type === 'trending' ? 'bg-gradient-to-br from-red-400 to-pink-500' :
+                      'bg-gradient-to-br from-purple-400 to-violet-500'
+                    }`}>
+                      {highlight.type === 'partyLeader' && <Crown className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                      {highlight.type === 'hydrationCheck' && <Droplets className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                      {highlight.type === 'trending' && <Flame className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                      {highlight.type === 'yourRank' && <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Social Button */}
+          {config.features.social && (
+            <div className="flex justify-center">
+              <Link href="/guest/social">
+                <button className="bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center gap-2">
+                  <Users className="w-4 h-4" />
+                  {getText('guest.social.buttons.viewPartyPulse', config)}
+                </button>
+              </Link>
+            </div>
+          )}
 
           {/* Personal Statistics Charts - Lazy Loaded */}
           <LazyCharts 

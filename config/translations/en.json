@@ -99,6 +99,48 @@
         "viewFullHistory": "View Complete Festival Journey",
         "viewActivity": "View Festival Activity"
       }
+    },
+    "social": {
+      "title": "Party Pulse",
+      "subtitle": "Live party activity and leaderboards",
+      "backToProfile": "Back to Profile",
+      "loading": "Loading party activity...",
+      "error": "Failed to load social data",
+      "highlights": {
+        "partyLeader": "🏆 Party Leader",
+        "partyLeaderDesc": "{name} leads with {count} drinks this hour",
+        "hydrationCheck": "💧 Hydration Check",
+        "hydrationCheckDesc": "{time} since last water - stay strong!",
+        "hydrationCheckGeneral": "Stay hydrated throughout the party!",
+        "trending": "🔥 Trending Now",
+        "trendingDesc": "{drink} surging - {count} ordered in {timeframe}",
+        "trendingGeneral": "Party is heating up - join the fun!",
+        "yourRank": "📊 Your Party Rank",
+        "yourRankDesc": "You're #{rank} today - climb up!",
+        "yourRankParticipant": "You've had {count} drinks - keep going!",
+        "noData": "Party just getting started!",
+        "partyPulse": "Get ready for an amazing time!"
+      },
+      "leaderboards": {
+        "title": "Live Leaderboards",
+        "hourly": "This Hour",
+        "allTime": "All Time",
+        "noOrders": "No orders yet"
+      },
+      "trending": {
+        "title": "Trending Drinks",
+        "subtitle": "What everyone's ordering right now",
+        "lastHour": "Last Hour",
+        "orderedCount": "{count} ordered"
+      },
+      "activity": {
+        "title": "Live Activity",
+        "justOrdered": "just ordered",
+        "minutesAgo": "{minutes}m ago"
+      },
+      "buttons": {
+        "viewPartyPulse": "View Party Pulse"
+      }
     }
   },
   "timetable": {
