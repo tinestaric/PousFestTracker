@@ -20,19 +20,6 @@ export interface EventConfig {
     social?: boolean
     // Note: overview, guests, drinks, recipes, timetable are always enabled
   }
-  social?: {
-    hydrationDetection?: {
-      waterCategories?: string[]
-      waterNames?: string[]
-      nonAlcoholicCategories?: string[]
-    }
-    drinkCategories?: {
-      alcoholic?: string[]
-      shots?: string[]
-      cocktails?: string[]
-      beer?: string[]
-    }
-  }
   ui: {
     heroGradient: string
   }

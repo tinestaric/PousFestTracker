@@ -32,19 +32,6 @@
     "food": true,
     "social": true
   },
-  "social": {
-    "hydrationDetection": {
-      "waterCategories": ["Water", "brezalkoholno"],
-      "waterNames": ["Voda", "Water", "H2O"],
-      "nonAlcoholicCategories": ["brezalkoholno", "Non-Alcoholic", "Soft Drinks"]
-    },
-    "drinkCategories": {
-      "alcoholic": ["koktajl", "pivo", "shot", "cocktail", "beer"],
-      "shots": ["shot"],
-      "cocktails": ["koktajl", "cocktail"],
-      "beer": ["pivo", "beer"]
-    }
-  },
   "ui": {
     "heroGradient": "from-blue-600 via-cyan-500 to-teal-400"
   },

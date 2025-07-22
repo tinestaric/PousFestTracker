@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
 
 interface SocialHighlight {
-  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'yourRank'
+  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'alcoholConsumption'
   title: string
   description: string
   data?: any
@@ -43,6 +43,12 @@ interface SocialData {
     rank: number
     totalDrinks: number
     timeSinceWater: string | null
+    alcoholConsumption: {
+      totalAlcoholMl: number
+      standardDrinks: number
+      estimatedBAC: number
+      lastHourAlcohol: number
+    }
   }
 }
 

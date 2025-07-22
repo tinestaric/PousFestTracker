@@ -116,10 +116,25 @@
         "trendingDesc": "{drink} v vzponu - {count} naročenih v {timeframe}",
         "trendingGeneral": "Zabava se segreva - pridruži se zabavi!",
         "yourRank": "📊 Tvoj rang na zabavi",
-        "yourRankDesc": "Si #{rank} danes - plezaj višje!",
+        "yourRankDesc": "#{rank} od {totalParticipants} - {rankMessage}",
         "yourRankParticipant": "Imel si {count} pijač - nadaljuj!",
+        "alcoholTracker": "🍺 Sledilnik alkohola",
+        "alcoholTrackerDesc": "BAC: {estimatedBAC}% - {alertMessage}",
+        "alcoholTrackerGeneral": "Odgovorno sledi svoji porabi",
         "noData": "Zabava se šele začenja!",
         "partyPulse": "Pripravi se na neverjetno zabavo!"
+      },
+      "alcoholMessages": {
+        "enjoyingResponsibly": "Uživaš odgovorno",
+        "considerPacing": "Razmisli o umirjanju tempa",
+        "timeForWaterAndFood": "Čas za vodo in hrano!"
+      },
+      "rankMessages": {
+        "partyChampion": "Si prvak zabave!",
+        "top3Impressive": "Top 3 - impresivno!",
+        "top5KeepUp": "Top 5 - tako naprej!",
+        "top10Solid": "Top 10 - solidno!",
+        "climbLeaderboard": "Plezaj po lestvici!"
       },
       "leaderboards": {
         "title": "Žive lestvice",

@@ -76,7 +76,7 @@ interface DrinkWithRecipe extends DrinkMenuItem {
 }
 
 interface SocialHighlight {
-  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'yourRank'
+  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'alcoholConsumption' | 'userRank'
   title: string
   description: string
   data?: any
@@ -144,6 +144,7 @@ export default function GuestDashboard() {
   const [showQuickOrder, setShowQuickOrder] = useState(true)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [allSocialHighlights, setAllSocialHighlights] = useState<SocialHighlight[]>([])
   const [socialHighlights, setSocialHighlights] = useState<SocialHighlight[]>([])
   const [socialLoading, setSocialLoading] = useState(false)
 
@@ -286,7 +287,7 @@ export default function GuestDashboard() {
       if (!response.ok) throw new Error('Failed to fetch social data')
       
       const data = await response.json()
-      setSocialHighlights(data.highlights || [])
+      setAllSocialHighlights(data.highlights || [])
     } catch (error) {
       console.error('Error fetching social highlights:', error)
       // Silently fail - social features are optional
@@ -550,6 +551,33 @@ export default function GuestDashboard() {
     }
   }, [guestData, drinkMenu]) // Dependencies ensure data is loaded before scrolling
 
+  // Effect to randomly select 2 highlights from all available highlights
+  useEffect(() => {
+    if (allSocialHighlights.length === 0) {
+      setSocialHighlights([])
+      return
+    }
+
+    if (allSocialHighlights.length <= 2) {
+      setSocialHighlights(allSocialHighlights)
+      return
+    }
+
+    // Function to randomly select 2 highlights
+    const selectRandomHighlights = () => {
+      const shuffled = [...allSocialHighlights].sort(() => 0.5 - Math.random())
+      setSocialHighlights(shuffled.slice(0, 2))
+    }
+
+    // Initial selection
+    selectRandomHighlights()
+
+    // Set up rotation timer - change highlights every 10 seconds
+    const rotationInterval = setInterval(selectRandomHighlights, 10000)
+
+    return () => clearInterval(rotationInterval)
+  }, [allSocialHighlights])
+
   if (loading) {
     return <DashboardSkeleton />
   }
@@ -699,12 +727,15 @@ export default function GuestDashboard() {
                       highlight.type === 'partyLeader' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' :
                       highlight.type === 'hydrationCheck' ? 'bg-gradient-to-br from-blue-400 to-cyan-500' :
                       highlight.type === 'trending' ? 'bg-gradient-to-br from-red-400 to-pink-500' :
+                      highlight.type === 'alcoholConsumption' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
+                      highlight.type === 'userRank' ? 'bg-gradient-to-br from-purple-400 to-violet-500' :
                       'bg-gradient-to-br from-purple-400 to-violet-500'
                     }`}>
                       {highlight.type === 'partyLeader' && <Crown className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                       {highlight.type === 'hydrationCheck' && <Droplets className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                       {highlight.type === 'trending' && <Flame className="w-5 h-5 md:w-6 md:h-6 text-white" />}
-                      {highlight.type === 'yourRank' && <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                      {highlight.type === 'alcoholConsumption' && <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                      {highlight.type === 'userRank' && <Trophy className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                     </div>
                   </div>
                 </div>

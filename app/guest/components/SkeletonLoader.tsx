@@ -1,5 +1,7 @@
 'use client'
 
+import { getEventConfig } from '@/lib/eventConfig'
+
 // Skeleton component for stats cards
 export const StatsSkeleton = () => (
   <div className="grid grid-cols-2 gap-4 md:gap-6">
@@ -70,52 +72,56 @@ export const DrinkOrderingSkeleton = () => (
 )
 
 // Main dashboard skeleton
-export const DashboardSkeleton = () => (
-  <div className="min-h-screen bg-gradient-to-br from-sky-400 via-blue-500 to-cyan-300 relative overflow-hidden">
-    {/* Background elements */}
-    <div className="absolute inset-0 opacity-20">
-      <div className="absolute inset-0 bg-white/5"></div>
-    </div>
-    
-    <div className="relative z-10 p-4">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header skeleton */}
-        <div className="text-center space-y-6">
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex-1 text-left">
-              <div className="h-8 md:h-10 bg-white/20 rounded w-64 mb-2 animate-pulse"></div>
-              <div className="h-6 bg-white/20 rounded w-48 animate-pulse"></div>
-            </div>
-            <div className="h-12 w-16 md:w-20 bg-white/20 rounded-xl animate-pulse"></div>
-          </div>
-
-          <div className="max-w-md mx-auto">
-            <div className="h-6 bg-white/20 rounded w-48 mb-4 mx-auto animate-pulse"></div>
-            <div className="h-16 bg-white/20 rounded-2xl animate-pulse"></div>
-          </div>
-        </div>
-
-        {/* Stats skeleton */}
-        <StatsSkeleton />
-
-        {/* Charts skeleton */}
-        <div className="grid lg:grid-cols-2 gap-6">
-          {[1, 2].map(i => (
-            <div key={i} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
-              <div className="h-6 bg-white/20 rounded w-48 mb-4 animate-pulse"></div>
-              <div className="h-64 bg-white/10 rounded-xl p-4">
-                <div className="h-full bg-white/20 rounded animate-pulse"></div>
+export const DashboardSkeleton = () => {
+  const config = getEventConfig()
+  
+  return (
+    <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
+      {/* Background elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0 bg-white/5"></div>
+      </div>
+      
+      <div className="relative z-10 p-4">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Header skeleton */}
+          <div className="text-center space-y-6">
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex-1 text-left">
+                <div className="h-8 md:h-10 bg-white/20 rounded w-64 mb-2 animate-pulse"></div>
+                <div className="h-6 bg-white/20 rounded w-48 animate-pulse"></div>
               </div>
+              <div className="h-12 w-16 md:w-20 bg-white/20 rounded-xl animate-pulse"></div>
             </div>
-          ))}
-        </div>
 
-        {/* Content skeleton */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          <AchievementsSkeleton />
-          <DrinkOrderingSkeleton />
+            <div className="max-w-md mx-auto">
+              <div className="h-6 bg-white/20 rounded w-48 mb-4 mx-auto animate-pulse"></div>
+              <div className="h-16 bg-white/20 rounded-2xl animate-pulse"></div>
+            </div>
+          </div>
+
+          {/* Stats skeleton */}
+          <StatsSkeleton />
+
+          {/* Charts skeleton */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            {[1, 2].map(i => (
+              <div key={i} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl">
+                <div className="h-6 bg-white/20 rounded w-48 mb-4 animate-pulse"></div>
+                <div className="h-64 bg-white/10 rounded-xl p-4">
+                  <div className="h-full bg-white/20 rounded animate-pulse"></div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Content skeleton */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            <AchievementsSkeleton />
+            <DrinkOrderingSkeleton />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-) 
+  )
+} 

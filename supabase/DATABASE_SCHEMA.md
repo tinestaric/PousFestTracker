@@ -42,8 +42,10 @@ UNIQUE(guest_id, achievement_template_id)
 id: UUID PRIMARY KEY
 name: TEXT NOT NULL
 description: TEXT
-category: TEXT NOT NULL        -- 'cocktail' | 'beer' | 'shot' | 'non-alcoholic'
+category: TEXT NOT NULL        -- 'koktajl' | 'pivo' | 'shot' | 'brezalkoholno'
 available: BOOLEAN DEFAULT TRUE
+alcohol_percentage: DECIMAL(4,2) DEFAULT 0.0  -- Alcohol by volume (e.g. 5.2, 35.0, 0.0)
+alcohol_content_ml: DECIMAL(6,2) DEFAULT 0.0  -- Volume in milliliters (e.g. 500, 40, 250)
 created_at: TIMESTAMP
 ```
 
@@ -99,6 +101,8 @@ UNIQUE(guest_id)               -- One order per guest
 
 - **NFC Integration**: Guests identified by `tag_uid`
 - **Time-based Achievements**: Achievement windows with `from_time`/`to_time`
+- **Alcohol Tracking**: Precise alcohol percentage and volume data for consumption analytics
+- **Hydration Detection**: Automatic detection of non-alcoholic drinks (alcohol_percentage = 0.0)
 - **Array Storage**: Recipe ingredients/instructions as PostgreSQL arrays
 - **Cascade Deletes**: All foreign keys cascade on delete
 - **Unique Constraints**: Prevent duplicate achievements and multiple food orders

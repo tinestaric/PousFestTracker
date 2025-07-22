@@ -116,10 +116,25 @@
         "trendingDesc": "{drink} surging - {count} ordered in {timeframe}",
         "trendingGeneral": "Party is heating up - join the fun!",
         "yourRank": "📊 Your Party Rank",
-        "yourRankDesc": "You're #{rank} today - climb up!",
+        "yourRankDesc": "#{rank} of {totalParticipants} - {rankMessage}",
         "yourRankParticipant": "You've had {count} drinks - keep going!",
+        "alcoholTracker": "🍺 Alcohol Tracker",
+        "alcoholTrackerDesc": "BAC: {estimatedBAC}% - {alertMessage}",
+        "alcoholTrackerGeneral": "Track your consumption responsibly",
         "noData": "Party just getting started!",
         "partyPulse": "Get ready for an amazing time!"
+      },
+      "alcoholMessages": {
+        "enjoyingResponsibly": "Enjoying responsibly",
+        "considerPacing": "Consider pacing yourself",
+        "timeForWaterAndFood": "Time for water and food!"
+      },
+      "rankMessages": {
+        "partyChampion": "You're the party champion!",
+        "top3Impressive": "Top 3 - impressive!",
+        "top5KeepUp": "Top 5 - keep it up!",
+        "top10Solid": "Top 10 - solid showing!",
+        "climbLeaderboard": "Climb the leaderboard!"
       },
       "leaderboards": {
         "title": "Live Leaderboards",
