@@ -1,7 +1,10 @@
+'use client'
+
 import Link from 'next/link'
-import { Calendar, Clock, MapPin, Trophy, Home } from 'lucide-react'
+import { Calendar, Clock, MapPin, Trophy, Home, ChevronLeft, ChevronRight } from 'lucide-react'
 import timetableData from '@/public/timetable.json'
 import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
+import { useState } from 'react'
 
 interface EventItem {
   time: string
@@ -12,13 +15,13 @@ interface EventItem {
 }
 
 interface DayData {
+  date: string
   caption: string
   events: EventItem[]
 }
 
 interface TimetableData {
-  day1: DayData
-  day2: DayData
+  [key: string]: DayData
 }
 
 const achievementIcons = {
@@ -41,6 +44,56 @@ export default function Timetable() {
   const config = getEventConfig()
   const timetable = timetableData as TimetableData
   const achievementsEnabled = config.features.achievements
+  
+  // Get all day keys and sort them
+  const dayKeys = Object.keys(timetable).sort((a, b) => {
+    const dayNumA = parseInt(a.replace('day', ''))
+    const dayNumB = parseInt(b.replace('day', ''))
+    return dayNumA - dayNumB
+  })
+  
+  // Find today's day or default to day1
+  const getTodaysDay = () => {
+    const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD format
+    
+    for (const dayKey of dayKeys) {
+      if (timetable[dayKey].date === today) {
+        return dayKey
+      }
+    }
+    
+    return dayKeys[0] // Default to first day if today doesn't match any day
+  }
+  
+  const [selectedDay, setSelectedDay] = useState(getTodaysDay())
+  const selectedDayData = timetable[selectedDay]
+  
+  // Get day number for display
+  const getDayNumber = (dayKey: string) => {
+    return parseInt(dayKey.replace('day', ''))
+  }
+  
+  // Check if a day is today
+  const isDayToday = (dayKey: string) => {
+    const today = new Date().toISOString().split('T')[0]
+    return timetable[dayKey].date === today
+  }
+  
+  // Get gradient colors for different days
+  const getDayGradient = (dayKey: string) => {
+    const dayNum = getDayNumber(dayKey)
+    const gradients = [
+      'from-blue-600 to-cyan-500',
+      'from-purple-600 to-pink-500', 
+      'from-green-600 to-emerald-500',
+      'from-orange-600 to-red-500',
+      'from-indigo-600 to-purple-500',
+      'from-teal-600 to-cyan-500',
+      'from-rose-600 to-pink-500',
+      'from-amber-600 to-orange-500'
+    ]
+    return gradients[(dayNum - 1) % gradients.length]
+  }
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
@@ -72,21 +125,79 @@ export default function Timetable() {
             </Link>
           </div>
 
-          {/* Day 1 */}
+          {/* Day Selector Tabs */}
+          <div className="mb-8">
+            <div className="flex flex-wrap gap-2 justify-center mb-4">
+              {dayKeys.map((dayKey) => {
+                const dayNum = getDayNumber(dayKey)
+                const isSelected = selectedDay === dayKey
+                const isToday = isDayToday(dayKey)
+                return (
+                  <button
+                    key={dayKey}
+                    onClick={() => setSelectedDay(dayKey)}
+                    className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 relative ${
+                      isSelected
+                        ? 'bg-white text-gray-800 shadow-lg scale-105'
+                        : 'bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:scale-105'
+                    }`}
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Dan {dayNum}
+                    {isToday && (
+                      <span className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold shadow-lg">
+                        {getText('time.today', config)}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+            
+            {/* Navigation arrows for mobile */}
+            <div className="flex justify-center gap-4 md:hidden">
+              <button
+                onClick={() => {
+                  const currentIndex = dayKeys.indexOf(selectedDay)
+                  if (currentIndex > 0) {
+                    setSelectedDay(dayKeys[currentIndex - 1])
+                  }
+                }}
+                disabled={dayKeys.indexOf(selectedDay) === 0}
+                className="p-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/30 transition-all duration-300"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => {
+                  const currentIndex = dayKeys.indexOf(selectedDay)
+                  if (currentIndex < dayKeys.length - 1) {
+                    setSelectedDay(dayKeys[currentIndex + 1])
+                  }
+                }}
+                disabled={dayKeys.indexOf(selectedDay) === dayKeys.length - 1}
+                className="p-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/30 transition-all duration-300"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          {/* Selected Day Content */}
           <div className="mb-12">
             <div className="flex items-center gap-3 mb-6">
-              <div className="p-3 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-xl shadow-lg">
+              <div className={`p-3 bg-gradient-to-r ${getDayGradient(selectedDay)} rounded-xl shadow-lg`}>
                 <Calendar className="w-8 h-8 text-white" />
               </div>
-              <h2 className="text-3xl font-bold text-white drop-shadow-lg">{timetable.day1.caption}</h2>
+              <h2 className="text-3xl font-bold text-white drop-shadow-lg">{selectedDayData.caption}</h2>
             </div>
             
             <div className="space-y-6">
-              {timetable.day1.events.map((event, index) => (
+              {selectedDayData.events.map((event, index) => (
                 <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
                   <div className="flex flex-col md:flex-row gap-4">
                     <div className="md:w-40 flex-shrink-0">
-                      <div className="flex items-center gap-2 text-white font-bold text-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-4 py-2 rounded-xl shadow-lg">
+                      <div className={`flex items-center gap-2 text-white font-bold text-lg bg-gradient-to-r ${getDayGradient(selectedDay)} px-4 py-2 rounded-xl shadow-lg`}>
                         <Clock className="w-5 h-5" />
                         {event.time}
                       </div>
@@ -120,57 +231,6 @@ export default function Timetable() {
               ))}
             </div>
           </div>
-
-          {/* Day 2 */}
-          {timetable.day2 && timetable.day2.events && timetable.day2.events.length > 0 && (
-            <div className="mb-12">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-gradient-to-r from-purple-500 to-pink-400 rounded-xl shadow-lg">
-                  <Calendar className="w-8 h-8 text-white" />
-                </div>
-                <h2 className="text-3xl font-bold text-white drop-shadow-lg">{timetable.day2.caption}</h2>
-              </div>
-              
-              <div className="space-y-6">
-                {timetable.day2.events.map((event, index) => (
-                  <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300">
-                    <div className="flex flex-col md:flex-row gap-4">
-                      <div className="md:w-40 flex-shrink-0">
-                        <div className="flex items-center gap-2 text-white font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-500 px-4 py-2 rounded-xl shadow-lg">
-                          <Clock className="w-5 h-5" />
-                          {event.time}
-                        </div>
-                      </div>
-                      
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                            {event.title}
-                          </h3>
-                          {achievementsEnabled && event.achievement && (
-                            <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                              <Trophy className="w-4 h-4" />
-                              <span className="text-lg">{achievementIcons[event.achievement as keyof typeof achievementIcons]}</span>
-                              {getText('timetable.achievement', config)}
-                            </div>
-                          )}
-                        </div>
-                        
-                        <p className="text-white/90 mb-4 text-lg leading-relaxed">
-                          {event.description}
-                        </p>
-                        
-                        <div className="flex items-center gap-2 text-white/80">
-                          <MapPin className="w-5 h-5" />
-                          <span className="font-medium">{event.location}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Program note */}
           <div className="mb-12">

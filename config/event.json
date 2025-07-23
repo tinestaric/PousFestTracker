@@ -3,7 +3,7 @@
     "name": "Yacht week",
     "year": "2025",
     "fullTitle": "YACHTWEEK", 
-    "date": "2.8.2025 - 10.8.2025",
+    "date": "2.8.2025 - 9.8.2025",
     "location": "Croatia",
     "description": "Pripravi se na nepozabno plovbo, kjer se kristalno modro morje, luksuz in nezaustavljiva zabava združijo v eno samo izkušnjo. Navdihujemo se pri svobodi odprtega morja – simbolu brezskrbnih dni, neomejenih horizontov in popolnega življenjskega užitka. Dvigni sidro, občuti vetrček in živi trenutek.",
     "tagline": "Set sail for adventure",
@@ -33,7 +33,36 @@
     "social": true
   },
   "ui": {
-    "heroGradient": "from-blue-600 via-cyan-500 to-teal-400"
+    "heroGradient": "from-blue-600 via-cyan-500 to-teal-400",
+    "primaryButton": "from-purple-500 to-pink-400",
+    "primaryButtonHover": "from-purple-600 to-pink-500",
+    "secondaryButton": "from-orange-500 to-red-400",
+    "secondaryButtonHover": "from-orange-600 to-red-500",
+    "charts": {
+      "pieColors": [
+        "rgba(59, 130, 246, 0.8)",   
+        "rgba(14, 165, 233, 0.8)",   
+        "rgba(6, 182, 212, 0.8)",    
+        "rgba(168, 85, 247, 0.8)",   
+        "rgba(236, 72, 153, 0.8)",  
+        "rgba(34, 197, 94, 0.8)"
+      ],
+      "pieBorders": [
+        "rgb(59, 130, 246)",
+        "rgb(14, 165, 233)",
+        "rgb(6, 182, 212)",
+        "rgb(168, 85, 247)",
+        "rgb(236, 72, 153)",
+        "rgb(34, 197, 94)"
+      ],
+      "timelineColor": "#3B82F6",
+      "timelineBackground": "rgba(59, 130, 246, 0.1)"
+    },
+    "socialHighlights": {
+      "hydration": "from-blue-400 to-cyan-500",
+      "userRank": "from-purple-400 to-violet-500",
+      "default": "from-purple-400 to-violet-500"
+    }
   },
   "navigation": {
     "cards": [

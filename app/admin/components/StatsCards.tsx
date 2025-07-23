@@ -1,12 +1,15 @@
 import { memo } from 'react'
 import { Users, Trophy, Wine, UtensilsCrossed, BarChart3 } from 'lucide-react'
 import type { AdminStats } from './types'
+import { getEventConfig } from '@/lib/eventConfig'
 
 interface StatsCardsProps {
   stats: AdminStats
 }
 
 const StatsCards = memo(function StatsCards({ stats }: StatsCardsProps) {
+  const config = getEventConfig()
+  
   const statItems = [
     {
       label: 'Skupaj gostov',
@@ -26,7 +29,7 @@ const StatsCards = memo(function StatsCards({ stats }: StatsCardsProps) {
       label: 'Postreženih pijač',
       value: stats.totalDrinks,
       icon: Wine,
-      gradient: 'from-purple-500 to-pink-400',
+      gradient: config.ui.primaryButton,
       iconColor: 'text-white'
     },
     {

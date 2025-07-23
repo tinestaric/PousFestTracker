@@ -20,6 +20,9 @@
     "order": "Naroči",
     "recipe": "Recept"
   },
+  "time": {
+    "today": "danes"
+  },
   "admin": {
     "title": "Admin nadzorna plošča",
     "subtitle": "Upravljaj svoj {eventName} dogodek",

@@ -3,7 +3,12 @@
 import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw, BarChart3, Crown, Droplets, Flame, Users } from 'lucide-react'
+import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
+import { supabase } from '@/lib/supabase'
+import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem, Recipe } from '@/lib/supabase'
+import { DashboardSkeleton } from './components/SkeletonLoader'
 
 // Simple throttle utility to avoid external dependency
 function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T {
@@ -24,9 +29,6 @@ function throttle<T extends (...args: any[]) => any>(func: T, delay: number): T 
     }
   }) as T
 }
-import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
-import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem, Recipe } from '@/lib/supabase'
 
 // Lazy load charts component to reduce initial bundle size
 const LazyCharts = dynamic(() => import('./components/LazyCharts'), {
@@ -46,9 +48,6 @@ const LazyCharts = dynamic(() => import('./components/LazyCharts'), {
     </div>
   )
 })
-
-import dynamic from 'next/dynamic'
-import { DashboardSkeleton } from './components/SkeletonLoader'
 
 interface GuestData {
   guest: Guest
@@ -133,7 +132,7 @@ function setCachedData<T>(key: string, data: T, tag_uid?: string): void {
   }
 }
 
-export default function GuestDashboard() {
+function GuestDashboard() {
   const config = getEventConfig()
   const searchParams = useSearchParams()
   const [guestData, setGuestData] = useState<GuestData | null>(null)
@@ -165,22 +164,8 @@ export default function GuestDashboard() {
     datasets: [{
       label: 'Drinks Consumed',
       data: Object.values(guestData?.drink_summary || {}),
-      backgroundColor: [
-        'rgba(59, 130, 246, 0.8)',   // blue-500
-        'rgba(14, 165, 233, 0.8)',   // sky-500
-        'rgba(6, 182, 212, 0.8)',    // cyan-500
-        'rgba(168, 85, 247, 0.8)',   // purple-500
-        'rgba(236, 72, 153, 0.8)',   // pink-500
-        'rgba(34, 197, 94, 0.8)',    // green-500
-      ],
-      borderColor: [
-        'rgb(59, 130, 246)',
-        'rgb(14, 165, 233)',
-        'rgb(6, 182, 212)',
-        'rgb(168, 85, 247)',
-        'rgb(236, 72, 153)',
-        'rgb(34, 197, 94)',
-      ],
+      backgroundColor: config.ui.charts.pieColors,
+      borderColor: config.ui.charts.pieBorders,
       borderWidth: 2,
     }]
   }), [guestData?.drink_summary])
@@ -248,8 +233,8 @@ export default function GuestDashboard() {
       datasets: [{
         label: 'Total Drinks Consumed',
         data: buckets.map(b => b.count),
-        borderColor: '#3B82F6',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        borderColor: config.ui.charts.timelineColor,
+        backgroundColor: config.ui.charts.timelineBackground,
         fill: true,
         tension: 0.1,
         pointRadius: 4,
@@ -669,7 +654,7 @@ export default function GuestDashboard() {
               <h2 className="text-xl font-semibold text-white/90 mb-4">{guestData.guest.gender === 'female' ? getText('guest.orderSection.readyForNextFemale', config) : getText('guest.orderSection.readyForNextMale', config)}</h2>
               <a 
                 href="#drink-ordering"
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-400 text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 no-underline"
+                className={`w-full bg-gradient-to-r ${config.ui.primaryButton} text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 no-underline`}
               >
                 <Wine className="w-6 h-6" />
                 {getText('guest.orderSection.orderDrink', config)}
@@ -742,11 +727,11 @@ export default function GuestDashboard() {
                       </div>
                       <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg ${
                         highlight.type === 'partyLeader' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' :
-                        highlight.type === 'hydrationCheck' ? 'bg-gradient-to-br from-blue-400 to-cyan-500' :
+                        highlight.type === 'hydrationCheck' ? `bg-gradient-to-br ${config.ui.socialHighlights.hydration}` :
                         highlight.type === 'trending' ? 'bg-gradient-to-br from-red-400 to-pink-500' :
                         highlight.type === 'alcoholConsumption' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
-                        highlight.type === 'userRank' ? 'bg-gradient-to-br from-purple-400 to-violet-500' :
-                        'bg-gradient-to-br from-purple-400 to-violet-500'
+                        highlight.type === 'userRank' ? `bg-gradient-to-br ${config.ui.socialHighlights.userRank}` :
+                        `bg-gradient-to-br ${config.ui.socialHighlights.default}`
                       }`}>
                         {highlight.type === 'partyLeader' && <Crown className="w-5 h-5 md:w-6 md:h-6 text-white" />}
                         {highlight.type === 'hydrationCheck' && <Droplets className="w-5 h-5 md:w-6 md:h-6 text-white" />}
@@ -855,7 +840,7 @@ export default function GuestDashboard() {
                           <div className="flex items-center gap-2">
                             {drink.recipe && (
                               <Link href={`/recipes?recipe=${drink.recipe.id}&from=${encodeURIComponent('/guest' + (typeof window !== 'undefined' ? window.location.search : '') + '#drink-ordering')}`}>
-                                <button className="bg-gradient-to-r from-orange-500 to-red-400 hover:from-orange-600 hover:to-red-500 text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm flex items-center gap-1">
+                                <button className={`bg-gradient-to-r ${config.ui.secondaryButton} hover:bg-gradient-to-r hover:${config.ui.secondaryButtonHover} text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm flex items-center gap-1`}>
                                   <BookOpen className="w-4 h-4" />
                                   {getText('buttons.recipe', config)}
                                 </button>
@@ -863,7 +848,7 @@ export default function GuestDashboard() {
                             )}
                             <button
                               onClick={() => orderDrink(drink.id)}
-                              className="bg-gradient-to-r from-purple-500 to-pink-400 hover:from-purple-600 hover:to-pink-500 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm"
+                              className={`bg-gradient-to-r ${config.ui.primaryButton} hover:bg-gradient-to-r hover:${config.ui.primaryButtonHover} text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm`}
                             >
                               Naroči
                             </button>
@@ -926,7 +911,7 @@ export default function GuestDashboard() {
         <div className="fixed bottom-6 right-6 z-40">
           <a 
             href="#drink-ordering"
-            className="bg-gradient-to-r from-purple-500 to-pink-400 p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 animate-pulse flex items-center justify-center"
+            className={`bg-gradient-to-r ${config.ui.primaryButton} p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 animate-pulse flex items-center justify-center`}
           >
             <Wine className="w-6 h-6 text-white" />
           </a>
@@ -954,4 +939,15 @@ export default function GuestDashboard() {
       )}
     </div>
   )
-} 
+}
+
+// Wrap the component with Suspense to handle useSearchParams
+function GuestDashboardWrapper() {
+  return (
+    <Suspense fallback={<DashboardSkeleton />}>
+      <GuestDashboard />
+    </Suspense>
+  )
+}
+
+export default GuestDashboardWrapper 

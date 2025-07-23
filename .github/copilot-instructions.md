@@ -104,6 +104,17 @@ import { formatSocialTime } from '@/features/social'
 - **Internationalization**: Use `getText()` and `getInterpolatedText()` from `lib/config/translations.ts`
 - **Event branding**: Use `getEventBranding()` from `lib/config/ui.ts`
 
+### Dynamic Styling & Tailwind Safelist
+- **Dynamic colors**: Colors defined in `config/event.json` (gradients, borderColors) must be added to `tailwind.config.js` safelist
+- **Safelist requirement**: Tailwind CSS only includes classes it detects during build - dynamic JSON-based classes need explicit safelisting
+- **Pattern**: When adding new colors to event config, always update the safelist in `tailwind.config.js`:
+```javascript
+safelist: [
+  'from-newcolor-500', 'to-newcolor-500', 'border-newcolor-200', 'hover:border-newcolor-200'
+]
+```
+- **Restart required**: After updating safelist, restart dev server (`npm run dev`) to rebuild CSS
+
 ### Session Management (No Auth)
 - **NFC-based**: `tag_uid` parameter identifies guests via NFC tap
 - **Persistence**: Store `tag_uid` in localStorage as `pous_fest_tag_uid` for navigation

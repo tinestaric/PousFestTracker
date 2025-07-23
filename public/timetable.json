@@ -1,5 +1,6 @@
 {
   "day1": {
+    "date": "2025-08-02",
     "caption": "2. avgust 2025 - Sobota",
     "events": [
       {
@@ -54,6 +55,7 @@
     ]
   },
   "day2": {
+    "date": "2025-08-03",
     "caption": "3. avgust 2025 - Nedelja",
     "events": [
       {
@@ -101,47 +103,8 @@
     ]
   },
   "day3": {
+    "date": "2025-08-04",
     "caption": "4. avgust 2025 - Ponedeljek",
-    "events": [
-      {
-        "time": "10:00",
-        "title": "Modra jama - naravni čudež 💎",
-        "description": "Obisk slovite Modre jame na otoku Biševo.",
-        "location": "Biševo - Modra jama",
-        "achievement": "cave_explorer"
-      },
-      {
-        "time": "13:00",
-        "title": "Kosilo v Komiži 🐟",
-        "description": "Tradicionalno ribiško kosilo v pristnem dalmatinskem mestu.",
-        "location": "Komiža, Vis",
-        "achievement": "fish_connoisseur"
-      },
-      {
-        "time": "16:00",
-        "title": "Vis - skrite plaže in zalivi 🏖️",
-        "description": "Odkrivanje skritih zalivov in divjih plaž otoka Vis.",
-        "location": "Otok Vis",
-        "achievement": "secret_beach"
-      },
-      {
-        "time": "19:00",
-        "title": "Večerja v lokalni konoba 🍷",
-        "description": "Avtentična dalmatinska večerja v tradicionalni konoba.",
-        "location": "Konoba, Vis",
-        "achievement": "local_foodie"
-      },
-      {
-        "time": "22:00",
-        "title": "Počitek pod zvezdami 🌌",
-        "description": "Mirna noč v zalivu z najlepšim razgledom na zvezdno nebo.",
-        "location": "Sidra v zalivu",
-        "achievement": "peaceful_sailor"
-      }
-    ]
-  },
-  "day4": {
-    "caption": "5. avgust 2025 - Torek",
     "events": [
       {
         "time": "09:00",
@@ -159,7 +122,7 @@
       },
       {
         "time": "17:00",
-        "title": "Degustacija korčulanskih vin 🍇",
+        "title": "Degustacija korčulanskih vin �",
         "description": "Odkrivanje lokalnih vin Grk in Pošip v vinoteki.",
         "location": "Vinoteka Korčula",
         "achievement": "wine_expert"
@@ -173,15 +136,16 @@
       },
       {
         "time": "22:30",
-        "title": "Nočna panorama Korčule 🌙",
+        "title": "Nočna panorama Korčule �",
         "description": "Sproščen večer z razgledom na osvetljeno staro mestno jedro.",
         "location": "Na krovu",
         "achievement": "night_photographer"
       }
     ]
   },
-  "day5": {
-    "caption": "6. avgust 2025 - Sreda",
+  "day4": {
+    "date": "2025-08-05",
+    "caption": "5. avgust 2025 - Torek",
     "events": [
       {
         "time": "08:00",
@@ -199,7 +163,7 @@
       },
       {
         "time": "14:00",
-        "title": "Mali Ston - srednjeveške mestne obzidje 🏯",
+        "title": "Mali Ston - srednjeveške mestne obzidje �",
         "description": "Sprehod po najdaljših obrambnih zidovih v Evropi.",
         "location": "Mali Ston",
         "achievement": "wall_walker"
@@ -220,15 +184,16 @@
       },
       {
         "time": "22:00",
-        "title": "Sidra v Lokrumu 🌿",
+        "title": "Sidra v Lokrumu �",
         "description": "Počitek v zalivu ob otoku Lokrum s pogledom na Dubrovnik.",
         "location": "Otok Lokrum",
         "achievement": "peaceful_anchor"
       }
     ]
   },
-  "day6": {
-    "caption": "7. avgust 2025 - Četrtek",
+  "day5": {
+    "date": "2025-08-06",
+    "caption": "6. avgust 2025 - Sreda",
     "events": [
       {
         "time": "09:00",
@@ -253,7 +218,7 @@
       },
       {
         "time": "18:00",
-        "title": "Sunset na Srđu 🌄",
+        "title": "Sunset na Srđu �",
         "description": "Vzpon na hrib Srđ za najboljši pogled na Dubrovnik.",
         "location": "Hrib Srđ",
         "achievement": "sunset_chaser"
@@ -274,8 +239,9 @@
       }
     ]
   },
-  "day7": {
-    "caption": "8. avgust 2025 - Petek",
+  "day6": {
+    "date": "2025-08-07",
+    "caption": "7. avgust 2025 - Četrtek",
     "events": [
       {
         "time": "10:00",
@@ -314,8 +280,9 @@
       }
     ]
   },
-  "day8": {
-    "caption": "9. avgust 2025 - Sobota",
+  "day7": {
+    "date": "2025-08-08",
+    "caption": "8. avgust 2025 - Petek",
     "events": [
       {
         "time": "09:00",
@@ -333,14 +300,14 @@
       },
       {
         "time": "16:00",
-        "title": "Trogir - UNESCO mestno jedro 🏛️",
+        "title": "Trogir - UNESCO mestno jedro �️",
         "description": "Zadnji postanek v čudovitem srednjeveškem mestu Trogir.",
         "location": "Trogir",
         "achievement": "unesco_visitor"
       },
       {
         "time": "19:00",
-        "title": "Povratek v Split 🏠",
+        "title": "Povratek v Split �",
         "description": "Prihod nazaj v matično marino v Splitu.",
         "location": "Marina Split",
         "achievement": "safe_harbor"
@@ -354,15 +321,16 @@
       },
       {
         "time": "23:00",
-        "title": "Zadnja noč na krovu 🌃",
+        "title": "Zadnja noč na krovu �",
         "description": "Nostalgična zadnja noč na krovu - jutri se vračamo domov.",
         "location": "Marina Split",
         "achievement": "last_night"
       }
     ]
   },
-  "day9": {
-    "caption": "10. avgust 2025 - Nedelja",
+  "day8": {
+    "date": "2025-08-09",
+    "caption": "9. avgust 2025 - Sobota",
     "events": [
       {
         "time": "09:00",

@@ -193,7 +193,7 @@ export default function OrderHistory() {
                 <Wine className="w-16 h-16 text-white/60 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-white mb-2">{getText('guest.history.empty.title', config)}</h3>
                 <p className="text-white/80 mb-4">{getText('guest.history.empty.message', config)}</p>
-                <Link href="/guest#drink-ordering" className="bg-gradient-to-r from-purple-500 to-pink-400 text-white py-2 px-6 rounded-lg font-semibold">
+                <Link href="/guest#drink-ordering" className={`bg-gradient-to-r ${config.ui.primaryButton} text-white py-2 px-6 rounded-lg font-semibold`}>
                   {getText('guest.history.empty.startOrdering', config)}
                 </Link>
               </div>

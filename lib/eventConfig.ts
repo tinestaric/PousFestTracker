@@ -22,6 +22,21 @@ export interface EventConfig {
   }
   ui: {
     heroGradient: string
+    primaryButton: string
+    primaryButtonHover: string
+    secondaryButton: string
+    secondaryButtonHover: string
+    charts: {
+      pieColors: string[]
+      pieBorders: string[]
+      timelineColor: string
+      timelineBackground: string
+    }
+    socialHighlights: {
+      hydration: string
+      userRank: string
+      default: string
+    }
   }
   navigation: {
     cards: NavigationCard[]

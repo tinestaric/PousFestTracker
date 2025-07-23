@@ -1,6 +1,7 @@
 import { Plus, Edit, Trash2, Save, X } from 'lucide-react'
 import type { DrinkMenuItem, DrinkOrder } from '@/lib/supabase'
 import type { EditingItem, FormValidation, LoadingState } from './types'
+import { getEventConfig } from '@/lib/eventConfig'
 
 interface DrinksTabProps {
   drinks: DrinkMenuItem[]
@@ -31,13 +32,15 @@ export default function DrinksTab({
   onSave, 
   onUpdateEditingData 
 }: DrinksTabProps) {
+  const config = getEventConfig()
+  
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h3 className="text-2xl font-bold text-white drop-shadow-lg">Drink Menu Management</h3>
         <button 
           onClick={() => onStartAdd('drink')} 
-          className="bg-gradient-to-r from-purple-500 to-pink-400 text-white px-4 py-2 rounded-xl font-semibold hover:from-purple-600 hover:to-pink-500 transition-all duration-300 flex items-center gap-2 shadow-lg"
+          className={`bg-gradient-to-r ${config.ui.primaryButton} text-white px-4 py-2 rounded-xl font-semibold hover:bg-gradient-to-r hover:${config.ui.primaryButtonHover} transition-all duration-300 flex items-center gap-2 shadow-lg`}
         >
           <Plus className="w-4 h-4" />
           Add Drink

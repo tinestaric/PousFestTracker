@@ -20,6 +20,9 @@
     "order": "Order",
     "recipe": "Recipe"
   },
+  "time": {
+    "today": "today"
+  },
   "admin": {
     "title": "Admin Dashboard",
     "subtitle": "Manage your {eventName} event",
