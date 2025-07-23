@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Calendar, Clock, MapPin, Trophy, Home, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Calendar, Clock, MapPin, Trophy, Home } from 'lucide-react'
 import timetableData from '@/public/timetable.json'
 import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
 import { useState } from 'react'
@@ -127,7 +127,8 @@ export default function Timetable() {
 
           {/* Day Selector Tabs */}
           <div className="mb-8">
-            <div className="flex flex-wrap gap-2 justify-center mb-4">
+            {/* Desktop: Centered flex-wrap layout */}
+            <div className="hidden md:flex flex-wrap gap-2 justify-center mb-4">
               {dayKeys.map((dayKey) => {
                 const dayNum = getDayNumber(dayKey)
                 const isSelected = selectedDay === dayKey
@@ -153,33 +154,35 @@ export default function Timetable() {
                 )
               })}
             </div>
-            
-            {/* Navigation arrows for mobile */}
-            <div className="flex justify-center gap-4 md:hidden">
-              <button
-                onClick={() => {
-                  const currentIndex = dayKeys.indexOf(selectedDay)
-                  if (currentIndex > 0) {
-                    setSelectedDay(dayKeys[currentIndex - 1])
-                  }
-                }}
-                disabled={dayKeys.indexOf(selectedDay) === 0}
-                className="p-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/30 transition-all duration-300"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => {
-                  const currentIndex = dayKeys.indexOf(selectedDay)
-                  if (currentIndex < dayKeys.length - 1) {
-                    setSelectedDay(dayKeys[currentIndex + 1])
-                  }
-                }}
-                disabled={dayKeys.indexOf(selectedDay) === dayKeys.length - 1}
-                className="p-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white rounded-xl disabled:opacity-50 disabled:cursor-not-allowed hover:bg-white/30 transition-all duration-300"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
+
+            {/* Mobile: Horizontal scrollable layout */}
+            <div className="md:hidden mb-4">
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide px-4 -mx-4 pb-2">
+                {dayKeys.map((dayKey) => {
+                  const dayNum = getDayNumber(dayKey)
+                  const isSelected = selectedDay === dayKey
+                  const isToday = isDayToday(dayKey)
+                  return (
+                    <button
+                      key={dayKey}
+                      onClick={() => setSelectedDay(dayKey)}
+                      className={`px-4 py-2 rounded-xl font-semibold transition-all duration-300 flex items-center gap-2 relative flex-shrink-0 ${
+                        isSelected
+                          ? 'bg-white text-gray-800 shadow-lg scale-105'
+                          : 'bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 hover:scale-105'
+                      }`}
+                    >
+                      <Calendar className="w-4 h-4" />
+                      Dan {dayNum}
+                      {isToday && (
+                        <span className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold shadow-lg">
+                          {getText('time.today', config)}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
           </div>
 
