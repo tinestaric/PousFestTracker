@@ -636,7 +636,7 @@ export default function GuestDashboard() {
       <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
 
-      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8 pb-20 sm:pb-24">
         <div className="max-w-6xl mx-auto space-y-8">
           {/* Hero Section with Header and Quick Order */}
           <div className="text-center space-y-6">
@@ -714,32 +714,50 @@ export default function GuestDashboard() {
           </div>
 
           {/* Social Highlights */}
-          {config.features.social && socialHighlights.length > 0 && (
+          {config.features.social && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-              {socialHighlights.map((highlight, index) => (
-                <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="text-sm md:text-base font-semibold text-white/90 mb-1">{highlight.title}</h3>
-                      <p className="text-xs md:text-sm text-white/80">{highlight.description}</p>
+              {socialLoading ? (
+                // Skeleton placeholders while loading
+                <>
+                  {[1, 2].map((index) => (
+                    <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <div className="h-4 md:h-5 bg-white/20 rounded w-24 md:w-32 mb-2 animate-pulse"></div>
+                          <div className="h-3 md:h-4 bg-white/20 rounded w-32 md:w-48 animate-pulse"></div>
+                        </div>
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl animate-pulse"></div>
+                      </div>
                     </div>
-                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg ${
-                      highlight.type === 'partyLeader' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' :
-                      highlight.type === 'hydrationCheck' ? 'bg-gradient-to-br from-blue-400 to-cyan-500' :
-                      highlight.type === 'trending' ? 'bg-gradient-to-br from-red-400 to-pink-500' :
-                      highlight.type === 'alcoholConsumption' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
-                      highlight.type === 'userRank' ? 'bg-gradient-to-br from-purple-400 to-violet-500' :
-                      'bg-gradient-to-br from-purple-400 to-violet-500'
-                    }`}>
-                      {highlight.type === 'partyLeader' && <Crown className="w-5 h-5 md:w-6 md:h-6 text-white" />}
-                      {highlight.type === 'hydrationCheck' && <Droplets className="w-5 h-5 md:w-6 md:h-6 text-white" />}
-                      {highlight.type === 'trending' && <Flame className="w-5 h-5 md:w-6 md:h-6 text-white" />}
-                      {highlight.type === 'alcoholConsumption' && <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />}
-                      {highlight.type === 'userRank' && <Trophy className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                  ))}
+                </>
+              ) : socialHighlights.length > 0 ? (
+                // Actual highlights
+                socialHighlights.map((highlight, index) => (
+                  <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-sm md:text-base font-semibold text-white/90 mb-1">{highlight.title}</h3>
+                        <p className="text-xs md:text-sm text-white/80">{highlight.description}</p>
+                      </div>
+                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg ${
+                        highlight.type === 'partyLeader' ? 'bg-gradient-to-br from-yellow-400 to-orange-500' :
+                        highlight.type === 'hydrationCheck' ? 'bg-gradient-to-br from-blue-400 to-cyan-500' :
+                        highlight.type === 'trending' ? 'bg-gradient-to-br from-red-400 to-pink-500' :
+                        highlight.type === 'alcoholConsumption' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
+                        highlight.type === 'userRank' ? 'bg-gradient-to-br from-purple-400 to-violet-500' :
+                        'bg-gradient-to-br from-purple-400 to-violet-500'
+                      }`}>
+                        {highlight.type === 'partyLeader' && <Crown className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                        {highlight.type === 'hydrationCheck' && <Droplets className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                        {highlight.type === 'trending' && <Flame className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                        {highlight.type === 'alcoholConsumption' && <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                        {highlight.type === 'userRank' && <Trophy className="w-5 h-5 md:w-6 md:h-6 text-white" />}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : null}
             </div>
           )}
 
@@ -891,7 +909,7 @@ export default function GuestDashboard() {
                   
                   {/* View Full History Button - Always show if features are enabled */}
                   <Link href="/guest/history">
-                    <button className="w-full bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
+                    <button className="w-full bg-white/10 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 font-semibold py-3 px-4 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 mt-6">
                       <BarChart3 className="w-4 h-4" />
                       {guestData.drink_orders.length > 0 ? getText('guest.history.buttons.viewFullHistory', config) : getText('guest.history.buttons.viewActivity', config)}
                     </button>

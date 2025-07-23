@@ -141,7 +141,7 @@ export default function SocialPage() {
         }}></div>
       </div>
 
-      <div className="relative z-10 p-4 sm:p-6 lg:p-8">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8 pb-20 sm:pb-24">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="flex items-center gap-4 mb-8">

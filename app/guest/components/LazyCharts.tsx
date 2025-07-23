@@ -23,13 +23,15 @@ interface LazyChartsProps {
 }
 
 // Loading skeleton for charts
-const ChartSkeleton = ({ title, icon }: { title: string; icon: React.ReactNode }) => (
-  <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+const ChartSkeleton = ({ title, icon, type }: { title: string; icon: React.ReactNode; type?: 'pie' | 'line' }) => (
+  <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl">
     <h3 className="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
       {icon}
       {title}
     </h3>
-    <div className="h-64 bg-white/10 rounded-xl p-2 sm:p-4 flex items-center justify-center overflow-hidden">
+    <div className={`bg-white/10 rounded-xl p-2 sm:p-4 flex items-center justify-center ${
+      type === 'pie' ? 'h-80' : 'h-64'
+    }`}>
       <div className="animate-pulse space-y-3 w-full">
         <div className="h-4 bg-white/20 rounded w-3/4 mx-auto"></div>
         <div className="h-4 bg-white/20 rounded w-1/2 mx-auto"></div>
@@ -58,6 +60,7 @@ export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, g
           <ChartSkeleton 
             title={getText('guest.charts.drinkPreferences', config)} 
             icon={<TrendingUp className="w-6 h-6 text-white" />}
+            type="pie"
           />
         }>
           <Chart 
@@ -74,6 +77,7 @@ export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, g
           <ChartSkeleton 
             title={getText('guest.charts.drinkTimeline', config)} 
             icon={<Wine className="w-6 h-6 text-white" />}
+            type="line"
           />
         }>
           <Chart 

@@ -59,12 +59,14 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
 
   if (loading || !ChartComponent) {
     return (
-      <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+      <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl">
         <h3 className="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
           {icon}
           {title}
         </h3>
-        <div className="h-64 bg-white/10 rounded-xl p-2 sm:p-4 flex items-center justify-center overflow-hidden">
+        <div className={`bg-white/10 rounded-xl p-2 sm:p-4 flex items-center justify-center ${
+          type === 'pie' ? 'h-80' : 'h-64'
+        }`}>
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
         </div>
       </div>
@@ -79,9 +81,41 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
           legend: {
             position: 'bottom' as const,
             labels: {
-              padding: 20,
+              padding: 8,
               usePointStyle: true,
-              color: '#ffffff'
+              color: '#ffffff',
+              boxWidth: 12,
+              boxHeight: 12,
+              font: {
+                size: 12
+              },
+              // Enable text wrapping and truncation
+              generateLabels: function(chart: any) {
+                const data = chart.data;
+                if (data.labels.length && data.datasets.length) {
+                  return data.labels.map((label: string, i: number) => {
+                    const dataset = data.datasets[0];
+                    return {
+                      text: label.length > 15 ? label.substring(0, 15) + '...' : label,
+                      fillStyle: dataset.backgroundColor[i],
+                      strokeStyle: dataset.borderColor?.[i] || dataset.backgroundColor[i],
+                      lineWidth: dataset.borderWidth || 0,
+                      hidden: false,
+                      index: i,
+                      fontColor: '#ffffff'
+                    };
+                  });
+                }
+                return [];
+              }
+            },
+            maxHeight: 120,
+            onClick: function(e: any, legendItem: any, legend: any) {
+              const index = legendItem.index;
+              const chart = legend.chart;
+              const meta = chart.getDatasetMeta(0);
+              meta.data[index].hidden = !meta.data[index].hidden;
+              chart.update();
             }
           }
         }
@@ -116,12 +150,16 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
       }
 
   return (
-    <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl overflow-hidden">
+    <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 sm:p-6 shadow-xl">
       <h3 className="text-lg sm:text-xl font-bold mb-4 flex items-center gap-2 text-white drop-shadow-lg">
         {icon}
         {title}
       </h3>
-      <div className="h-64 bg-white/10 rounded-xl p-2 sm:p-4 overflow-hidden">
+      <div className={`bg-white/10 rounded-xl p-2 sm:p-4 ${
+        type === 'pie' 
+          ? 'h-80 overflow-y-auto overflow-x-hidden' 
+          : 'h-64 overflow-hidden'
+      }`}>
         <ChartComponent data={data} options={chartOptions} />
       </div>
     </div>
