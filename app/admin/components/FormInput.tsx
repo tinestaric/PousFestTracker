@@ -6,27 +6,34 @@ interface BaseFormInputProps {
   error?: string
   variant?: 'input' | 'textarea' | 'select'
   children?: React.ReactNode
+  onChange?: (value: string) => void
 }
 
-interface InputFormInputProps extends BaseFormInputProps, React.InputHTMLAttributes<HTMLInputElement> {
+interface InputFormInputProps extends BaseFormInputProps, Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> {
   variant?: 'input'
 }
 
-interface TextareaFormInputProps extends BaseFormInputProps, React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaFormInputProps extends BaseFormInputProps, Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> {
   variant: 'textarea'
 }
 
-interface SelectFormInputProps extends BaseFormInputProps, React.SelectHTMLAttributes<HTMLSelectElement> {
+interface SelectFormInputProps extends BaseFormInputProps, Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
   variant: 'select'
 }
 
 type FormInputProps = InputFormInputProps | TextareaFormInputProps | SelectFormInputProps
 
 export const FormInput = forwardRef<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement, FormInputProps>(
-  ({ label, error, variant = 'input', children, className = '', ...props }, ref) => {
+  ({ label, error, variant = 'input', children, className = '', onChange, ...props }, ref) => {
     const baseClasses = "w-full px-4 py-3 bg-white/10 backdrop-blur-sm border rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
     const errorClasses = error ? "border-red-400/60 focus:border-red-400" : "border-white/30"
     const finalClasses = `${baseClasses} ${errorClasses} ${className}`
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      if (onChange) {
+        onChange(e.target.value)
+      }
+    }
 
     const renderInput = () => {
       switch (variant) {
@@ -36,6 +43,7 @@ export const FormInput = forwardRef<HTMLInputElement | HTMLTextAreaElement | HTM
               {...(props as React.TextareaHTMLAttributes<HTMLTextAreaElement>)}
               ref={ref as React.Ref<HTMLTextAreaElement>}
               className={finalClasses}
+              onChange={handleChange}
             />
           )
         case 'select':
@@ -44,6 +52,7 @@ export const FormInput = forwardRef<HTMLInputElement | HTMLTextAreaElement | HTM
               {...(props as React.SelectHTMLAttributes<HTMLSelectElement>)}
               ref={ref as React.Ref<HTMLSelectElement>}
               className={finalClasses}
+              onChange={handleChange}
             >
               {children}
             </select>
@@ -54,6 +63,7 @@ export const FormInput = forwardRef<HTMLInputElement | HTMLTextAreaElement | HTM
               {...(props as React.InputHTMLAttributes<HTMLInputElement>)}
               ref={ref as React.Ref<HTMLInputElement>}
               className={finalClasses}
+              onChange={handleChange}
             />
           )
       }

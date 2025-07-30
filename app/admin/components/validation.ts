@@ -1,17 +1,27 @@
 import type { ValidationError, FormValidation, EditingItem } from './types'
 
+// Helper function to safely check if a string value is empty after trimming
+function isEmptyString(value: any): boolean {
+  return !value || typeof value !== 'string' || value.trim() === ''
+}
+
+// Helper function to safely get string length
+function getStringLength(value: any): number {
+  return (value && typeof value === 'string') ? value.length : 0
+}
+
 export function validateGuestData(data: any): FormValidation {
   const errors: ValidationError[] = []
 
-  if (!data.name || data.name.trim() === '') {
+  if (isEmptyString(data.name)) {
     errors.push({ field: 'name', message: 'Guest name is required' })
-  } else if (data.name.length < 2) {
+  } else if (getStringLength(data.name) < 2) {
     errors.push({ field: 'name', message: 'Guest name must be at least 2 characters' })
   }
 
-  if (!data.tag_uid || data.tag_uid.trim() === '') {
+  if (isEmptyString(data.tag_uid)) {
     errors.push({ field: 'tag_uid', message: 'NFC Tag UID is required' })
-  } else if (data.tag_uid.length < 4) {
+  } else if (getStringLength(data.tag_uid) < 4) {
     errors.push({ field: 'tag_uid', message: 'Tag UID must be at least 4 characters' })
   }
 
@@ -28,17 +38,17 @@ export function validateGuestData(data: any): FormValidation {
 export function validateAchievementData(data: any): FormValidation {
   const errors: ValidationError[] = []
 
-  if (!data.achievement_type || data.achievement_type.trim() === '') {
+  if (isEmptyString(data.achievement_type)) {
     errors.push({ field: 'achievement_type', message: 'Achievement type is required' })
   }
 
-  if (!data.title || data.title.trim() === '') {
+  if (isEmptyString(data.title)) {
     errors.push({ field: 'title', message: 'Title is required' })
-  } else if (data.title.length < 3) {
+  } else if (getStringLength(data.title) < 3) {
     errors.push({ field: 'title', message: 'Title must be at least 3 characters' })
   }
 
-  if (!data.description || data.description.trim() === '') {
+  if (isEmptyString(data.description)) {
     errors.push({ field: 'description', message: 'Description is required' })
   }
 
@@ -59,13 +69,13 @@ export function validateAchievementData(data: any): FormValidation {
 export function validateDrinkData(data: any): FormValidation {
   const errors: ValidationError[] = []
 
-  if (!data.name || data.name.trim() === '') {
+  if (isEmptyString(data.name)) {
     errors.push({ field: 'name', message: 'Drink name is required' })
-  } else if (data.name.length < 2) {
+  } else if (getStringLength(data.name) < 2) {
     errors.push({ field: 'name', message: 'Drink name must be at least 2 characters' })
   }
 
-  if (!data.category || data.category.trim() === '') {
+  if (isEmptyString(data.category)) {
     errors.push({ field: 'category', message: 'Category is required' })
   }
 
@@ -78,11 +88,11 @@ export function validateDrinkData(data: any): FormValidation {
 export function validateRecipeData(data: any): FormValidation {
   const errors: ValidationError[] = []
 
-  if (!data.name || data.name.trim() === '') {
+  if (isEmptyString(data.name)) {
     errors.push({ field: 'name', message: 'Recipe name is required' })
   }
 
-  if (!data.drink_menu_id || data.drink_menu_id.trim() === '') {
+  if (isEmptyString(data.drink_menu_id)) {
     errors.push({ field: 'drink_menu_id', message: 'Associated drink is required' })
   }
 
@@ -90,7 +100,7 @@ export function validateRecipeData(data: any): FormValidation {
     errors.push({ field: 'serves', message: 'Serves must be between 1 and 20' })
   }
 
-  if (data.video_url && data.video_url.trim() !== '') {
+  if (data.video_url && typeof data.video_url === 'string' && data.video_url.trim() !== '') {
     const urlPattern = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
     if (!urlPattern.test(data.video_url)) {
       errors.push({ field: 'video_url', message: 'Please enter a valid URL' })
@@ -106,13 +116,13 @@ export function validateRecipeData(data: any): FormValidation {
 export function validateFoodData(data: any): FormValidation {
   const errors: ValidationError[] = []
 
-  if (!data.name || data.name.trim() === '') {
+  if (isEmptyString(data.name)) {
     errors.push({ field: 'name', message: 'Food name is required' })
-  } else if (data.name.length < 2) {
+  } else if (getStringLength(data.name) < 2) {
     errors.push({ field: 'name', message: 'Food name must be at least 2 characters' })
   }
 
-  if (!data.category || data.category.trim() === '') {
+  if (isEmptyString(data.category)) {
     errors.push({ field: 'category', message: 'Category is required' })
   }
 
@@ -125,15 +135,15 @@ export function validateFoodData(data: any): FormValidation {
 export function validateDeviceData(data: any): FormValidation {
   const errors: ValidationError[] = []
 
-  if (!data.device_id || data.device_id.trim() === '') {
+  if (isEmptyString(data.device_id)) {
     errors.push({ field: 'device_id', message: 'Device ID is required' })
-  } else if (data.device_id.length < 3) {
+  } else if (getStringLength(data.device_id) < 3) {
     errors.push({ field: 'device_id', message: 'Device ID must be at least 3 characters' })
   }
 
-  if (!data.name || data.name.trim() === '') {
+  if (isEmptyString(data.name)) {
     errors.push({ field: 'name', message: 'Device name is required' })
-  } else if (data.name.length < 3) {
+  } else if (getStringLength(data.name) < 3) {
     errors.push({ field: 'name', message: 'Device name must be at least 3 characters' })
   }
 
@@ -141,7 +151,7 @@ export function validateDeviceData(data: any): FormValidation {
     errors.push({ field: 'scan_type', message: 'Valid scan type is required' })
   }
 
-  if (data.scan_type === 'drink' && (!data.drink_menu_id || data.drink_menu_id.trim() === '')) {
+  if (data.scan_type === 'drink' && isEmptyString(data.drink_menu_id)) {
     errors.push({ field: 'drink_menu_id', message: 'Drink selection is required for drink scanners' })
   }
 
