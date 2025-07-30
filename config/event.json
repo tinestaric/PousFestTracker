@@ -103,6 +103,7 @@
     { "key": "drinks", "icon": "Wine" },
     { "key": "recipes", "icon": "BookOpen" },
     { "key": "achievements", "icon": "Trophy", "feature": "achievements" },
-    { "key": "food", "icon": "UtensilsCrossed", "feature": "food" }
+    { "key": "food", "icon": "UtensilsCrossed", "feature": "food" },
+    { "key": "devices", "icon": "Smartphone" }
   ]
 }

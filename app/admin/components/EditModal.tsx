@@ -1,18 +1,28 @@
 import { Save, X, Trash2 } from 'lucide-react'
 import type { EditingItem, FormValidation, LoadingState } from './types'
-import type { DrinkMenuItem } from '@/lib/supabase'
+import type { DrinkMenuItem, AchievementTemplate } from '@/lib/supabase'
 
 interface EditModalProps {
   editing: EditingItem
   drinks?: DrinkMenuItem[]
+  achievements?: AchievementTemplate[]
   validation: FormValidation
   loading: LoadingState
   onSave: () => void
   onCancel: () => void
-  onUpdateEditingData: (updates: any) => void
+  onUpdateEditingData: (updates: Record<string, any>) => void
 }
 
-export default function EditModal({ editing, drinks = [], validation, loading, onSave, onCancel, onUpdateEditingData }: EditModalProps) {
+export default function EditModal({ 
+  editing, 
+  drinks = [], 
+  achievements = [], 
+  validation, 
+  loading, 
+  onSave, 
+  onCancel, 
+  onUpdateEditingData 
+}: EditModalProps) {
   if (!editing.id || !editing.type) return null
 
   return (
@@ -228,6 +238,74 @@ export default function EditModal({ editing, drinks = [], validation, loading, o
                 className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
                 min="1"
               />
+            </div>
+          </div>
+        )}
+
+        {editing.type === 'device' && (
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Device ID"
+              value={editing.data?.device_id || ''}
+              onChange={(e) => onUpdateEditingData({ device_id: e.target.value })}
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+            />
+            <input
+              type="text"
+              placeholder="Device Name"
+              value={editing.data?.name || ''}
+              onChange={(e) => onUpdateEditingData({ name: e.target.value })}
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+            />
+            <select
+              value={editing.data?.scan_type || ''}
+              onChange={(e) => onUpdateEditingData({ scan_type: e.target.value })}
+              className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+            >
+              <option value="" className="text-gray-800">Select scan type...</option>
+              <option value="drink" className="text-gray-800">Drink</option>
+              <option value="achievement" className="text-gray-800">Achievement</option>
+            </select>
+            
+            {editing.data?.scan_type === 'drink' && (
+              <select
+                value={editing.data?.drink_menu_id || ''}
+                onChange={(e) => onUpdateEditingData({ drink_menu_id: e.target.value })}
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+              >
+                <option value="" className="text-gray-800">Select drink...</option>
+                {drinks.map(drink => (
+                  <option key={drink.id} value={drink.id} className="text-gray-800">
+                    {drink.name} ({drink.category})
+                  </option>
+                ))}
+              </select>
+            )}
+
+            {editing.data?.scan_type === 'achievement' && (
+              <select
+                value={editing.data?.achievement_template_id || ''}
+                onChange={(e) => onUpdateEditingData({ achievement_template_id: e.target.value || null })}
+                className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+              >
+                <option value="" className="text-gray-800">Time-based achievements</option>
+                {achievements.map(achievement => (
+                  <option key={achievement.id} value={achievement.id} className="text-gray-800">
+                    {achievement.title}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={editing.data?.active ?? true}
+                onChange={(e) => onUpdateEditingData({ active: e.target.checked })}
+                className="rounded"
+              />
+              <label className="text-white">Device Active</label>
             </div>
           </div>
         )}

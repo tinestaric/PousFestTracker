@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { BarChart3, Users, Trophy, Wine, BookOpen, UtensilsCrossed } from 'lucide-react'
+import { BarChart3, Users, Trophy, Wine, BookOpen, UtensilsCrossed, Smartphone } from 'lucide-react'
 import { getEventConfig, getEnabledAdminTabs, getText } from '@/lib/eventConfig'
 import type { ActiveTab, TabItem } from './types'
 
@@ -19,7 +19,8 @@ const TabNavigation = memo(function TabNavigation({ activeTab, onTabChange }: Ta
     Trophy,
     Wine,
     BookOpen,
-    UtensilsCrossed
+    UtensilsCrossed,
+    Smartphone
   }
 
   return (

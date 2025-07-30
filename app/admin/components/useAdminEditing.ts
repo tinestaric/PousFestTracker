@@ -49,6 +49,7 @@ export const useAdminEditing = (onDataChange: () => void) => {
       case 'recipe': return 'recipes'
       case 'food': return 'food_menu'
       case 'drink': return 'drink_menu'
+      case 'device': return 'device_configs'
       default: throw new Error(`Unknown type: ${type}`)
     }
   }
@@ -76,7 +77,15 @@ export const useAdminEditing = (onDataChange: () => void) => {
         difficulty: 'Easy', 
         serves: 1 
       },
-      food: { name: '', description: '', category: 'breakfast', available: true }
+      food: { name: '', description: '', category: 'breakfast', available: true },
+      device: { 
+        device_id: '', 
+        name: '', 
+        scan_type: '', 
+        drink_menu_id: null, 
+        achievement_template_id: null, 
+        active: true 
+      }
     }
     return defaults[type!] || {}
   }
@@ -100,11 +109,24 @@ export const useAdminEditing = (onDataChange: () => void) => {
     setValidation({ isValid: true, errors: [] })
   }, [])
 
-  const updateEditingData = useCallback((updates: any) => {
+  const updateEditingData = useCallback((updates: Record<string, any>) => {
     setEditing(prev => {
+      const newData = { ...prev.data, ...updates }
+      
+      // Handle device-specific logic
+      if (prev.type === 'device' && 'scan_type' in updates) {
+        const scanType = updates.scan_type
+        // Reset related fields when scan_type changes
+        if (scanType === 'drink') {
+          newData.achievement_template_id = null
+        } else if (scanType === 'achievement') {
+          newData.drink_menu_id = null
+        }
+      }
+      
       const newEditing = {
         ...prev,
-        data: { ...prev.data, ...updates }
+        data: newData
       }
       
       // Validate on each update
@@ -134,11 +156,18 @@ export const useAdminEditing = (onDataChange: () => void) => {
       setLoadingState(true, 'saving', 'Saving data...')
       const tableName = getTableName(editing.type)
 
+      // Prepare payload and strip nested relation fields for device type
+      let payload = editing.data
+      if (editing.type === 'device') {
+        const { drink_menu, achievement_templates, ...deviceData } = editing.data as any
+        payload = deviceData
+      }
+
       if (editing.id) {
         // Update existing
         const { error } = await supabase
           .from(tableName)
-          .update(editing.data)
+          .update(payload)
           .eq('id', editing.id)
         
         if (error) throw error
@@ -147,7 +176,7 @@ export const useAdminEditing = (onDataChange: () => void) => {
         // Create new
         const { error } = await supabase
           .from(tableName)
-          .insert([editing.data])
+          .insert([payload])
         
         if (error) throw error
         addError(`${editing.type} created successfully`, 'success')
@@ -230,4 +259,4 @@ export const useAdminEditing = (onDataChange: () => void) => {
     // Utilities
     addError
   }
-} 
+}

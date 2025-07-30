@@ -31,7 +31,8 @@
     "drinks": "Drinks",
     "recipes": "Recipes",
     "achievements": "Achievements",
-    "food": "Food"
+    "food": "Food",
+    "devices": "Devices"
   },
   "guest": {
     "profileTitle": "Your {eventName} profile",

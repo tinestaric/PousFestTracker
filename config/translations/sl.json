@@ -31,7 +31,8 @@
     "drinks": "Pijače",
     "recipes": "Recepti",
     "achievements": "Dosežki",
-    "food": "Hrana"
+    "food": "Hrana",
+    "devices": "Naprave"
   },
   "guest": {
     "profileTitle": "Tvoj {eventName} profil",

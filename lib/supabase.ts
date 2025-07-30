@@ -86,4 +86,18 @@ export interface FoodOrder {
   ordered_at: string
   food_menu?: FoodMenuItem
   guests?: { name: string }
+}
+
+export interface DeviceConfig {
+  id: string
+  device_id: string
+  name: string
+  scan_type: 'drink' | 'achievement'
+  drink_menu_id: string | null
+  achievement_template_id: string | null
+  active: boolean
+  created_at: string
+  updated_at: string
+  drink_menu?: DrinkMenuItem
+  achievement_templates?: AchievementTemplate
 } 

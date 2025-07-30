@@ -122,6 +122,39 @@ export function validateFoodData(data: any): FormValidation {
   }
 }
 
+export function validateDeviceData(data: any): FormValidation {
+  const errors: ValidationError[] = []
+
+  if (!data.device_id || data.device_id.trim() === '') {
+    errors.push({ field: 'device_id', message: 'Device ID is required' })
+  } else if (data.device_id.length < 3) {
+    errors.push({ field: 'device_id', message: 'Device ID must be at least 3 characters' })
+  }
+
+  if (!data.name || data.name.trim() === '') {
+    errors.push({ field: 'name', message: 'Device name is required' })
+  } else if (data.name.length < 3) {
+    errors.push({ field: 'name', message: 'Device name must be at least 3 characters' })
+  }
+
+  if (!data.scan_type || !['drink', 'achievement'].includes(data.scan_type)) {
+    errors.push({ field: 'scan_type', message: 'Valid scan type is required' })
+  }
+
+  if (data.scan_type === 'drink' && (!data.drink_menu_id || data.drink_menu_id.trim() === '')) {
+    errors.push({ field: 'drink_menu_id', message: 'Drink selection is required for drink scanners' })
+  }
+
+  // For achievement scanners, achievement_template_id is optional
+  // If null/empty, scanner will use time-based achievement unlocking
+  // If set, scanner will unlock that specific achievement regardless of time
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  }
+}
+
 export function validateFormData(editing: EditingItem): FormValidation {
   if (!editing.type || !editing.data) {
     return { isValid: false, errors: [{ field: 'general', message: 'No data to validate' }] }
@@ -138,6 +171,8 @@ export function validateFormData(editing: EditingItem): FormValidation {
       return validateRecipeData(editing.data)
     case 'food':
       return validateFoodData(editing.data)
+    case 'device':
+      return validateDeviceData(editing.data)
     default:
       return { isValid: false, errors: [{ field: 'general', message: 'Unknown data type' }] }
   }

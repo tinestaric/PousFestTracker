@@ -11,7 +11,8 @@ export const useAdminData = () => {
     drinkOrders: [],
     guestAchievements: [],
     foodMenu: [],
-    foodOrders: []
+    foodOrders: [],
+    deviceConfigs: []
   })
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<AdminStats>({
@@ -35,7 +36,8 @@ export const useAdminData = () => {
         drinkOrdersData, 
         guestAchievementsData, 
         foodMenuData, 
-        foodOrdersData
+        foodOrdersData,
+        deviceConfigsData
       ] = await Promise.all([
         supabase.from('guests').select('*').order('created_at', { ascending: false }),
         supabase.from('achievement_templates').select('*').order('created_at', { ascending: false }),
@@ -44,7 +46,12 @@ export const useAdminData = () => {
         supabase.from('drink_orders').select('*, drink_menu(name, category)').order('ordered_at', { ascending: false }),
         supabase.from('guest_achievements').select('*, achievement_templates(title), guests(name)').order('unlocked_at', { ascending: false }),
         supabase.from('food_menu').select('*').order('category', { ascending: true }),
-        supabase.from('food_orders').select('*, food_menu(name, category), guests(name)').order('ordered_at', { ascending: false })
+        supabase.from('food_orders').select('*, food_menu(name, category), guests(name)').order('ordered_at', { ascending: false }),
+        supabase.from('device_configs').select(`
+          *,
+          drink_menu:drink_menu_id(name, category),
+          achievement_templates:achievement_template_id(title)
+        `).order('created_at', { ascending: false })
       ])
 
       const newData: AdminData = {
@@ -55,7 +62,8 @@ export const useAdminData = () => {
         drinkOrders: drinkOrdersData.data || [],
         guestAchievements: guestAchievementsData.data || [],
         foodMenu: foodMenuData.data || [],
-        foodOrders: foodOrdersData.data || []
+        foodOrders: foodOrdersData.data || [],
+        deviceConfigs: deviceConfigsData.data || []
       }
 
       setData(newData)

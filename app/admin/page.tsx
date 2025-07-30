@@ -27,6 +27,7 @@ import {
   DrinksTab,
   RecipesTab,
   FoodTab,
+  DevicesTab,
   EditModal,
   ConfirmModal,
   ToastContainer,
@@ -199,10 +200,29 @@ export default function AdminDashboard() {
             />
           )}
 
+          {activeTab === 'devices' && (
+            <DevicesTab
+              deviceConfigs={data.deviceConfigs}
+              drinks={data.drinks}
+              achievements={data.achievements}
+              editing={editing.editing}
+              showAddForm={editing.showAddForm}
+              validation={editing.validation}
+              loading={editing.loading}
+              onStartAdd={editing.startAdd}
+              onStartEdit={editing.startEdit}
+              onDelete={editing.handleDelete}
+              onCancelEdit={editing.cancelEdit}
+              onSave={editing.handleSave}
+              onUpdateEditingData={editing.updateEditingData}
+            />
+          )}
+
           {/* Edit Modal */}
           <EditModal
             editing={editing.editing}
             drinks={data.drinks}
+            achievements={data.achievements}
             validation={editing.validation}
             loading={editing.loading}
             onSave={editing.handleSave}

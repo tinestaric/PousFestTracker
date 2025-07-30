@@ -1,7 +1,7 @@
 # Database Schema
 
 ## Overview
-PousFestTracker database with 8 tables supporting guest management, achievements, beverages, food, and recipes.
+PousFestTracker database with 9 tables supporting guest management, achievements, beverages, food, recipes, and device configurations.
 
 ## Core Tables
 
@@ -97,9 +97,30 @@ ordered_at: TIMESTAMP
 UNIQUE(guest_id)               -- One order per guest
 ```
 
+## Device Management
+
+### `device_configs`
+```sql
+id: UUID PRIMARY KEY
+device_id: TEXT UNIQUE NOT NULL
+name: TEXT NOT NULL
+scan_type: TEXT NOT NULL       -- 'drink' | 'achievement'
+drink_menu_id: UUID → drink_menu(id)
+achievement_template_id: UUID → achievement_templates(id)
+active: BOOLEAN DEFAULT TRUE
+created_at: TIMESTAMP
+updated_at: TIMESTAMP          -- Auto-updated via trigger
+
+-- Constraints:
+-- scan_type must be 'drink' or 'achievement'
+-- If scan_type='drink': drink_menu_id NOT NULL, achievement_template_id NULL
+-- If scan_type='achievement': drink_menu_id NULL
+```
+
 ## Key Features
 
 - **NFC Integration**: Guests identified by `tag_uid`
+- **Device Management**: Configurable scanning devices for drinks and achievements
 - **Time-based Achievements**: Achievement windows with `from_time`/`to_time`
 - **Alcohol Tracking**: Precise alcohol percentage and volume data for consumption analytics
 - **Hydration Detection**: Automatic detection of non-alcoholic drinks (alcohol_percentage = 0.0)
@@ -115,4 +136,6 @@ guests (1) ←→ (M) guest_achievements (M) ←→ (1) achievement_templates
 guests (1) ←→ (M) drink_orders (M) ←→ (1) drink_menu
 guests (1) ←→ (1) food_orders (M) ←→ (1) food_menu
 drink_menu (1) ←→ (M) recipes
+drink_menu (1) ←→ (M) device_configs
+achievement_templates (1) ←→ (M) device_configs
 ``` 

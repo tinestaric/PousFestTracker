@@ -1,4 +1,4 @@
-import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement, Recipe, FoodMenuItem, FoodOrder } from '@/lib/supabase'
+import type { Guest, AchievementTemplate, DrinkMenuItem, DrinkOrder, GuestAchievement, Recipe, FoodMenuItem, FoodOrder, DeviceConfig } from '@/lib/supabase'
 
 export interface AdminStats {
   totalGuests: number
@@ -10,11 +10,11 @@ export interface AdminStats {
 
 export interface EditingItem {
   id: string | null
-  type: 'guest' | 'achievement' | 'drink' | 'recipe' | 'food' | null
+  type: 'guest' | 'achievement' | 'drink' | 'recipe' | 'food' | 'device' | null
   data: any
 }
 
-export type ActiveTab = 'overview' | 'guests' | 'achievements' | 'drinks' | 'recipes' | 'food'
+export type ActiveTab = 'overview' | 'guests' | 'achievements' | 'drinks' | 'recipes' | 'food' | 'devices'
 
 export interface AdminData {
   guests: Guest[]
@@ -25,6 +25,7 @@ export interface AdminData {
   guestAchievements: GuestAchievement[]
   foodMenu: FoodMenuItem[]
   foodOrders: FoodOrder[]
+  deviceConfigs: DeviceConfig[]
 }
 
 export interface TabItem {
