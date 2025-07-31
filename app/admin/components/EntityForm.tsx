@@ -36,7 +36,7 @@ export default function EntityForm({
           label="Guest Name"
           placeholder="Enter guest name"
           value={editing.data.name || ''}
-          onChange={(e) => onUpdateData({ name: e.target.value })}
+          onChange={(value) => onUpdateData({ name: value })}
           error={getFieldError(validation.errors, 'name')}
           disabled={isLoading}
         />
@@ -44,7 +44,7 @@ export default function EntityForm({
           label="NFC Tag UID"
           placeholder="Enter NFC tag UID"
           value={editing.data.tag_uid || ''}
-          onChange={(e) => onUpdateData({ tag_uid: e.target.value })}
+          onChange={(value) => onUpdateData({ tag_uid: value })}
           error={getFieldError(validation.errors, 'tag_uid')}
           disabled={isLoading}
         />
@@ -53,7 +53,7 @@ export default function EntityForm({
         label="Gender"
         variant="select"
         value={editing.data.gender || 'male'}
-        onChange={(e) => onUpdateData({ gender: e.target.value })}
+        onChange={(value) => onUpdateData({ gender: value })}
         error={getFieldError(validation.errors, 'gender')}
         disabled={isLoading}
       >
@@ -70,7 +70,7 @@ export default function EntityForm({
           label="Achievement Type"
           placeholder="e.g., drink_count, time_based"
           value={editing.data.achievement_type || ''}
-          onChange={(e) => onUpdateData({ achievement_type: e.target.value })}
+          onChange={(value) => onUpdateData({ achievement_type: value })}
           error={getFieldError(validation.errors, 'achievement_type')}
           disabled={isLoading}
         />
@@ -78,7 +78,7 @@ export default function EntityForm({
           label="Title"
           placeholder="Achievement title"
           value={editing.data.title || ''}
-          onChange={(e) => onUpdateData({ title: e.target.value })}
+          onChange={(value) => onUpdateData({ title: value })}
           error={getFieldError(validation.errors, 'title')}
           disabled={isLoading}
         />
@@ -89,7 +89,7 @@ export default function EntityForm({
         variant="textarea"
         placeholder="Achievement description"
         value={editing.data.description || ''}
-        onChange={(e) => onUpdateData({ description: e.target.value })}
+        onChange={(value) => onUpdateData({ description: value })}
         error={getFieldError(validation.errors, 'description')}
         rows={3}
         disabled={isLoading}
@@ -99,7 +99,7 @@ export default function EntityForm({
         label="Logo URL"
         placeholder="URL to achievement icon"
         value={editing.data.logo_url || ''}
-        onChange={(e) => onUpdateData({ logo_url: e.target.value })}
+        onChange={(value) => onUpdateData({ logo_url: value })}
         error={getFieldError(validation.errors, 'logo_url')}
         disabled={isLoading}
       />
@@ -109,7 +109,7 @@ export default function EntityForm({
           label="From Time"
           type="datetime-local"
           value={editing.data.from_time || ''}
-          onChange={(e) => onUpdateData({ from_time: e.target.value })}
+          onChange={(value) => onUpdateData({ from_time: value })}
           error={getFieldError(validation.errors, 'from_time')}
           disabled={isLoading}
         />
@@ -117,7 +117,7 @@ export default function EntityForm({
           label="To Time"
           type="datetime-local"
           value={editing.data.to_time || ''}
-          onChange={(e) => onUpdateData({ to_time: e.target.value })}
+          onChange={(value) => onUpdateData({ to_time: value })}
           error={getFieldError(validation.errors, 'to_time')}
           disabled={isLoading}
         />
@@ -132,7 +132,7 @@ export default function EntityForm({
           label="Drink Name"
           placeholder="Enter drink name"
           value={editing.data.name || ''}
-          onChange={(e) => onUpdateData({ name: e.target.value })}
+          onChange={(value) => onUpdateData({ name: value })}
           error={getFieldError(validation.errors, 'name')}
           disabled={isLoading}
         />
@@ -140,7 +140,7 @@ export default function EntityForm({
           label="Category"
           variant="select"
           value={editing.data.category || 'cocktail'}
-          onChange={(e) => onUpdateData({ category: e.target.value })}
+          onChange={(value) => onUpdateData({ category: value })}
           error={getFieldError(validation.errors, 'category')}
           disabled={isLoading}
         >
@@ -155,7 +155,7 @@ export default function EntityForm({
         label="Description"
         placeholder="Enter drink description"
         value={editing.data.description || ''}
-        onChange={(e) => onUpdateData({ description: e.target.value })}
+        onChange={(value) => onUpdateData({ description: value })}
         error={getFieldError(validation.errors, 'description')}
         disabled={isLoading}
       />
@@ -176,7 +176,7 @@ export default function EntityForm({
           label="Recipe Name"
           placeholder="Enter recipe name"
           value={editing.data.name || ''}
-          onChange={(e) => onUpdateData({ name: e.target.value })}
+          onChange={(value) => onUpdateData({ name: value })}
           error={getFieldError(validation.errors, 'name')}
           disabled={isLoading}
         />
@@ -184,7 +184,7 @@ export default function EntityForm({
           label="Associated Drink"
           variant="select"
           value={editing.data.drink_menu_id || ''}
-          onChange={(e) => onUpdateData({ drink_menu_id: e.target.value })}
+          onChange={(value) => onUpdateData({ drink_menu_id: value })}
           error={getFieldError(validation.errors, 'drink_menu_id')}
           disabled={isLoading}
         >
@@ -202,7 +202,7 @@ export default function EntityForm({
         variant="textarea"
         placeholder="Recipe description"
         value={editing.data.description || ''}
-        onChange={(e) => onUpdateData({ description: e.target.value })}
+        onChange={(value) => onUpdateData({ description: value })}
         error={getFieldError(validation.errors, 'description')}
         rows={2}
         disabled={isLoading}
@@ -213,7 +213,7 @@ export default function EntityForm({
           label="Prep Time"
           placeholder="e.g., 5 min"
           value={editing.data.prep_time || ''}
-          onChange={(e) => onUpdateData({ prep_time: e.target.value })}
+          onChange={(value) => onUpdateData({ prep_time: value })}
           error={getFieldError(validation.errors, 'prep_time')}
           disabled={isLoading}
         />
@@ -221,7 +221,7 @@ export default function EntityForm({
           label="Difficulty"
           variant="select"
           value={editing.data.difficulty || 'Easy'}
-          onChange={(e) => onUpdateData({ difficulty: e.target.value })}
+          onChange={(value) => onUpdateData({ difficulty: value })}
           error={getFieldError(validation.errors, 'difficulty')}
           disabled={isLoading}
         >
@@ -235,7 +235,7 @@ export default function EntityForm({
           min="1"
           max="20"
           value={editing.data.serves || 1}
-          onChange={(e) => onUpdateData({ serves: parseInt(e.target.value) || 1 })}
+          onChange={(value) => onUpdateData({ serves: parseInt(value) || 1 })}
           error={getFieldError(validation.errors, 'serves')}
           disabled={isLoading}
         />
@@ -245,7 +245,7 @@ export default function EntityForm({
         label="Video URL (optional)"
         placeholder="YouTube video URL"
         value={editing.data.video_url || ''}
-        onChange={(e) => onUpdateData({ video_url: e.target.value })}
+        onChange={(value) => onUpdateData({ video_url: value })}
         error={getFieldError(validation.errors, 'video_url')}
         disabled={isLoading}
       />
@@ -259,7 +259,7 @@ export default function EntityForm({
           label="Food Name"
           placeholder="Enter food name"
           value={editing.data.name || ''}
-          onChange={(e) => onUpdateData({ name: e.target.value })}
+          onChange={(value) => onUpdateData({ name: value })}
           error={getFieldError(validation.errors, 'name')}
           disabled={isLoading}
         />
@@ -267,7 +267,7 @@ export default function EntityForm({
           label="Category"
           variant="select"
           value={editing.data.category || 'breakfast'}
-          onChange={(e) => onUpdateData({ category: e.target.value })}
+          onChange={(value) => onUpdateData({ category: value })}
           error={getFieldError(validation.errors, 'category')}
           disabled={isLoading}
         >
@@ -282,7 +282,7 @@ export default function EntityForm({
         label="Description"
         placeholder="Enter food description"
         value={editing.data.description || ''}
-        onChange={(e) => onUpdateData({ description: e.target.value })}
+        onChange={(value) => onUpdateData({ description: value })}
         error={getFieldError(validation.errors, 'description')}
         disabled={isLoading}
       />
