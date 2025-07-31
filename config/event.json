@@ -28,8 +28,8 @@
     "home.readyToStart": "Pripravljen dvigniti sidro?"
   },
   "features": {
-    "achievements": true,
-    "food": true,
+    "achievements": false,
+    "food": false,
     "social": true
   },
   "ui": {

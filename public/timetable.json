@@ -1,343 +1,469 @@
 {
   "day1": {
     "date": "2025-08-02",
-    "caption": "2. avgust 2025 - Sobota",
+    "caption": "2. avgust 2025 - Sobota - Sukošan → Vodice",
     "events": [
       {
+        "time": "08:00",
+        "title": "Zajtrk doma 🏠",
+        "description": "Zadnji domači zajtrk pred jadralno pustolovščino. Preverite, če imate vse potrebno!",
+        "location": "Doma",
+        "achievement": "home_preparation"
+      },
+      {
         "time": "10:00",
-        "title": "Dobrodošlica in vkrcanje ⛵",
-        "description": "Dobrodošli na Yacht Week 2025! Registracija, prevzem kabine in spoznavanje posadke.",
-        "location": "Marina Split",
-        "achievement": "yacht_captain"
+        "title": "Odhod proti Sukošanu 🚗",
+        "description": "Začetek 4-urne vožnje proti marini Sukošan - naša jadralna pustolovščina se začenja!",
+        "location": "Odhod od doma",
+        "achievement": "journey_begins"
       },
       {
         "time": "12:00",
-        "title": "Varnostni briefing in jadrnica 101 📋",
+        "title": "Kosilo na poti 🍽️",
+        "description": "Postanek za kosilo med 4-urno vožnjo proti Sukošanu - zadnji obrok na kopnem pred vkrcanjem.",
+        "location": "Restavracija na poti",
+        "achievement": "road_meal"
+      },
+      {
+        "time": "14:00",
+        "title": "Dobrodošlica in vkrcanje ⛵",
+        "description": "Dobrodošli na Yacht Week 2025! Registracija, prevzem kabine in spoznavanje posadke.",
+        "location": "Marina Sukošan",
+        "achievement": "yacht_captain"
+      },
+      {
+        "time": "15:30",
+        "title": "Varnostni briefing in jadrnica 101 �",
         "description": "Pomembne varnostne informacije in osnove jadranja za začetnike.",
         "location": "Na krovu",
         "achievement": "safety_first"
       },
       {
-        "time": "14:00",
-        "title": "Prvi ladijski kosilo 🍽️",
-        "description": "Dobrodošlica na krovu z okusnim tradicionalnim dalmatinskim kosilom.",
-        "location": "Kuhinja na krovu",
-        "achievement": "ship_chef"
-      },
-      {
         "time": "16:00",
         "title": "Dvigni sidro! Prvi izplov ⚓",
-        "description": "Krst jadrnice - prvi izplov iz Splita proti Brču.",
-        "location": "Split → Brač",
+        "description": "Krst jadrnice - prvi izplov iz Sukošana proti Vodicam.",
+        "location": "Sukošan → Vodice",
         "achievement": "first_sail"
       },
       {
-        "time": "19:00",
-        "title": "Zaliv Zlatni Rat - kopanje ob sončnem zahodu 🌅",
-        "description": "Sidra mečemo v čudovitem zalivu ob najlepši plaži Hrvaške.",
-        "location": "Zlatni Rat, Brač",
-        "achievement": "golden_swimmer"
+        "time": "18:00",
+        "title": "Pristanišče Vodice - rezervacija Marine �️",
+        "description": "Prihod v Marina Vodice in ureditev nočitve. Prekrasno pristanišče z vsemi potrebnimi storitvami.",
+        "location": "Marina Vodice",
+        "achievement": "marina_master"
       },
       {
-        "time": "21:00",
-        "title": "Kapitanova večerja na krovu 🦑",
-        "description": "Tradicionalna hrvaška večerja s svežimi morskimi sadeži in lokalnim vinom.",
-        "location": "Na krovu",
-        "achievement": "seafood_lover"
+        "time": "20:00",
+        "title": "Večerja v Vodicah 🍽️",
+        "description": "Tradicionalna dalmatinska večerja v enem od lokalnih lokalom Vodic.",
+        "location": "Restavracija Vodice",
+        "achievement": "vodice_diner"
       },
       {
-        "time": "23:00",
-        "title": "Zvezde nad Jadranskim morjem ✨",
-        "description": "Sproščeni večer pod zvezdnatim nebom z glasbo in koktejli.",
-        "location": "Paluba",
-        "achievement": "stargazer"
+        "time": "22:00",
+        "title": "Erste Nacht auf dem Meer 🌙",
+        "description": "Prva noč na krovu - spoznavanje z morskim ritmom in zvoki valov.",
+        "location": "Marina Vodice",
+        "achievement": "first_night_sailor"
       }
     ]
   },
   "day2": {
     "date": "2025-08-03",
-    "caption": "3. avgust 2025 - Nedelja",
+    "caption": "3. avgust 2025 - Nedelja - Vodice → Otok Kakan",
     "events": [
       {
         "time": "08:00",
-        "title": "Jutranji skočit v morje 🏊‍♂️",
-        "description": "Osvežujoč skok v kristalno čisto Jadransko morje.",
-        "location": "Z jadrnice",
-        "achievement": "morning_swimmer"
+        "title": "Jutranji zakaj na barki 🥐",
+        "description": "Zajtrk na krovu s sveže kuplenimi sestavinami iz trgovine.",
+        "location": "Na krovu",
+        "achievement": "morning_chef"
       },
       {
         "time": "09:30",
-        "title": "Zajtrk na morju ☕",
-        "description": "Svež zajtrk na palubi z razgledom na modro morje.",
-        "location": "Paluba",
-        "achievement": "breakfast_sailor"
+        "title": "Nakup za pot v Vodicah 🛒",
+        "description": "Zadnji nakup svežih sestavin in potrebščin v trgovini Vodice.",
+        "location": "Trgovina Vodice",
+        "achievement": "supply_master"
       },
       {
         "time": "11:00",
-        "title": "Jadralnica proti Hvaru 🚢",
-        "description": "Jadranje proti prestolnici zabave - otoku Hvar.",
-        "location": "Brač → Hvar",
-        "achievement": "island_hopper"
+        "title": "Jadranje proti otoku Kakan 🏝️",
+        "description": "Čudovito jadranje proti skritemu biseру - otoku Kakan.",
+        "location": "Vodice → Otok Kakan",
+        "achievement": "island_navigator"
       },
       {
-        "time": "15:00",
-        "title": "Pristanišče Hvar - raziskovanje mesta 🏛️",
-        "description": "Sprehod po starem mestnem jedru Hvara in obisk trdnjave Španjola.",
-        "location": "Hvar center",
-        "achievement": "culture_explorer"
+        "time": "13:00",
+        "title": "Kosilo iz nakupa 🥪",
+        "description": "Priprava kosila iz sestavin, kupljenih v Vodicah. Skupno kuhanje na krovu.",
+        "location": "Na krovu",
+        "achievement": "crew_cook"
       },
       {
-        "time": "18:00",
-        "title": "Aperitivo na plaži Dubovica 🍹",
-        "description": "Sproščen aperitivo na eni najlepših plaž Hrvaške.",
-        "location": "Plaža Dubovica",
-        "achievement": "beach_lover"
+        "time": "15:30",
+        "title": "Raziskovanje otoka Kakan �",
+        "description": "Sprehod po divjem otoku Kakan - odkrivanje skritih zalivov in narave.",
+        "location": "Otok Kakan",
+        "achievement": "island_explorer"
       },
       {
-        "time": "21:00",
-        "title": "Hvar by night - mesta noč 🌃",
-        "description": "Nočno življenje v Hvaru - najboljši koktejli in glasba.",
-        "location": "Hvar center",
-        "achievement": "party_animal"
+        "time": "17:00",
+        "title": "Kopanje v kristalnem morju �‍♂️",
+        "description": "Osvežujoče kopanje v nedotaknjenem morju okoli Kakana.",
+        "location": "Zaliv Kakan",
+        "achievement": "crystal_swimmer"
+      },
+      {
+        "time": "19:00",
+        "title": "Večerja iz vodiških sestavin �",
+        "description": "Okusna večerja pripravljena iz nakupljenih sestavin - svež okus Dalmacije.",
+        "location": "Na krovu",
+        "achievement": "dalmatian_chef"
+      },
+      {
+        "time": "21:30",
+        "title": "Zvezdna noč na divjem otoku ✨",
+        "description": "Mirna noč pod zvezdnatim nebom, daleč od mestnih luči.",
+        "location": "Sidra pri Kakanu",
+        "achievement": "wilderness_stargazer"
       }
     ]
   },
   "day3": {
     "date": "2025-08-04",
-    "caption": "4. avgust 2025 - Ponedeljek",
+    "caption": "4. avgust 2025 - Ponedeljek - Kaprije → Smokvica",
     "events": [
       {
-        "time": "09:00",
-        "title": "Jadranje proti Korčuli 🌊",
-        "description": "Dolg jadralski dan proti čudovitemu otoku Korčula.",
-        "location": "Vis → Korčula",
-        "achievement": "long_distance_sailor"
+        "time": "08:00",
+        "title": "Zajtrk na barki s kruhom �",
+        "description": "Svež zajtrk na krovu s sveže kupljenim kruhom iz trgovine.",
+        "location": "Na krovu",
+        "achievement": "bread_lover"
+      },
+      {
+        "time": "09:30",
+        "title": "Nakup kruha in potrebščin 🥖",
+        "description": "Hitro nakupovanje svežega kruha in osnovnih potrebščin za dan.",
+        "location": "Trgovina Kaprije",
+        "achievement": "morning_shopper"
+      },
+      {
+        "time": "10:30",
+        "title": "Raziskovanje otoka Kaprije �️",
+        "description": "Sprehod po čudovitem otoku Kaprije in odkrivanje skritih kotičkov.",
+        "location": "Otok Kaprije",
+        "achievement": "kaprije_explorer"
+      },
+      {
+        "time": "12:00",
+        "title": "Jadranje proti Smokvici 🌊",
+        "description": "Prijetno jadranje proti koncu dneva - proti Smokvici.",
+        "location": "Kaprije → Smokvica",
+        "achievement": "afternoon_sailor"
       },
       {
         "time": "14:00",
-        "title": "Korčula - mesto Marka Pola 🏰",
-        "description": "Sprehod po starem jedru mesta, kjer se je rodil Marco Polo.",
-        "location": "Korčula center",
-        "achievement": "history_buff"
+        "title": "Improvizirano kosilo na krovu 🥙",
+        "description": "Priprava preprostega, a okusnega kosila iz trenutno razpoložljivih sestavin.",
+        "location": "Na krovu",
+        "achievement": "improvisation_master"
       },
       {
-        "time": "17:00",
-        "title": "Degustacija korčulanskih vin �",
-        "description": "Odkrivanje lokalnih vin Grk in Pošip v vinoteki.",
-        "location": "Vinoteka Korčula",
-        "achievement": "wine_expert"
+        "time": "16:30",
+        "title": "Prihod v Smokvico 🏘️",
+        "description": "Pristop v pristanišče Smokvice - pripravljeni za večerno kulinarično doživetje.",
+        "location": "Pristanišče Smokvica",
+        "achievement": "smokvica_arrival"
+      },
+      {
+        "time": "18:00",
+        "title": "Rezervacija v Konoba Smokvica 📞",
+        "description": "Rezervacija mize za večerno poulstvo v tradicijski konobe.",
+        "location": "Smokvica center",
+        "achievement": "reservation_planner"
       },
       {
         "time": "20:00",
-        "title": "Moreška - tradicionalen meč ples ⚔️",
-        "description": "Ogled tradicionalnega mečkega plesa, ki je značilen za Korčulo.",
-        "location": "Trg Korčula",
-        "achievement": "culture_enthusiast"
+        "title": "Večerja v Konoba Smokvica 🦐",
+        "description": "Tradicionalna dalmatinska večerja v pristni konobe z lokalno hrano in vinom.",
+        "location": "Konoba Smokvica",
+        "achievement": "konoba_diner"
       },
       {
         "time": "22:30",
-        "title": "Nočna panorama Korčule �",
-        "description": "Sproščen večer z razgledom na osvetljeno staro mestno jedro.",
-        "location": "Na krovu",
-        "achievement": "night_photographer"
+        "title": "Lokalni večer v Smokvici 🍷",
+        "description": "Spoznavanje lokalnih običajev in uživanje v mirnem otoškem večeru.",
+        "location": "Smokvica",
+        "achievement": "local_culture"
       }
     ]
   },
   "day4": {
     "date": "2025-08-05",
-    "caption": "5. avgust 2025 - Torek",
+    "caption": "5. avgust 2025 - Torek - Smokvica → Kornati",
     "events": [
       {
         "time": "08:00",
-        "title": "Jutranji yoga na palubi 🧘‍♀️",
-        "description": "Umiritev duha z jutranjo jogo na palubi ob sončnem vzhodu.",
-        "location": "Paluba",
-        "achievement": "zen_sailor"
+        "title": "Zajtrk na barki �",
+        "description": "Mirno jutro na krovu s preprostim zajtrkom pred odhodom proti Kornatom.",
+        "location": "Na krovu",
+        "achievement": "peaceful_morning"
       },
       {
         "time": "10:00",
-        "title": "Pelješac - dežela ostrig in vina 🦪",
-        "description": "Obisk polotoka Pelješac za degustacijo ostrig in lokalnih vin.",
-        "location": "Pelješac",
-        "achievement": "oyster_enthusiast"
+        "title": "Jadranje proti Kornatom 🏔️",
+        "description": "Spektakularno jadranje proti Kornatskemu narodnem parku - naravnemu čudežu.",
+        "location": "Smokvica → Kornati",
+        "achievement": "national_park_sailor"
       },
       {
-        "time": "14:00",
-        "title": "Mali Ston - srednjeveške mestne obzidje �",
-        "description": "Sprehod po najdaljših obrambnih zidovih v Evropi.",
-        "location": "Mali Ston",
-        "achievement": "wall_walker"
+        "time": "12:00",
+        "title": "Rezervacija 3-dnevne karte Kornati 🎫",
+        "description": "Ureditev vstopa v narodni park - 3-dnevna karta za raziskovanje.",
+        "location": "Kornati Park Office",
+        "achievement": "park_explorer"
+      },
+      {
+        "time": "13:00",
+        "title": "Kosilo: ribe in meso na žaru 🐟🥩",
+        "description": "Pristno kosilo s svežimi ribami in mesom na krovu v srcu Kornatov.",
+        "location": "Na krovu - Kornati",
+        "achievement": "grill_master"
+      },
+      {
+        "time": "15:30",
+        "title": "Raziskovanje Kornatskih otokov 🗺️",
+        "description": "Odkrivanje skritih zalivov in golih lepot Kornatskega arhipelaga.",
+        "location": "Kornati National Park",
+        "achievement": "kornati_discoverer"
       },
       {
         "time": "17:00",
-        "title": "Jadranje proti Dubrovniku 🏔️",
-        "description": "Zadnje velike jadranje proti biseru Jadrana.",
-        "location": "Pelješac → Dubrovnik",
-        "achievement": "approaching_pearl"
+        "title": "Kopanje v nedotaknjeni naravi 🌊",
+        "description": "Kristalno čisto morje Kornatov - kopanje v zaščiteni naravni dediščini.",
+        "location": "Kornatski zaliv",
+        "achievement": "nature_swimmer"
       },
       {
-        "time": "20:00",
-        "title": "Prvi pogled na Dubrovnik 👑",
-        "description": "Nepozaben pogled na staro mestno jedro Dubrovnika z morja.",
-        "location": "Dubrovniška riviera",
-        "achievement": "pearl_viewer"
+        "time": "19:00",
+        "title": "Improvizirana večerja 🍽️",
+        "description": "Pripravljamo večerjo iz razpoložljivih sestavin v čudovitem naravnem okolju.",
+        "location": "Na krovu - Kornati",
+        "achievement": "wilderness_chef"
       },
       {
-        "time": "22:00",
-        "title": "Sidra v Lokrumu �",
-        "description": "Počitek v zalivu ob otoku Lokrum s pogledom na Dubrovnik.",
-        "location": "Otok Lokrum",
-        "achievement": "peaceful_anchor"
+        "time": "21:00",
+        "title": "Noč pod Kornatskim nebom 🌌",
+        "description": "Magičen večer v naravnem parku, daleč od civilizacije.",
+        "location": "Sidra v Kornatih",
+        "achievement": "park_camper"
       }
     ]
   },
   "day5": {
     "date": "2025-08-06",
-    "caption": "6. avgust 2025 - Sreda",
+    "caption": "6. avgust 2025 - Sreda - Kornati → Molat",
     "events": [
       {
-        "time": "09:00",
-        "title": "Dubrovnik - biser Jadrana 💎",
-        "description": "Raziskovanje Game of Thrones lokacij in stare mestne arhitekture.",
-        "location": "Dubrovnik center",
-        "achievement": "kings_landing"
+        "time": "08:00",
+        "title": "Zajtrk na barki v Kornatih 🌅",
+        "description": "Zadnji zajtrk v čudovitem Kornatskem naravnem parku.",
+        "location": "Na krovu - Kornati",
+        "achievement": "kornati_breakfast"
+      },
+      {
+        "time": "10:00",
+        "title": "Zadnje raziskovanje Kornatov 🔍",
+        "description": "Možnost za zadnje kopanje in raziskovanje pred odhodom proti Molatu.",
+        "location": "Kornati National Park",
+        "achievement": "kornati_farewell"
       },
       {
         "time": "12:00",
-        "title": "Hoja po mestnem obzidju 🚶‍♂️",
-        "description": "Sprehod po spektakularnem mestnem obzidju z razgledom na morje.",
-        "location": "Mestno obzidje",
-        "achievement": "wall_runner"
+        "title": "Jadranje proti otoku Molat 🏝️",
+        "description": "Dolgo jadranje proti mirnemmu otoku Molat - novi izziv navigacije.",
+        "location": "Kornati → Molat",
+        "achievement": "molat_navigator"
       },
       {
-        "time": "15:00",
-        "title": "Plančića palača - Game of Thrones 🐉",
-        "description": "Obisk lokacij, kjer so snemali Game of Thrones.",
-        "location": "Staro mestno jedro",
-        "achievement": "throne_seeker"
+        "time": "14:00",
+        "title": "Kosilo: makaroni na krovu 🍝",
+        "description": "Preprost a sit obed - klasični makaroni pripravljeni na jadrnici.",
+        "location": "Na krovu",
+        "achievement": "pasta_sailor"
+      },
+      {
+        "time": "16:30",
+        "title": "Prihod na Molat 🏖️",
+        "description": "Odkrivanje mirnega otoka Molat - skrite perle severnega Jadrana.",
+        "location": "Otok Molat",
+        "achievement": "molat_discoverer"
       },
       {
         "time": "18:00",
-        "title": "Sunset na Srđu �",
-        "description": "Vzpon na hrib Srđ za najboljši pogled na Dubrovnik.",
-        "location": "Hrib Srđ",
-        "achievement": "sunset_chaser"
+        "title": "Sprehod po otoku Molat 🚶‍♂️",
+        "description": "Raziskovanje lokalnih vasi in naravnih lepot otoka Molat.",
+        "location": "Molat village",
+        "achievement": "village_explorer"
       },
       {
-        "time": "21:00",
-        "title": "Dubrovačka večerja 🦞",
-        "description": "Večerja v eni najboljših restavracij Dubrovnika.",
-        "location": "Restavracija Dubrovnik",
-        "achievement": "fine_diner"
+        "time": "20:00",
+        "title": "Večerja po izbiri 🍽️",
+        "description": "Prosto izbran način večerje - lahko v lokalni konoba ali na krovu.",
+        "location": "Po izbiri",
+        "achievement": "dinner_choice"
       },
       {
-        "time": "23:30",
-        "title": "Nočna Placa (Stradun) 🚶‍♀️",
-        "description": "Sproščen nočni sprehod po glavnem trgu starega mesta.",
-        "location": "Placa - Stradun",
-        "achievement": "night_wanderer"
+        "time": "22:00",
+        "title": "Miren večer na Molatu 🌙",
+        "description": "Sproščen večer na mirnem otoku, daleč od turističnih množic.",
+        "location": "Molat",
+        "achievement": "peaceful_molat"
       }
     ]
   },
   "day6": {
     "date": "2025-08-07",
-    "caption": "7. avgust 2025 - Četrtek",
+    "caption": "7. avgust 2025 - Četrtek - Kornati → Molat",
     "events": [
       {
-        "time": "10:00",
-        "title": "Elafitski otoki - rajski arhipelag 🏝️",
-        "description": "Raziskovanje čudovitih Elafitskih otokov - Koločep, Lopud, Šipan.",
-        "location": "Elafitski otoki",
-        "achievement": "island_explorer"
+        "time": "08:00",
+        "title": "Zajtrk na barki - Molat 🥐",
+        "description": "Svež jutranji obreд na mirnem otoku s pogledom na čisto morje.",
+        "location": "Na krovu - Molat",
+        "achievement": "molat_morning"
       },
       {
-        "time": "13:00",
-        "title": "Šunj plaža - peščena idila 🏖️",
-        "description": "Uživanje na eni redkih peščenih plaž v Dalmaciji.",
-        "location": "Lopud - plaža Šunj",
-        "achievement": "sandy_feet"
+        "time": "10:00",
+        "title": "Povratek v Kornate 🔄",
+        "description": "Jadranje nazaj v Kornatski narodni park za dodatno raziskovanje.",
+        "location": "Molat → Kornati",
+        "achievement": "return_sailor"
+      },
+      {
+        "time": "12:00",
+        "title": "Dopoldan v Kornatih �️",
+        "description": "Dodatno raziskovanje arhipelaga in uživanje v naravnih lepotah.",
+        "location": "Kornati National Park",
+        "achievement": "kornati_veteran"
+      },
+      {
+        "time": "14:00",
+        "title": "Kosilo: makaroni na krovu �",
+        "description": "Ponovno pripravljamo klasične makaroni - preverjeno dobro kosilo na morju.",
+        "location": "Na krovu - Kornati",
+        "achievement": "macaroni_master"
       },
       {
         "time": "16:00",
-        "title": "Šipanska luka - mirni zaliv 🎣",
-        "description": "Počitek v mirnem zalivu z možnostjo ribolova.",
-        "location": "Šipanska luka",
-        "achievement": "fisherman"
+        "title": "Kopanje v Kornatskih vodah 🏊‍♀️",
+        "description": "Dodatno kopanje v kristalno čistem morju narodnega parka.",
+        "location": "Kornati",
+        "achievement": "kornati_swimmer"
       },
       {
-        "time": "19:00",
-        "title": "BBQ na plaži 🔥",
-        "description": "Skupinsko kuhanje na plaži ob sončnem zahodu.",
-        "location": "Divja plaža",
-        "achievement": "beach_chef"
+        "time": "18:00",
+        "title": "Jadranje nazaj k Molatu 🌊",
+        "description": "Veurnemo se na miren otok Molat za počitek.",
+        "location": "Kornati → Molat",
+        "achievement": "molat_return"
       },
       {
-        "time": "21:30",
-        "title": "Glasba pod zvezdami 🎵",
-        "description": "Sproščen večer z glasbo in petjem pod zvezdnatim nebom.",
-        "location": "Na krovu",
-        "achievement": "music_sailor"
+        "time": "20:00",
+        "title": "Večerja po izbiri �️",
+        "description": "Prosto izbran način večerje - raziskovanje lokalnih možnosti ali kuhanje na krovu.",
+        "location": "Molat - po izbiri",
+        "achievement": "choice_diner"
+      },
+      {
+        "time": "22:00",
+        "title": "Druga noč na Molatu 🌜",
+        "description": "Ponovno uživanje v miru in tišini otoka Molat.",
+        "location": "Molat",
+        "achievement": "molat_regular"
       }
     ]
   },
   "day7": {
     "date": "2025-08-08",
-    "caption": "8. avgust 2025 - Petek",
+    "caption": "8. avgust 2025 - Petek - Molat → Sukošan",
     "events": [
       {
-        "time": "09:00",
-        "title": "Zadnje jadranje proti Splitu ⛵",
-        "description": "Nostalgično zadnje jadranje nazaj proti domači marini.",
-        "location": "Dubrovnik → Split",
-        "achievement": "homeward_bound"
+        "time": "08:00",
+        "title": "Zadnji zajtrk na barki - Molat 🌅",
+        "description": "Nostalgičen zadnji zajtrk na mirnem otoku pred vrnitvijo.",
+        "location": "Na krovu - Molat",
+        "achievement": "farewell_molat"
       },
       {
-        "time": "12:00",
-        "title": "Kosilo na krovu s spomini 📸",
-        "description": "Delimo najlepše spomine tedna ob zadnjem kosilu na krovu.",
-        "location": "Na morju",
-        "achievement": "memory_keeper"
+        "time": "10:00",
+        "title": "Jadranje proti Sukošanu ⛵",
+        "description": "Dolgo jadranje nazaj proti matični mari - zadnji veliki jadralski dan.",
+        "location": "Molat → Sukošan",
+        "achievement": "homeward_sailor"
       },
       {
-        "time": "16:00",
-        "title": "Trogir - UNESCO mestno jedro �️",
-        "description": "Zadnji postanek v čudovitem srednjeveškem mestu Trogir.",
-        "location": "Trogir",
-        "achievement": "unesco_visitor"
+        "time": "13:00",
+        "title": "Kosilo v Sukošanu 🍽️",
+        "description": "Kosilo na kopnem v Sukošanu - prva možnost za kopenska jed po dneve.",
+        "location": "Restavracija Sukošan",
+        "achievement": "land_meal"
       },
       {
-        "time": "19:00",
-        "title": "Povratek v Split �",
-        "description": "Prihod nazaj v matično marino v Splitu.",
-        "location": "Marina Split",
-        "achievement": "safe_harbor"
+        "time": "15:00",
+        "title": "Priprava na končno tankovanje ⛽",
+        "description": "Organizacija za končno polnitev rezervoarjev pred predajo jadrnice.",
+        "location": "Marina Sukošan",
+        "achievement": "fuel_planner"
       },
       {
-        "time": "21:00",
-        "title": "Slovesna večerja posadke 🥂",
-        "description": "Čudovita zaključna večerja z vso posadko in spomini na nepozaben teden.",
-        "location": "Restavracija Split",
-        "achievement": "crew_family"
+        "time": "16:30",
+        "title": "Zadnji sprehod po Sukošanu 🚶‍♂️",
+        "description": "Raziskovanje kraja, kjer se je začela naša pustolovščina.",
+        "location": "Sukošan",
+        "achievement": "sukosan_explorer"
       },
       {
-        "time": "23:00",
-        "title": "Zadnja noč na krovu �",
-        "description": "Nostalgična zadnja noč na krovu - jutri se vračamo domov.",
-        "location": "Marina Split",
-        "achievement": "last_night"
+        "time": "18:00",
+        "title": "Tankovanje in zaključni postopki ⛽",
+        "description": "Polnitev rezervoarjev in priprava jadrnice za predajo.",
+        "location": "Bencinska črpalka",
+        "achievement": "fuel_master"
+      },
+      {
+        "time": "20:00",
+        "title": "Večerja po izbiri 🍴",
+        "description": "Prosto izbira večerje - končno poslovo s Sukošanom.",
+        "location": "Sukošan - po izbiri",
+        "achievement": "sukosan_diner"
+      },
+      {
+        "time": "22:00",
+        "title": "Zadnja noč na krovu 🌙",
+        "description": "Nostalgična zadnja noč na jadrnici - deljenje spominov.",
+        "location": "Marina Sukošan",
+        "achievement": "last_night_memories"
       }
     ]
   },
   "day8": {
     "date": "2025-08-09",
-    "caption": "9. avgust 2025 - Sobota",
+    "caption": "9. avgust 2025 - Sobota - Zadnji dan v Sukošanu",
     "events": [
       {
-        "time": "09:00",
-        "title": "Zajtrk kapitana 🧑‍✈️",
-        "description": "Zadnji skupni zajtrk na krovu - čas za počasno slovo.",
-        "location": "Na krovu",
-        "achievement": "captain_breakfast"
+        "time": "08:00",
+        "title": "Zadnji zajtrk kapitana 🧑‍✈️",
+        "description": "Končni zajtrk na krovu - čas za počasno slovo od jadrnice.",
+        "location": "Na krovu - Sukošan",
+        "achievement": "captain_farewell"
+      },
+      {
+        "time": "10:00",
+        "title": "Dokončno tankovanje ⛽",
+        "description": "Dokončanje polnitev rezervoarjev pred predajo jadrnice.",
+        "location": "Bencinska črpalka Sukošan",
+        "achievement": "final_fuel"
       },
       {
         "time": "11:00",
@@ -350,14 +476,28 @@
         "time": "12:00",
         "title": "Slovesno predajo jadrnice ⚓",
         "description": "Zadnji pregled jadrnice s kapetanom in uradno predajo.",
-        "location": "Marina Split",
+        "location": "Marina Sukošan",
         "achievement": "duty_completed"
       },
       {
         "time": "13:00",
+        "title": "Zadnje kosilo skupaj 🍽️",
+        "description": "Končno skupno kosilo pred odhodom domov.",
+        "location": "Restavracija Sukošan",
+        "achievement": "final_meal"
+      },
+      {
+        "time": "14:00",
+        "title": "Zadnje večerja 🍽️",
+        "description": "Prosto izbrana zadnja večerja - lahko zgodaj pred odhodom domov.",
+        "location": "Po izbiri",
+        "achievement": "farewell_dinner"
+      },
+      {
+        "time": "15:00",
         "title": "Slovo od posadke 👋",
         "description": "Čustveno slovo od nove družine, ki smo jo spoznali ta teden. Do naslednjega Yacht Week!",
-        "location": "Marina Split",
+        "location": "Sukošan",
         "achievement": "yacht_week_legend"
       }
     ]
