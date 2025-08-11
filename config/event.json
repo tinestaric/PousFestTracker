@@ -1,67 +1,67 @@
 {
   "event": {
-    "name": "Yacht week",
+    "name": "Čau Litva!",
     "year": "2025",
-    "fullTitle": "YACHTWEEK", 
-    "date": "2.8.2025 - 9.8.2025",
-    "location": "Croatia",
-    "description": "Pripravi se na nepozabno plovbo, kjer se kristalno modro morje, luksuz in nezaustavljiva zabava združijo v eno samo izkušnjo. Navdihujemo se pri svobodi odprtega morja – simbolu brezskrbnih dni, neomejenih horizontov in popolnega življenjskega užitka. Dvigni sidro, občuti vetrček in živi trenutek.",
-    "tagline": "Set sail for adventure",
+    "fullTitle": "ČAU LITVA!", 
+    "date": "23.8.2025",
+    "location": "Lithuania",
+    "description": "Join us for an unforgettable farewell celebration where Slovenian hearts and Lithuanian souls unite for one last amazing night. After four incredible years of memories in Lithuania, it's time for a special goodbye – with music, laughter, and unforgettable moments that will stay in our hearts forever. Iki kito karto, Lietuva!",
+    "tagline": "Slovenija ❤️ Lietuva",
     "logo": "/Logo.png",
     "logoSquare": "/LogoSquare.png"
   },
-  "language": "sl",
+  "language": "en",
   "translations": {
-    "navigation.guest": "Kapitanov Dnevnik",
-    "navigation.guestDescription": "Sledi svojim morskim dosežkom, naroči pijače in navigiraj skozi tvojo jadralno pustolovščino!",
-    "navigation.profile": "Kapitanov Dnevnik", 
-    "navigation.profileDescription": "Sledi svojim morskim dosežkom, naroči pijače in navigiraj skozi tvojo jadralno pustolovščino!",
-    "navigation.recipes": "Ladijski Bar Vodič",
-    "navigation.recipesDescription": "Obvladaj umetnost mešanja koktejlov z našimi navodili ladijskega barmana",
-    "navigation.timetable": "Jadralni Urnik",
-    "navigation.timetableDescription": "Preveri urnik jadrne tedna in nikoli ne zamudi pristanišča ali zabave",
-    "buttons.startAdventure": "Dvigni Sidro!",
-    "admin.subtitle": "Navigiraj svojo {eventName} floto",
-    "guest.profileTitle": "Tvoje {eventName} potovanje",
-    "home.subtitle": "Načrtuj svojo pot in izvleci največ iz {eventName} {year}!",
-    "home.footerCta": "Preprosto tapni svojo posadko na telefon, da dostopaš do svojega kapitanovega dnevnika in začneš svojo {eventName} {year} pustolovščino!",
-    "home.readyToStart": "Pripravljen dvigniti sidro?"
+    "navigation.guest": "My Story",
+    "navigation.guestDescription": "Track your memories, order drinks and create unforgettable moments before departure!",
+    "navigation.profile": "My Story", 
+    "navigation.profileDescription": "Track your memories, order drinks and create unforgettable moments before departure!",
+    "navigation.recipes": "Memory Mixers",
+    "navigation.recipesDescription": "Mix special cocktails for the farewell party - a blend of Slovenian and Lithuanian flavors",
+    "navigation.timetable": "Weekend Plan",
+    "navigation.timetableDescription": "Check the farewell party schedule and don't miss any special moments",
+    "buttons.startAdventure": "Start Your Story!",
+    "admin.subtitle": "Manage your {eventName} party",
+    "guest.profileTitle": "Your {eventName} story",
+    "home.subtitle": "Create unforgettable memories and say goodbye in style at {eventName} {year}!",
+    "home.footerCta": "Simply tap your NFC tag on your phone to access your personal memory diary and start your {eventName} {year} farewell!",
+    "home.readyToStart": "Ready for one last dance together?"
   },
   "features": {
-    "achievements": false,
+    "achievements": true,
     "food": false,
     "social": true
   },
   "ui": {
-    "heroGradient": "from-blue-600 via-cyan-500 to-teal-400",
-    "primaryButton": "from-purple-500 to-pink-400",
-    "primaryButtonHover": "from-purple-600 to-pink-500",
-    "secondaryButton": "from-orange-500 to-red-400",
-    "secondaryButtonHover": "from-orange-600 to-red-500",
+    "heroGradient": "from-amber-500 via-orange-500 to-red-500",
+    "primaryButton": "from-red-500 to-orange-500",
+    "primaryButtonHover": "from-red-600 to-orange-600",
+    "secondaryButton": "from-yellow-500 to-amber-500",
+    "secondaryButtonHover": "from-yellow-600 to-amber-600",
     "charts": {
       "pieColors": [
-        "rgba(59, 130, 246, 0.8)",   
-        "rgba(14, 165, 233, 0.8)",   
-        "rgba(6, 182, 212, 0.8)",    
-        "rgba(168, 85, 247, 0.8)",   
-        "rgba(236, 72, 153, 0.8)",  
-        "rgba(34, 197, 94, 0.8)"
+        "rgba(239, 68, 68, 0.8)",
+        "rgba(249, 115, 22, 0.8)",
+        "rgba(245, 158, 11, 0.8)",
+        "rgba(234, 179, 8, 0.8)",
+        "rgba(202, 138, 4, 0.8)",
+        "rgba(251, 146, 60, 0.8)"
       ],
       "pieBorders": [
-        "rgb(59, 130, 246)",
-        "rgb(14, 165, 233)",
-        "rgb(6, 182, 212)",
-        "rgb(168, 85, 247)",
-        "rgb(236, 72, 153)",
-        "rgb(34, 197, 94)"
+        "rgb(239, 68, 68)",
+        "rgb(249, 115, 22)",
+        "rgb(245, 158, 11)",
+        "rgb(234, 179, 8)",
+        "rgb(202, 138, 4)",
+        "rgb(251, 146, 60)"
       ],
-      "timelineColor": "#3B82F6",
-      "timelineBackground": "rgba(59, 130, 246, 0.1)"
+      "timelineColor": "#F97316",
+      "timelineBackground": "rgba(249, 115, 22, 0.1)"
     },
     "socialHighlights": {
-      "hydration": "from-blue-400 to-cyan-500",
-      "userRank": "from-purple-400 to-violet-500",
-      "default": "from-purple-400 to-violet-500"
+      "hydration": "from-cyan-400 to-blue-500",
+      "userRank": "from-orange-400 to-red-500",
+      "default": "from-yellow-400 to-orange-500"
     }
   },
   "navigation": {
@@ -70,29 +70,29 @@
         "key": "guest",
         "href": "/guest",
         "icon": "User",
-        "gradient": "from-blue-600 to-cyan-500",
-        "borderColor": "cyan-200"
+        "gradient": "from-amber-500 to-orange-500",
+        "borderColor": "amber-200"
       },
       {
         "key": "recipes",
         "href": "/recipes",
         "icon": "BookOpen",
-        "gradient": "from-orange-500 to-red-500",
-        "borderColor": "orange-200"
+        "gradient": "from-red-500 to-pink-500",
+        "borderColor": "red-200"
       },
       {
         "key": "timetable", 
         "href": "/timetable",
         "icon": "Calendar", 
-        "gradient": "from-green-500 to-blue-500",
-        "borderColor": "green-200"
+        "gradient": "from-purple-500 to-indigo-500",
+        "borderColor": "purple-200"
       },
       {
         "key": "food",
         "href": "/food",
         "icon": "UtensilsCrossed",
-        "gradient": "from-indigo-500 to-blue-500", 
-        "borderColor": "indigo-200",
+        "gradient": "from-orange-500 to-red-500", 
+        "borderColor": "orange-200",
         "feature": "food"
       }
     ]
