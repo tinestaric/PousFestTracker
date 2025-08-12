@@ -409,7 +409,7 @@ function GuestDashboard() {
     // Show processing feedback IMMEDIATELY to prevent multiple clicks
     setOrderFeedback({
       show: true,
-              message: `Obdelavam naročilo ${drinkName}...`,
+      message: getInterpolatedText('guest.order.processing', config, { drinkName }),
       success: true, // Use success styling for processing state
       processing: true
     })
@@ -434,7 +434,7 @@ function GuestDashboard() {
       // Update to success feedback
       setOrderFeedback({
         show: true,
-        message: `${drinkName} uspešno naročen! 🍻`,
+        message: getInterpolatedText('guest.order.success', config, { drinkName }),
         success: true,
         processing: false
       })
@@ -454,7 +454,7 @@ function GuestDashboard() {
       // Show error feedback
       setOrderFeedback({
         show: true,
-        message: 'Naročilo pijače ni uspelo. Prosimo, poskusi znova.',
+        message: getText('guest.errors.orderFailed', config),
         success: false,
         processing: false
       })
@@ -850,7 +850,7 @@ function GuestDashboard() {
                               onClick={() => orderDrink(drink.id)}
                               className={`bg-gradient-to-r ${config.ui.primaryButton} hover:bg-gradient-to-r hover:${config.ui.primaryButtonHover} text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm`}
                             >
-                              Naroči
+                              {getText('buttons.order', config)}
                             </button>
                           </div>
                         </div>
@@ -950,4 +950,4 @@ function GuestDashboardWrapper() {
   )
 }
 
-export default GuestDashboardWrapper 
+export default GuestDashboardWrapper

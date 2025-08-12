@@ -38,6 +38,22 @@ const achievementIcons = {
   ceremony_witness: '🎭',
   music_marathon: '🎵',
   camp_survivor: '🏕️',
+  road_tripper: '🚗',
+  first_arrival: '🏞️',
+  fire_starter: '🔥',
+  early_bird: '🐦',
+  welcome_committee: '🎉',
+  quiz_master: '🧠',
+  free_spirit: '🎵',
+  well_fed: '🍽️',
+  nature_walker: '🌿',
+  water_warrior: '🏊‍♂️',
+  snack_master: '🍿',
+  dance_legend: '🕺',
+  zen_master: '☕',
+  brunch_lover: '🥐',
+  memory_keeper: '📸',
+  farewell_master: '🚗',
 }
 
 export default function Timetable() {
@@ -67,6 +83,8 @@ export default function Timetable() {
   
   const [selectedDay, setSelectedDay] = useState(getTodaysDay())
   const selectedDayData = timetable[selectedDay]
+  // Collect achievement opportunities for the selected day
+  const selectedDayAchievements = selectedDayData.events.filter((e) => !!e.achievement)
   
   // Get day number for display
   const getDayNumber = (dayKey: string) => {
@@ -144,9 +162,9 @@ export default function Timetable() {
                     }`}
                   >
                     <Calendar className="w-4 h-4" />
-                    Dan {dayNum}
+                    {getText('time.day', config)} {dayNum}
                     {isToday && (
-                      <span className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold shadow-lg">
+                      <span className="ml-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold shadow-lg">
                         {getText('time.today', config)}
                       </span>
                     )}
@@ -173,9 +191,9 @@ export default function Timetable() {
                       }`}
                     >
                       <Calendar className="w-4 h-4" />
-                      Dan {dayNum}
+                      {getText('time.day', config)} {dayNum}
                       {isToday && (
-                        <span className="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold shadow-lg">
+                        <span className="ml-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 text-xs px-2 py-1 rounded-full font-bold shadow-lg">
                           {getText('time.today', config)}
                         </span>
                       )}
@@ -258,47 +276,25 @@ export default function Timetable() {
               <p className="text-white/90 mb-6 text-lg leading-relaxed">
                 {getText('timetable.achievementOpportunitiesMessage', config)}
               </p>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
-                <span className="text-3xl">🐦</span>
-                <div>
-                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.earlyBird', config)}</span>
-                  <p className="text-white/80">{getText('timetable.achievements.earlyBirdDesc', config)}</p>
-                </div>
+            {selectedDayAchievements.length > 0 ? (
+              <div className="grid md:grid-cols-2 gap-6">
+                {selectedDayAchievements.map((event, idx) => (
+                  <div key={`${event.time}-${event.title}-${idx}`} className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
+                    <span className="text-3xl">{achievementIcons[event.achievement as keyof typeof achievementIcons] || '🏆'}</span>
+                    <div>
+                      <span className="font-bold text-white text-lg">{event.title}</span>
+                      <p className="text-white/80 flex items-center gap-2"><Clock className="w-4 h-4" /> {event.time}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
-                <span className="text-3xl">🏊</span>
-                <div>
-                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.poolChampion', config)}</span>
-                  <p className="text-white/80">{getText('timetable.achievements.poolChampionDesc', config)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
-                <span className="text-3xl">🎉</span>
-                <div>
-                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.partyAnimal', config)}</span>
-                  <p className="text-white/80">{getText('timetable.achievements.partyAnimalDesc', config)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
-                <span className="text-3xl">🦉</span>
-                <div>
-                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.nightOwl', config)}</span>
-                  <p className="text-white/80">{getText('timetable.achievements.nightOwlDesc', config)}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
-                <span className="text-3xl">🦋</span>
-                <div>
-                  <span className="font-bold text-white text-lg">{getText('timetable.achievements.socialButterfly', config)}</span>
-                  <p className="text-white/80">{getText('timetable.achievements.socialButterflyDesc', config)}</p>
-                </div>
-              </div>
-            </div>
+            ) : (
+              <div className="text-white/80 italic">{getText('timetable.noAchievementOpportunities', config)}</div>
+            )}
             </div>
           )}
         </div>
       </div>
     </div>
   )
-} 
+}

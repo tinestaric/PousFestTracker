@@ -21,7 +21,8 @@
     "recipe": "Recept"
   },
   "time": {
-    "today": "danes"
+    "today": "danes",
+    "day": "Dan"
   },
   "admin": {
     "title": "Admin nadzorna plošča",
@@ -160,6 +161,10 @@
       "buttons": {
         "viewPartyPulse": "Poglej utrip zabave"
       }
+    },
+    "order": {
+      "processing": "Obdelujem naročilo za {drinkName}...",
+      "success": "{drinkName} uspešno naročen! 🍻"
     }
   },
   "timetable": {
@@ -180,7 +185,8 @@
       "socialButterfly": "Socialni metulj",
       "socialButterflyDesc": "Družiti se z vsemi"
     },
-    "noEvents": "Ni dogodkov na urniku."
+    "noEvents": "Ni dogodkov na urniku.",
+    "noAchievementOpportunities": "Ni priložnosti za dosežke ta dan."
   },
   "home": {
     "subtitle": "Izberi svojo pustolovščino in izkoristi {eventName} {year} na največ!",

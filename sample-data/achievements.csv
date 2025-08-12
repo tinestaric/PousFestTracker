@@ -1,18 +1,18 @@
 achievement_type,title,description,logo_url,from_time,to_time
-early_arrival,Zgodnja ptica,Pridi zgodaj na festival in začni svoje pustolovščino,🐦,2025-07-19 10:00:00+00,2025-07-19 11:00:00+00
-beer_pong_champion,Prvak beer ponga,Pokaži svoje spretnosti v turnirju beer ponga,🍻,2025-07-19 11:00:00+00,2025-07-19 12:30:00+00
-food_explorer,Raziskovalec okusov,Okusi odlično hrano v food courtu,🍔,2025-07-19 12:30:00+00,2025-07-19 13:00:00+00
-pool_party,Bazenski prvak,Pridruži se bazenlski zabavi z DJ Daviia,🏊,2025-07-19 13:00:00+00,2025-07-19 16:30:00+00
-evening_snacker,Popoldanski sladokusec,Okusi popoldanske grižljaje,🥪,2025-07-19 16:30:00+00,2025-07-19 17:00:00+00
-party_animal,Zabavna žival,Pleši in se zabavaj med sunset setom,🎉,2025-07-19 17:00:00+00,2025-07-19 18:30:00+00
-ceremony_witness,Priča slovesnosti,Prisostvuj zaključni slovesnosti,🏆,2025-07-19 18:30:00+00,2025-07-19 19:00:00+00
-night_owl,Nočna sova,Ostani do pozno v noč na silent disco,🦉,2025-07-19 19:00:00+00,2025-07-19 23:00:00+00
-music_marathon,Glasbeni maratonec,Vztrajaj do konca glasbenega programa,🎵,2025-07-19 23:00:00+00,2025-07-20 00:00:00+00
-camp_survivor,Preživeli kampa,Preživi noč v festivalskem kampu,🏕️,2025-07-20 00:00:00+00,2025-07-20 06:00:00+00
-social_butterfly,Socialni metulj,Družiti se z vsemi skozi cel dan,🦋,2025-07-19 10:00:00+00,2025-07-20 00:00:00+00
-festival_champion,Prvak festivala,Sodeluj v vseh glavnih aktivnostih,👑,2025-07-19 10:00:00+00,2025-07-20 00:00:00+00
-early_bird_special,Posebna zgodnja ptica,Prvi med prvimi na festivalu,⭐,2025-07-19 10:00:00+00,2025-07-19 10:30:00+00
-midnight_warrior,Polnočni bojevnik,Ostani aktiven do konca glasbenega programa,⚔️,2025-07-19 23:00:00+00,2025-07-20 00:00:00+00
-dj_fan,Oboževalec DJ Daviia,Uživaj v obeh nastopih DJ Daviia,🎧,2025-07-19 13:00:00+00,2025-07-19 18:30:00+00
-morning_fuel,Jutranjo gorivo,Okusi zadnji skupni zajtrk pred slovesom,🥞,2025-07-20 07:00:00+00,2025-07-20 08:00:00+00
-still_here,Zakaj si še tu?,Res ne moreš iti domov? Festival se je že končal!,😅,2025-07-20 12:00:00+00,2025-07-20 16:00:00+00 
+road_tripper,"Hit the Road!","Time to leave Vilnius behind! Flexible departure depending on when everyone's ready for the scenic hour drive.",🚗,2025-08-22 15:00:00+00,2025-08-22 16:00:00+00
+first_arrival,"Arrival at Lake Paradise","Welcome to Moletai! Simple, warm welcome to our lakeside adventure base after the pleasant drive.",🏞️,2025-08-22 17:00:00+00,2025-08-22 18:00:00+00
+fire_starter,"Campfire Chronicles & Chill Vibes","Kick back around the fire! Optional games, music, and that perfect Friday night relaxed energy. No pressure, just good vibes.",🔥,2025-08-22 19:00:00+00,2025-08-22 20:00:00+00
+early_bird,"Slovenian Breakfast Bonanza","Rise and shine, Slovenia! Keep it easy, keep it social, keep it delicious.",🐦,2025-08-23 06:00:00+00,2025-08-23 07:00:00+00
+welcome_committee,"Lithuanian Landing Party","The Lithuanians have arrived! Time for welcome drinks and the real party to begin.",🎉,2025-08-23 07:00:00+00,2025-08-23 08:00:00+00
+social_butterfly,"Meet & Greet Madness","Name tags, icebreakers, and the beautiful chaos of new friendships being born!",🦋,2025-08-23 08:00:00+00,2025-08-23 09:00:00+00
+quiz_master,"Mixed-Culture Quiz Battle","Slovenians vs Lithuanians? Nah! Mixed teams for maximum cultural chaos and fun!",🧠,2025-08-23 09:00:00+00,2025-08-23 10:00:00+00
+free_spirit,"Freedom Hour","Music, hammocks, optional activities - basically do whatever makes your soul happy!",🎵,2025-08-23 10:00:00+00,2025-08-23 11:00:00+00
+well_fed,"Lunch & Munch","Proper sit-down meal to fuel up for the afternoon adventures ahead.",🍽️,2025-08-23 11:30:00+00,2025-08-23 12:30:00+00
+nature_walker,"Park Explorer Mission","Guided tour of the park - perfect for digesting lunch with some light movement and nature vibes.",🌿,2025-08-23 13:00:00+00,2025-08-23 14:00:00+00
+water_warrior,"Splash Zone & Sports Spectacular","Water games, sports, drinks, and chats - the perfect combo for Saturday afternoon energy!",🏊‍♂️,2025-08-23 14:30:00+00,2025-08-23 15:30:00+00
+snack_master,"Snack Attack & Evening Prep","Free time with snacks - the perfect transition from day vibes to evening magic.",🍿,2025-08-23 15:30:00+00,2025-08-23 16:30:00+00
+dance_legend,"Evening Program Extravaganza","Dance floor is OPEN! Time to show off those moves and party like it's 2025!",🕺,2025-08-23 17:00:00+00,2025-08-23 18:00:00+00
+zen_master,"Slow Motion Morning","Wake up slowly with coffee, quiet music, and peaceful morning walks. No rush, just vibes.",☕,2025-08-24 07:00:00+00,2025-08-24 08:00:00+00
+brunch_lover,"Brunch & Heart-to-Hearts","The perfect time to eat, chat, and soak in those last precious moments together.",🥐,2025-08-24 08:00:00+00,2025-08-24 09:00:00+00
+memory_keeper,"Pack-Up & Memory Lane","Last hugs, final photos, and maybe some guestbook signing for the memories!",📸,2025-08-24 09:30:00+00,2025-08-24 10:30:00+00
+farewell_master,"Road Trip Back to Vilnius","Time for our Slovenian friends to hit the road back to Vilnius. Safe travels on the scenic drive!",🚗,2025-08-24 10:30:00+00,2025-08-24 11:30:00+00

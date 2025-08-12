@@ -1,21 +1,17 @@
 name,description,category,available,created_at,alcohol_percentage,alcohol_content_ml
-"Aperol Spritz","Klasični italijanski aperitiv s svežim okusom pomaranče in penečega vina. Popoln za poletne večere.","koktajl",true,2024-01-01T00:00:00Z,11.0,150.0
-"Black Devil's Ice Tea","Močan koktajl z mešanico štirih žganih pijač in svežim blackberry okusom. Popoln za zabave.","koktajl",true,2024-01-01T00:00:00Z,25.0,200.0
-"Cherry Bitherinho","Unikaten koktajl z Jägermeisterjem in višnjami. Popolna kombinacija grenkega in sladkega okusa.","koktajl",true,2024-01-01T00:00:00Z,30.0,250.0
-"Red Bull Vodka","Energijska kombinacija vodke in Red Bulla. Popolna za dolge noči in zabave.","koktajl",true,2024-01-01T00:00:00Z,20.0,180.0
-"Klasični Gin Tonik","Eleganten in osvežujoč koktajl z botaničnim okusom gina in grenkim tonikom.","koktajl",true,2024-01-01T00:00:00Z,23.0,160.0
-"Moscow Mule","Osvežujoč koktajl z vodko in ingverjevim pivom. Tradicionalno se postreže v bakreni skodelici.","koktajl",true,2024-01-01T00:00:00Z,15.0,180.0
-"Rum & Cola (Cuba Libre)","Klasična kombinacija ruma in kole z dodatkom svežega limetnega soka za pristno kubansko izkušnjo.","koktajl",true,2024-01-01T00:00:00Z,18.0,170.0
-"Pivo Laško","Legendarno slovensko pivo iz Laškega z več kot 200-letno tradicijo. Svetlo lager pivo z značilno zlato barvo in harmoničnim okusom hmelja.","pivo",true,2024-01-01T00:00:00Z,5.2,500.0
-"Pivo Union","Kultno ljubljansko pivo z več kot 160-letno tradicijo. Klasično svetlo pivo z zmajevo esenco in osvežujočim okusom.","pivo",true,2024-01-01T00:00:00Z,5.0,500.0
-"Nord","Prvi slovenski hard seltzer - osvežujoča alkoholna pijača z gazirano vodo in naravnimi okusi. Samo 89 kalorij na pločevinko.","pivo",true,2024-01-01T00:00:00Z,4.5,330.0
-"Radler Grenivka","Osvežujoča mešanica piva z grenivko (grapefruit). Popolna za vroče poletne dni s cvetličnim okusom citrusa.","pivo",true,2024-01-01T00:00:00Z,2.0,500.0
-"Radler Isotonic (0.0%)","Inovativna mešanica piva z izotoničnimi minerali. Brezalkoholna različica (0,0%) z okusi pomaranče in melise.","brezalkoholno",true,2024-01-01T00:00:00Z,0.0,0.0
-"Pivo Heineken 0.0","Svetovno znano nizozemsko pivo v brezalkoholni različici. Popoln okus pravega piva brez alkohola.","brezalkoholno",true,2024-01-01T00:00:00Z,0.0,0.0
-"Voda","Sveža pitna voda. Osnova življenja in popolna za hidriranje ob katerikoli priložnosti.","brezalkoholno",true,2024-01-01T00:00:00Z,0.0,500.0
-"Red Bull","Svetovno znana energijska pijača z kofeinom in taurinom. Daje krila in energijo za aktivne trenutke.","brezalkoholno",true,2024-01-01T00:00:00Z,0.0,250.0
-"Ledeni čaj","Osvežujoč hladen čaj, popoln za poletne dni. Klasična pijača z nežnim okusom čaja in osvežujočim učinkom.","brezalkoholno",true,2024-01-01T00:00:00Z,0.0,330.0
-"Jägermeister","Nemški zeliščni liker z več kot 56 naravnimi sestavinami. Kompleksen okus z edinstveno kombinacijo zelišč in začimb.","shot",true,2024-01-01T00:00:00Z,35.0,20.0
-"Borovničke","Slovenski tradicionalni sadni žganje iz domačih borovnic. Intenziven okus divjih gozdnih sadežev z dolgo tradicijo.","shot",true,2024-01-01T00:00:00Z,40.0,20.0
-"Šamar","Srbska premijska šljivovica z dodatkom dunje. Nežna in pitka rakija z edinstvenimi sadnimi notami in dolgim sazrevanjem.","shot",true,2024-01-01T00:00:00Z,40.0,20.0
-"Pelinkovec","Slovenski tradicionalni zeliščni liker z dominantno pelin (Artemisia absinthium). Grenki okus z zdravilnimi lastnostmi in stoletno tradicijo.","shot",true,2024-01-01T00:00:00Z,35.0,20.0 
+"Aperol Spritz","Classic Italian aperitif with a fresh orange flavor and sparkling wine. Perfect for summer evenings.","cocktail",true,2024-01-01T00:00:00Z,11.0,150.0
+"Black Devil's Ice Tea","Strong cocktail with a mix of four spirits and a fresh blackberry note. Perfect for parties.","cocktail",true,2024-01-01T00:00:00Z,25.0,200.0
+"Cherry Bitherinho","Unique cocktail with Jägermeister and cherries. A perfect balance of bitter and sweet.","cocktail",true,2024-01-01T00:00:00Z,30.0,250.0
+"Red Bull Vodka","Energizing combination of vodka and Red Bull. Perfect for long nights and parties.","cocktail",true,2024-01-01T00:00:00Z,20.0,180.0
+"Classic Gin & Tonic","Elegant and refreshing cocktail with the botanical notes of gin and a bitter tonic.","cocktail",true,2024-01-01T00:00:00Z,23.0,160.0
+"Moscow Mule","Refreshing cocktail with vodka and ginger beer. Traditionally served in a copper mug.","cocktail",true,2024-01-01T00:00:00Z,15.0,180.0
+"Rum & Cola (Cuba Libre)","Classic combination of rum and cola with a touch of fresh lime juice for an authentic Cuban experience.","cocktail",true,2024-01-01T00:00:00Z,18.0,170.0
+"Draft Beer","Rotating tap: one keg at a time. Expect crisp lagers and seasonal picks. Always cold, foamy, and poured to perfection.","beer",true,2024-01-01T00:00:00Z,5.0,500.0
+"Radler Isotonic (0.0%)","Innovative mix of beer with isotonic minerals. Non-alcoholic version (0.0%) with orange and lemon balm flavors.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,0.0
+"Heineken 0.0","World-famous Dutch beer in a non-alcoholic version. The full taste of real beer without alcohol.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,0.0
+"Water","Fresh drinking water. The essence of life and perfect for hydration at any moment.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,500.0
+"Red Bull","World-renowned energy drink with caffeine and taurine. Gives you wings and energy for active moments.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,250.0
+"Iced Tea","Refreshing cold tea, perfect for summer days. A classic drink with a gentle tea flavor and cooling effect.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,330.0
+"Jägermeister","German herbal liqueur with more than 56 natural ingredients. A complex flavor with a unique blend of herbs and spices.","shot",true,2024-01-01T00:00:00Z,35.0,20.0
+"Borovničke","Traditional Slovenian fruit brandy made from local blueberries. Intense wild berry flavor with a long-standing tradition.","shot",true,2024-01-01T00:00:00Z,40.0,20.0
+"Žalios Devynerios","Lithuanian herbal liqueur from the devynerios family: aromatic, bitter‑sweet blend of botanicals with notes of roots, citrus peel, and spice. Best served ice‑cold as a shot.","shot",true,2024-01-01T00:00:00Z,35.0,20.0

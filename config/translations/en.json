@@ -21,7 +21,8 @@
     "recipe": "Recipe"
   },
   "time": {
-    "today": "today"
+    "today": "today",
+    "day": "Day"
   },
   "admin": {
     "title": "Admin Dashboard",
@@ -160,6 +161,10 @@
       "buttons": {
         "viewPartyPulse": "View Party Pulse"
       }
+    },
+    "order": {
+      "processing": "Processing order for {drinkName}...",
+      "success": "Successfully ordered {drinkName}! 🍻"
     }
   },
   "timetable": {
@@ -179,7 +184,8 @@
       "nightOwlDesc": "Stay up late into the night",
       "socialButterfly": "Social Butterfly",
       "socialButterflyDesc": "Socialize with everyone"
-    }
+    },
+    "noAchievementOpportunities": "No achievement opportunities for this day."
   },
   "home": {
     "subtitle": "Choose your adventure and make the most of {eventName} {year}!",
