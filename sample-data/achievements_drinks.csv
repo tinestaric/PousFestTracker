@@ -1,0 +1,14 @@
+achievement_type,title,description,logo_url,from_time,to_time
+FIRST_SIP,First Sip,"Your very first drink of the event. Cheers!",🥤,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+TRIPLE_THREAT,Triple Threat,"Three alcoholic drinks logged — pace yourself, legend.",🍻,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+MENU_EXPLORER_5,Menu Explorer,"Tried five different drinks from the menu.",🧭,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+TOTAL_COUNT_5,Warming Up,"Five drinks logged across the event.",🥳,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+TOTAL_COUNT_10,Thirsty Ten,"Ten total drinks — still standing!",🔟,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+TOTAL_COUNT_15,"Trying to Dethrone Galič?","15 drinks and counting — last champ Galič did 33. Eyes on the crown, water in the other hand.",👑,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+ALCOHOLIC_COUNT_5,High Spirits,"Five alcoholic drinks — pace yourself.",🥂,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+UNIQUE_DRINKS_3,Sampler Set,"Tried three different drinks.",🧪,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+UNIQUE_DRINKS_8,Menu Master,"Eight different drinks — impressive tour!",🏅,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+CATEGORY_COUNT_beer_3,Hop Head,"Three beers enjoyed.",🍺,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+CATEGORY_COUNT_cocktail_3,Shaker Star,"Three cocktails mixed or ordered.",🍹,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+CATEGORY_COUNT_shot_3,Shot Caller,"Three shots fired.",🥃,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00
+CATEGORY_COUNT_non-alcoholic_3,Hydration Hero,"Three non-alcoholic drinks — respect.",💧,2025-08-22 00:00:00+00,2025-08-24 23:59:59+00

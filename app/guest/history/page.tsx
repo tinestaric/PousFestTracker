@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getStoredTagUid } from '@/lib/hooks/useTagUid'
 import { ArrowLeft, Wine, UtensilsCrossed, Clock, Calendar, TrendingUp, BarChart3, Trophy } from 'lucide-react'
 import Link from 'next/link'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
@@ -42,7 +43,7 @@ export default function OrderHistory() {
   useEffect(() => {
     const fetchOrderHistory = async () => {
       try {
-        const tagUid = localStorage.getItem('pous_fest_tag_uid')
+        const tagUid = getStoredTagUid()
         if (!tagUid) {
           router.push('/guest')
           return

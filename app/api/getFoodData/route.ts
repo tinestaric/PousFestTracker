@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export async function GET(request: NextRequest) {
   try {
@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
     const tag_uid = searchParams.get('tag_uid')
 
     // Get food menu items
-    const { data: foodMenu, error: menuError } = await supabase
+    const { data: foodMenu, error: menuError } = await supabaseAdmin
       .from('food_menu')
       .select('*')
       .eq('available', true)
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     if (tag_uid) {
       // Get guest by tag_uid
-      const { data: guest, error: guestError } = await supabase
+      const { data: guest, error: guestError } = await supabaseAdmin
         .from('guests')
         .select('id')
         .eq('tag_uid', tag_uid)
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
 
       if (guest && !guestError) {
         // Get guest's current food order
-        const { data: foodOrder, error: orderError } = await supabase
+        const { data: foodOrder, error: orderError } = await supabaseAdmin
           .from('food_orders')
           .select(`
             *,

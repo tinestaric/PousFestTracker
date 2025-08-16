@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { buildBacTimeSeries } from '@/lib/alcohol'
 
 export async function GET(request: NextRequest) {
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Resolve guest
-    const { data: guest } = await supabase
+    const { data: guest } = await supabaseAdmin
       .from('guests')
       .select('id, gender')
       .eq('tag_uid', tagUid)
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fetch guest drink orders with required alcohol fields
-    const { data: orders } = await supabase
+    const { data: orders } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         quantity,

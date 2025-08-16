@@ -1,5 +1,7 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { awardDrinkAchievementsForGuest } from '../_shared/achievements.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -76,6 +78,9 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       )
     }
+
+    // Attempt to award simple drink-based achievements via shared helper
+    await awardDrinkAchievementsForGuest(supabaseClient as any, guest.id, now)
 
     return new Response(
       JSON.stringify({

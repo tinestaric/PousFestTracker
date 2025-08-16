@@ -1,5 +1,7 @@
+// @ts-nocheck
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { awardDrinkAchievementsForGuest } from '../_shared/achievements.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -131,7 +133,7 @@ serve(async (req) => {
       const drink = deviceConfig.drink_menu
       
       if (drink.available) {
-        // Log the drink order
+        // Log the drink order locally and then award achievements via shared helper
         await supabaseClient
           .from('drink_orders')
           .insert({
@@ -141,6 +143,8 @@ serve(async (req) => {
             status: 'logged',
             ordered_at: now
           })
+
+        await awardDrinkAchievementsForGuest(supabaseClient as any, guest.id, now)
       }
     }
 

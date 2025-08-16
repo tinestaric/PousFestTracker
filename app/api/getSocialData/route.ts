@@ -1,53 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
 import { calculateAlcoholMetrics } from '@/lib/alcohol'
+import { getDrinkOrdersWithAlcoholFieldsByGuestId } from '@/lib/data/drinkOrders'
+import type { SocialData, SocialHighlight } from '@/types/social'
 
-interface SocialHighlight {
-  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'alcoholConsumption' | 'userRank'
-  title: string
-  description: string
-  data?: any
-}
-
-interface LeaderboardEntry {
-  name: string
-  drinks: number
-  rank: number
-}
-
-interface TrendingDrink {
-  name: string
-  count: number
-  category: string
-}
-
-interface ActivityItem {
-  guestName: string
-  drinkName: string
-  timestamp: string
-}
-
-interface SocialData {
-  highlights: SocialHighlight[]
-  leaderboards: {
-    hourly: LeaderboardEntry[]
-    allTime: LeaderboardEntry[]
-  }
-  trending: TrendingDrink[]
-  activity: ActivityItem[]
-  userStats: {
-    rank: number
-    totalDrinks: number
-    timeSinceWater: string | null
-    alcoholConsumption: {
-      totalAlcoholMl: number
-      standardDrinks: number
-      estimatedBAC: number
-      lastHourAlcohol: number
-    }
-  }
-}
+// Types now imported from '@/types/social'
 
 export async function GET(request: NextRequest) {
   try {
@@ -72,7 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get current user's guest info (including gender for BAC calculation)
-    const { data: currentGuest } = await supabase
+    const { data: currentGuest } = await supabaseAdmin
       .from('guests')
       .select('id, name, gender')
       .eq('tag_uid', tagUid)
@@ -89,7 +47,7 @@ export async function GET(request: NextRequest) {
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
 
     // Get hourly leaderboard
-    const { data: hourlyLeaderboard } = await supabase
+    const { data: hourlyLeaderboard } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         guest_id,
@@ -118,7 +76,7 @@ export async function GET(request: NextRequest) {
       }))
 
     // Get all-time leaderboard
-    const { data: allTimeLeaderboard } = await supabase
+    const { data: allTimeLeaderboard } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         guest_id,
@@ -146,7 +104,7 @@ export async function GET(request: NextRequest) {
       }))
 
     // Get trending drinks (last hour)
-    const { data: trendingData } = await supabase
+    const { data: trendingData } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         drink_menu!inner(name, category),
@@ -170,7 +128,7 @@ export async function GET(request: NextRequest) {
 
     // Get recent activity (last 30 minutes)
     const thirtyMinutesAgo = new Date(now.getTime() - 30 * 60 * 1000)
-    const { data: recentActivity } = await supabase
+    const { data: recentActivity } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         ordered_at,
@@ -194,7 +152,7 @@ export async function GET(request: NextRequest) {
     const userTotalDrinks = allTimeDrinkCounts.get(currentGuest.id)?.drinks || 0
 
     // Calculate alcohol consumption via shared utility
-    const { data: userDrinkOrders } = await supabase
+    const { data: userDrinkOrders } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         quantity,
@@ -202,6 +160,7 @@ export async function GET(request: NextRequest) {
         drink_menu!inner(alcohol_percentage, alcohol_content_ml)
       `)
       .eq('guest_id', currentGuest.id)
+      .order('ordered_at', { ascending: true })
 
     const alcoholConsumption = calculateAlcoholMetrics(
       (userDrinkOrders || []) as any,
@@ -210,7 +169,7 @@ export async function GET(request: NextRequest) {
     )
 
     // Get time since last non-alcoholic drink (simple: alcohol_percentage = 0.0)
-    const { data: lastNonAlcoholicOrder } = await supabase
+    const { data: lastNonAlcoholicOrder } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         ordered_at,

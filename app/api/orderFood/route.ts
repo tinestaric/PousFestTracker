@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get guest by tag_uid
-    const { data: guest, error: guestError } = await supabase
+    const { data: guest, error: guestError } = await supabaseAdmin
       .from('guests')
       .select('id')
       .eq('tag_uid', tag_uid)
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if guest already has a food order - if so, update it
-    const { data: existingOrder, error: checkError } = await supabase
+    const { data: existingOrder, error: checkError } = await supabaseAdmin
       .from('food_orders')
       .select('id')
       .eq('guest_id', guest.id)
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     if (existingOrder) {
       // Update existing order
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('food_orders')
         .update({
           food_menu_id,
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, data, updated: true })
     } else {
       // Create new order
-      const { data, error } = await supabase
+      const { data, error } = await supabaseAdmin
         .from('food_orders')
         .insert([
           {

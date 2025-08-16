@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState, useMemo, useCallback, Suspense } from 'react'
+import { useEffect, useState, useMemo, useCallback, Suspense, useRef } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw, BarChart3, Crown, Droplets, Flame, Users } from 'lucide-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
+import { TAG_UID_STORAGE_KEY, getStoredTagUid, setStoredTagUid } from '@/lib/hooks/useTagUid'
 import { supabase } from '@/lib/supabase'
 import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem, Recipe } from '@/lib/supabase'
 import { DashboardSkeleton } from './components/SkeletonLoader'
@@ -84,9 +85,9 @@ interface SocialHighlight {
 // Cache utilities
 const GENERAL_CACHE_DURATION = 5 * 60 * 1000 // 5 minutes for general data
 const ACHIEVEMENT_CACHE_DURATION = 30 * 1000 // 30 seconds for achievements
-const DRINK_MENU_CACHE_KEY = 'pous_fest_drink_menu_cache'
-const GUEST_DATA_CACHE_KEY = 'pous_fest_guest_data_cache'
-const ACHIEVEMENTS_CACHE_KEY = 'pous_fest_achievements_cache'
+const DRINK_MENU_CACHE_KEY = 'event_drink_menu_cache'
+const GUEST_DATA_CACHE_KEY = 'event_guest_data_cache'
+const ACHIEVEMENTS_CACHE_KEY = 'event_achievements_cache'
 
 interface CacheItem<T> {
   data: T
@@ -147,6 +148,7 @@ function GuestDashboard() {
   const [socialHighlights, setSocialHighlights] = useState<SocialHighlight[]>([])
   const [socialLoading, setSocialLoading] = useState(false)
   const [alcoholTimelineData, setAlcoholTimelineData] = useState<{ labels: string[]; datasets: any[] }>({ labels: [], datasets: [] })
+  const hasAnchoredScroll = useRef(false)
 
   // Memoize expensive category grouping calculation - moved before early returns
   const drinksByCategory = useMemo(() => {
@@ -425,7 +427,7 @@ function GuestDashboard() {
   }
 
   const orderDrink = async (drinkId: string, quantity: number = 1) => {
-    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    const tagUid = getStoredTagUid()
     if (!tagUid) return
 
     // Find the drink name for feedback
@@ -505,8 +507,16 @@ function GuestDashboard() {
     }
   }
 
+  const handleScrollToOrderingClick = (e: any) => {
+    e.preventDefault()
+    scrollToOrdering()
+    if (typeof window !== 'undefined' && window.history && window.history.replaceState) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search)
+    }
+  }
+
   const handleManualRefresh = async () => {
-    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    const tagUid = getStoredTagUid()
     if (!tagUid || isRefreshing) return
 
     setIsRefreshing(true)
@@ -528,13 +538,13 @@ function GuestDashboard() {
   useEffect(() => {
     const tag_uid = searchParams.get('tag_uid')
     if (tag_uid) {
-      // Store in localStorage for session management
-      localStorage.setItem('pous_fest_tag_uid', tag_uid)
+      // Store in localStorage for session management (migrates legacy keys)
+      setStoredTagUid(tag_uid)
       // Optimized single API call
       fetchDashboardData(tag_uid)
     } else {
       // Try to get from localStorage
-      const storedTagUid = localStorage.getItem('pous_fest_tag_uid')
+      const storedTagUid = getStoredTagUid()
       if (storedTagUid) {
         // Optimized single API call
         fetchDashboardData(storedTagUid)
@@ -551,16 +561,19 @@ function GuestDashboard() {
   }, [throttledScrollHandler])
 
   useEffect(() => {
-    // Check if we need to scroll to drink ordering section after page load
+    // Deep link support: if URL contains #drink-ordering on first load, scroll once then clear the hash
+    if (hasAnchoredScroll.current) return
     if (typeof window !== 'undefined' && window.location.hash === '#drink-ordering') {
-      // Wait for the component to fully render and data to load
+      hasAnchoredScroll.current = true
       const scrollTimer = setTimeout(() => {
         scrollToOrdering()
-      }, 1000)
-      
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState(null, '', window.location.pathname + window.location.search)
+        }
+      }, 300)
       return () => clearTimeout(scrollTimer)
     }
-  }, [guestData, drinkMenu]) // Dependencies ensure data is loaded before scrolling
+  }, [])
 
   // Effect to randomly select 2 highlights from all available highlights
   useEffect(() => {
@@ -680,6 +693,7 @@ function GuestDashboard() {
               <h2 className="text-xl font-semibold text-white/90 mb-4">{guestData.guest.gender === 'female' ? getText('guest.orderSection.readyForNextFemale', config) : getText('guest.orderSection.readyForNextMale', config)}</h2>
               <a 
                 href="#drink-ordering"
+                onClick={handleScrollToOrderingClick}
                 className={`w-full bg-gradient-to-r ${config.ui.primaryButton} text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 flex items-center justify-center gap-3 no-underline`}
               >
                 <Wine className="w-6 h-6" />
@@ -938,6 +952,7 @@ function GuestDashboard() {
         <div className="fixed bottom-6 right-6 z-40">
           <a 
             href="#drink-ordering"
+            onClick={handleScrollToOrderingClick}
             className={`bg-gradient-to-r ${config.ui.primaryButton} p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 animate-pulse flex items-center justify-center`}
           >
             <Wine className="w-6 h-6 text-white" />

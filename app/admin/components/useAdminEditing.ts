@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react'
-import { supabase } from '@/lib/supabase'
+import { adminSave, adminDelete } from '@/lib/admin/fetch'
 import type { EditingItem, AppError, LoadingState, FormValidation } from './types'
 import { validateFormData } from './validation'
 
@@ -43,15 +43,10 @@ export const useAdminEditing = (onDataChange: () => void) => {
   }, [])
 
   const getTableName = (type: EditingItem['type']) => {
-    switch (type) {
-      case 'guest': return 'guests'
-      case 'achievement': return 'achievement_templates'
-      case 'recipe': return 'recipes'
-      case 'food': return 'food_menu'
-      case 'drink': return 'drink_menu'
-      case 'device': return 'device_configs'
-      default: throw new Error(`Unknown type: ${type}`)
-    }
+    // Delegate to centralized mapping for consistency
+    // Cast is safe due to union overlap
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return require('@/lib/admin/db').getTableName(type as any)
   }
 
   const getDefaultData = (type: EditingItem['type']) => {
@@ -154,33 +149,10 @@ export const useAdminEditing = (onDataChange: () => void) => {
 
     try {
       setLoadingState(true, 'saving', 'Saving data...')
-      const tableName = getTableName(editing.type)
-
-      // Prepare payload and strip nested relation fields for device type
-      let payload = editing.data
-      if (editing.type === 'device') {
-        const { drink_menu, achievement_templates, ...deviceData } = editing.data as any
-        payload = deviceData
-      }
-
-      if (editing.id) {
-        // Update existing
-        const { error } = await supabase
-          .from(tableName)
-          .update(payload)
-          .eq('id', editing.id)
-        
-        if (error) throw error
-        addError(`${editing.type} updated successfully`, 'success')
-      } else {
-        // Create new
-        const { error } = await supabase
-          .from(tableName)
-          .insert([payload])
-        
-        if (error) throw error
-        addError(`${editing.type} created successfully`, 'success')
-      }
+      const { buildSavePayload } = require('@/lib/admin/db')
+      const payload = buildSavePayload(editing.type as any, editing.data)
+      await adminSave(editing.type as any, editing.id, payload)
+      addError(`${editing.type} ${editing.id ? 'updated' : 'created'} successfully`, 'success')
 
       cancelEdit()
       onDataChange()
@@ -208,14 +180,7 @@ export const useAdminEditing = (onDataChange: () => void) => {
   const performDelete = useCallback(async (id: string, type: EditingItem['type']) => {
     try {
       setLoadingState(true, 'deleting', 'Deleting item...')
-      const tableName = getTableName(type)
-      
-      const { error } = await supabase
-        .from(tableName)
-        .delete()
-        .eq('id', id)
-      
-      if (error) throw error
+      await adminDelete(type as any, id)
       
       addError(`${type} deleted successfully`, 'success')
       onDataChange()

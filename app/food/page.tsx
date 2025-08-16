@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import { UtensilsCrossed, User, Home, Loader2, CheckCircle, Clock, ChefHat, Coffee } from 'lucide-react'
 import Link from 'next/link'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
+import { getStoredTagUid, setStoredTagUid } from '@/lib/hooks/useTagUid'
 
 interface FoodMenuItem {
   id: string
@@ -31,7 +32,7 @@ interface FoodData {
 
 // Cache utilities
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
-const FOOD_DATA_CACHE_KEY = 'pous_fest_food_data_cache'
+const FOOD_DATA_CACHE_KEY = 'event_food_data_cache'
 
 interface CacheItem<T> {
   data: T
@@ -236,7 +237,7 @@ export default function FoodPage() {
   }, [])
 
   const orderFood = async (foodMenuId: string) => {
-    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    const tagUid = getStoredTagUid()
     if (!tagUid) return
 
     // Find the food name for feedback
@@ -308,11 +309,11 @@ export default function FoodPage() {
     const tag_uid = searchParams.get('tag_uid')
     if (tag_uid) {
       // Store in localStorage for session management
-      localStorage.setItem('pous_fest_tag_uid', tag_uid)
+      setStoredTagUid(tag_uid)
       fetchFoodData(tag_uid)
     } else {
       // Try to get from localStorage
-      const storedTagUid = localStorage.getItem('pous_fest_tag_uid')
+      const storedTagUid = getStoredTagUid()
       if (storedTagUid) {
         fetchFoodData(storedTagUid)
       } else {

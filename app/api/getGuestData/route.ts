@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { proxySupabaseFunction } from '@/lib/api/proxySupabaseFunction'
 
 export async function GET(request: NextRequest) {
   try {
@@ -12,13 +13,9 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const response = await fetch(`${supabaseUrl}/functions/v1/getGuestData?tag_uid=${tag_uid}`, {
+    const response = await proxySupabaseFunction('getGuestData', {
       method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      params: { tag_uid },
     })
 
     if (!response.ok) {

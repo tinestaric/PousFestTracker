@@ -1,0 +1,73 @@
+---
+alwaysApply: true
+---
+
+Project identity
+- This is a fun, time-boxed event app for small private festivals/parties.
+- Typical scope: runs for 1-3 days, up to ~100 attendees, a few NFC readers.
+- Implication: optimize for speed, clarity, and reliability over enterprise abstractions.
+
+Tech snapshot
+- Framework: Next.js 14 (App Router) + TypeScript, Tailwind CSS.
+- Backend: Supabase (Postgres) + Edge Functions (Deno). Next API routes proxy to Edge Functions.
+- Data: simple relational schema; CSVs for seed/demo; config in `config/` and `public/`.
+- Key dirs: `app/`, `lib/`, `supabase/functions/`, `supabase/migrations/`, `public/`.
+
+Design principles
+- Keep it simple: straightforward code over patterns (no CQRS/DDD/hexagonal/complex DI).
+- Local-first UI: React state/hooks; avoid heavy state libs unless there is a clear pain point.
+- Few dependencies: pick the smallest tool that works; avoid unnecessary abstraction layers.
+- YAGNI: do not build for hypothetical scale; design for <= 100 concurrent users.
+- Ship fast: prefer solutions that can be built and tested in hours.
+- Readable over clever: clear code, early returns, small modules.
+
+Error handling and logging
+- Show friendly user-facing errors (toasts/messages) where it matters.
+- Server logging via console is acceptable; no heavy observability stacks.
+- Retries only where they materially improve UX (e.g., flaky network).
+
+Data, consistency, and performance
+- Event-tolerant consistency; eventual consistency is acceptable for non-critical stats.
+- Caching: prefer simple Next.js or in-memory caching when it clearly helps; avoid complex invalidation.
+- Queries: keep simple and indexed; optimize only with evidence of slowness.
+
+Security and privacy
+- Secrets in env vars only; never commit secrets.
+- Guest names and tag UIDs are private to the event; keep logs minimal and short-lived.
+- Admin access can remain simple (env password) unless stricter controls are clearly needed.
+
+Testing and QA
+- Right-sized tests: add focused unit tests for tricky logic (time windows, achievements).
+- Skip exhaustive E2E unless driven by a bug.
+- Manual QA should mirror real flows: NFC scan -> guest dashboard -> ordering -> admin stats.
+
+UX guidelines
+- Mobile-first: most usage is on phones at the venue.
+- Fast paths: minimize taps to log a drink or view achievements.
+- Favor delightful, simple visuals over enterprise polish; Tailwind is preferred.
+
+Feature work guidelines
+- Always ask: does this matter for a 1-3 day, <=100 person event? If not, skip or defer.
+- Prefer config over code when possible (e.g., `config/event.json`, `public/timetable.json`).
+- Reuse existing patterns and utilities in `app/` and `lib/`; keep files small and direct.
+
+Anti-goals (avoid unless justified)
+- Microservices, message buses, complex job schedulers.
+- Enterprise feature flags, heavy A/B testing frameworks.
+- Complex role systems beyond simple admin vs guest.
+- Over-abstracted repositories/services with little payoff.
+
+AI assistant guidance
+- Default to pragmatic, minimal solutions aligned with this scope.
+- Reuse current utilities (Supabase client, API proxies) and file structure.
+- Prefer explicit TypeScript types and early returns; avoid over-engineering.
+- Keep new files focused and colocated where discoverable.
+- If unsure, choose the simpler path and leave a short comment explaining the tradeoff.
+
+Operational notes
+- Deploy: Vercel for Next.js; Supabase for DB and Edge Functions.
+- Incidents: favor rapid hotfixes over perfect root-cause processes during the event.
+- Backups: export CSVs before/after the event for peace of mind.
+
+Summary reminder
+- This is a party app. If a choice adds enterprise overhead without clear benefit during a short event, do not do it.

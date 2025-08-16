@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
+import { fetchAllAdminData } from '@/lib/admin/fetch'
 import type { AdminStats, AdminData } from './types'
 
 export const useAdminData = () => {
@@ -28,31 +29,17 @@ export const useAdminData = () => {
       setLoading(true)
       
       // Fetch all data in parallel
-      const [
-        guestsData, 
-        achievementsData, 
-        drinksData, 
-        recipesData, 
-        drinkOrdersData, 
-        guestAchievementsData, 
-        foodMenuData, 
+      const {
+        guestsData,
+        achievementsData,
+        drinksData,
+        recipesData,
+        drinkOrdersData,
+        guestAchievementsData,
+        foodMenuData,
         foodOrdersData,
-        deviceConfigsData
-      ] = await Promise.all([
-        supabase.from('guests').select('*').order('created_at', { ascending: false }),
-        supabase.from('achievement_templates').select('*').order('created_at', { ascending: false }),
-        supabase.from('drink_menu').select('*').order('category', { ascending: true }),
-        supabase.from('recipes').select('*, drink_menu(name, category)').order('created_at', { ascending: false }),
-        supabase.from('drink_orders').select('*, drink_menu(name, category)').order('ordered_at', { ascending: false }),
-        supabase.from('guest_achievements').select('*, achievement_templates(title), guests(name)').order('unlocked_at', { ascending: false }),
-        supabase.from('food_menu').select('*').order('category', { ascending: true }),
-        supabase.from('food_orders').select('*, food_menu(name, category), guests(name)').order('ordered_at', { ascending: false }),
-        supabase.from('device_configs').select(`
-          *,
-          drink_menu:drink_menu_id(name, category),
-          achievement_templates:achievement_template_id(title)
-        `).order('created_at', { ascending: false })
-      ])
+        deviceConfigsData,
+      } = await fetchAllAdminData()
 
       const newData: AdminData = {
         guests: guestsData.data || [],

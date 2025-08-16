@@ -7,10 +7,11 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
 import type { Recipe } from '@/lib/supabase'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
+import { getStoredTagUid } from '@/lib/hooks/useTagUid'
 
 // Cache constants to match guest page
-const GUEST_DATA_CACHE_KEY = 'pous_fest_guest_data_cache'
-const DRINK_MENU_CACHE_KEY = 'pous_fest_drink_menu_cache'
+const GUEST_DATA_CACHE_KEY = 'event_guest_data_cache'
+const DRINK_MENU_CACHE_KEY = 'event_drink_menu_cache'
 
 export default function RecipesPage() {
   const searchParams = useSearchParams()
@@ -69,7 +70,7 @@ export default function RecipesPage() {
   }
 
   const orderDrink = async (recipe: Recipe) => {
-    const tagUid = localStorage.getItem('pous_fest_tag_uid')
+    const tagUid = getStoredTagUid()
     if (!tagUid) {
       setOrderFeedback({
         show: true,

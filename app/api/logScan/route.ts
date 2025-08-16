@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { proxySupabaseFunction } from '@/lib/api/proxySupabaseFunction'
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,14 +13,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const response = await fetch(`${supabaseUrl}/functions/v1/logScan`, {
+    const response = await proxySupabaseFunction('logScan', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ tag_uid }),
+      body: { tag_uid },
     })
 
     if (!response.ok) {

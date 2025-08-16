@@ -2,55 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getStoredTagUid } from '@/lib/hooks/useTagUid'
+import type { SocialData } from '@/types/social'
 import { ArrowLeft, Users, TrendingUp, Activity, Trophy, Crown, Droplets, Flame, BarChart3 } from 'lucide-react'
 import Link from 'next/link'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
 
-interface SocialHighlight {
-  type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'alcoholConsumption'
-  title: string
-  description: string
-  data?: any
-}
-
-interface LeaderboardEntry {
-  name: string
-  drinks: number
-  rank: number
-}
-
-interface TrendingDrink {
-  name: string
-  count: number
-  category: string
-}
-
-interface ActivityItem {
-  guestName: string
-  drinkName: string
-  timestamp: string
-}
-
-interface SocialData {
-  highlights: SocialHighlight[]
-  leaderboards: {
-    hourly: LeaderboardEntry[]
-    allTime: LeaderboardEntry[]
-  }
-  trending: TrendingDrink[]
-  activity: ActivityItem[]
-  userStats: {
-    rank: number
-    totalDrinks: number
-    timeSinceWater: string | null
-    alcoholConsumption: {
-      totalAlcoholMl: number
-      standardDrinks: number
-      estimatedBAC: number
-      lastHourAlcohol: number
-    }
-  }
-}
+// Types now imported
 
 export default function SocialPage() {
   const config = getEventConfig()
@@ -68,7 +26,7 @@ export default function SocialPage() {
 
     const fetchSocialData = async () => {
       try {
-        const tagUid = localStorage.getItem('pous_fest_tag_uid')
+        const tagUid = getStoredTagUid()
         if (!tagUid) {
           router.push('/guest')
           return
