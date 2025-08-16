@@ -204,13 +204,13 @@ export default function RecipesPage() {
                   
                   {/* Recipe Info */}
                   <div className="flex flex-wrap gap-4 mb-6">
-                    <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
-                      <Clock className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-800">{selectedRecipe.prep_time}</span>
+                    <div className={`flex items-center gap-2 ${config.ui.recipes?.accentPillBg || 'bg-amber-50'} px-3 py-2 rounded-lg`}>
+                      <Clock className={`w-4 h-4 ${config.ui.recipes?.accentIcon || 'text-amber-600'}`} />
+                      <span className={`text-sm font-medium ${config.ui.recipes?.accentPillText || 'text-amber-800'}`}>{selectedRecipe.prep_time}</span>
                     </div>
-                    <div className="flex items-center gap-2 bg-blue-50 px-3 py-2 rounded-lg">
-                      <Users className="w-4 h-4 text-blue-600" />
-                      <span className="text-sm font-medium text-blue-800">{getText('recipes.serves', config)} {selectedRecipe.serves}</span>
+                    <div className={`flex items-center gap-2 ${config.ui.recipes?.accentPillBg || 'bg-amber-50'} px-3 py-2 rounded-lg`}>
+                      <Users className={`w-4 h-4 ${config.ui.recipes?.accentIcon || 'text-amber-600'}`} />
+                      <span className={`text-sm font-medium ${config.ui.recipes?.accentPillText || 'text-amber-800'}`}>{getText('recipes.serves', config)} {selectedRecipe.serves}</span>
                     </div>
                     <span className={`px-3 py-2 rounded-lg text-sm font-medium ${getDifficultyColor(selectedRecipe.difficulty || 'Easy')}`}>
                       {selectedRecipe.difficulty}
@@ -231,7 +231,7 @@ export default function RecipesPage() {
                   {/* Order Button */}
                   <button
                     onClick={() => orderDrink(selectedRecipe)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl w-full lg:w-auto text-lg"
+                    className={`bg-gradient-to-r ${config.ui.primaryButton} hover:bg-gradient-to-r hover:${config.ui.primaryButtonHover} text-white font-semibold py-4 px-8 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl w-full lg:w-auto text-lg`}
                   >
                     {getText('recipes.orderCocktail', config)}
                   </button>
@@ -243,14 +243,14 @@ export default function RecipesPage() {
                     {/* Ingredients */}
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <Sparkles className="w-6 h-6 text-blue-600" />
+                        <Sparkles className={`w-6 h-6 ${config.ui.recipes?.accentIcon || 'text-amber-600'}`} />
                         {getText('recipes.ingredients', config)}
                       </h3>
                       <div className="bg-gray-50 rounded-xl p-6">
                         <ul className="space-y-3">
                           {selectedRecipe.ingredients.map((ingredient, index) => (
                             <li key={index} className="flex items-start gap-3">
-                              <span className="w-2 h-2 bg-blue-500 rounded-full mt-3 flex-shrink-0"></span>
+                              <span className={`w-2 h-2 ${config.ui.recipes?.bullet || 'bg-amber-500'} rounded-full mt-3 flex-shrink-0`}></span>
                               <span className="text-gray-700 font-medium">{ingredient}</span>
                             </li>
                           ))}
@@ -261,14 +261,14 @@ export default function RecipesPage() {
                     {/* Instructions */}
                     <div>
                       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
-                        <ChefHat className="w-6 h-6 text-blue-600" />
+                        <ChefHat className={`w-6 h-6 ${config.ui.recipes?.accentIcon || 'text-amber-600'}`} />
                         {getText('recipes.instructions', config)}
                       </h3>
                       <div className="bg-gray-50 rounded-xl p-6">
                         <ol className="space-y-4">
                           {selectedRecipe.instructions.map((instruction, index) => (
                             <li key={index} className="flex gap-4">
-                              <span className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">
+                              <span className={`w-8 h-8 ${config.ui.recipes?.bullet || 'bg-amber-500'} text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0`}>
                                 {index + 1}
                               </span>
                               <span className="text-gray-700 pt-1 font-medium">{instruction}</span>
@@ -324,7 +324,7 @@ export default function RecipesPage() {
           <div className="flex justify-between items-center mb-8">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">{getText('recipes.title', config)}</h1>
-              <p className="text-blue-100 text-lg">{getText('recipes.subtitle', config)}</p>
+              <p className="text-white/80 text-lg">{getText('recipes.subtitle', config)}</p>
             </div>
             <Link href="/" className="bg-white/20 backdrop-blur-sm border border-white/30 text-white hover:bg-white/30 font-semibold py-3 px-6 rounded-lg transition-all duration-200 flex items-center gap-2">
                               <Home className="w-4 h-4" />
@@ -354,7 +354,7 @@ export default function RecipesPage() {
               {recipes.map((recipe) => (
                 <div key={recipe.id} className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-6 hover:shadow-3xl hover:scale-105 transition-all duration-300 cursor-pointer group" onClick={() => setSelectedRecipe(recipe)}>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300">
+                    <div className={`w-14 h-14 bg-gradient-to-br ${config.ui.recipes?.iconGradient || 'from-amber-500 to-orange-500'} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-300`}>
                       <Wine className="w-7 h-7 text-white" />
                     </div>
                     <div className="flex-1">
@@ -363,7 +363,7 @@ export default function RecipesPage() {
                         <span className={`px-2 py-1 rounded-lg text-xs font-medium ${getDifficultyColor(recipe.difficulty || 'Easy')}`}>
                           {recipe.difficulty}
                         </span>
-                        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-lg">{recipe.prep_time}</span>
+                        <span className={`text-xs ${config.ui.recipes?.accentPillText || 'text-amber-800'} ${config.ui.recipes?.accentPillBg || 'bg-amber-50'} px-2 py-1 rounded-lg`}>{recipe.prep_time}</span>
                       </div>
                     </div>
                   </div>
@@ -372,13 +372,13 @@ export default function RecipesPage() {
                   
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg">
-                        <Clock className="w-4 h-4 text-blue-600" />
-                        <span className="text-blue-800 font-medium">{recipe.prep_time}</span>
+                      <div className={`flex items-center gap-1 ${config.ui.recipes?.accentPillBg || 'bg-amber-50'} px-2 py-1 rounded-lg`}>
+                        <Clock className={`w-4 h-4 ${config.ui.recipes?.accentIcon || 'text-amber-600'}`} />
+                        <span className={`${config.ui.recipes?.accentPillText || 'text-amber-800'} font-medium`}>{recipe.prep_time}</span>
                       </div>
-                      <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-lg">
-                        <Users className="w-4 h-4 text-blue-600" />
-                        <span className="text-blue-800 font-medium">{recipe.serves}</span>
+                      <div className={`flex items-center gap-1 ${config.ui.recipes?.accentPillBg || 'bg-amber-50'} px-2 py-1 rounded-lg`}>
+                        <Users className={`w-4 h-4 ${config.ui.recipes?.accentIcon || 'text-amber-600'}`} />
+                        <span className={`${config.ui.recipes?.accentPillText || 'text-amber-800'} font-medium`}>{recipe.serves}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
@@ -387,7 +387,7 @@ export default function RecipesPage() {
                           <Play className="w-4 h-4 text-red-600" />
                         </div>
                       )}
-                      <span className="text-blue-600 font-bold text-sm group-hover:text-blue-700 transition-colors">{getText('recipes.viewRecipe', config)}</span>
+                      <span className={`${config.ui.recipes?.linkAccent || 'text-amber-600 hover:text-amber-700'} font-bold text-sm transition-colors`}>{getText('recipes.viewRecipe', config)}</span>
                     </div>
                   </div>
                 </div>

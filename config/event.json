@@ -38,6 +38,14 @@
     "primaryButtonHover": "from-red-600 to-orange-600",
     "secondaryButton": "from-yellow-500 to-amber-500",
     "secondaryButtonHover": "from-yellow-600 to-amber-600",
+    "recipes": {
+      "iconGradient": "from-amber-500 to-orange-500",
+      "accentIcon": "text-amber-600",
+      "accentPillBg": "bg-amber-50",
+      "accentPillText": "text-amber-800",
+      "bullet": "bg-amber-500",
+      "linkAccent": "text-amber-600 hover:text-amber-700"
+    },
     "charts": {
       "pieColors": [
         "rgba(239, 68, 68, 0.8)",

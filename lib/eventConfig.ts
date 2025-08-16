@@ -26,6 +26,14 @@ export interface EventConfig {
     primaryButtonHover: string
     secondaryButton: string
     secondaryButtonHover: string
+    recipes?: {
+      iconGradient: string
+      accentIcon: string
+      accentPillBg: string
+      accentPillText: string
+      bullet: string
+      linkAccent: string
+    }
     charts: {
       pieColors: string[]
       pieBorders: string[]

@@ -63,6 +63,9 @@ module.exports = {
     
     // Text gradient classes
     'bg-clip-text', 'text-transparent',
+
+    // Recipe UI accents (from config)
+    'text-amber-600', 'hover:text-amber-700', 'text-amber-800', 'bg-amber-50', 'bg-amber-500',
   ],
   theme: {
     extend: {
