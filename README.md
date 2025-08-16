@@ -62,12 +62,12 @@ A comprehensive event management system for tracking achievements, drinks, and s
 
 ### 3. Database Setup
 
-1. Run the migration script in your Supabase SQL editor:
-   ```sql
-   -- Copy and paste the contents of supabase/migrations/001_initial_schema.sql
-   ```
+Run the migrations in your Supabase SQL editor (in order):
 
-2. The migration will create:
+1. Initial tables: copy and run `supabase/migrations/20250730_initial_tables.sql`
+2. Enable RLS public reads: copy and run `supabase/migrations/20250816_enable_public_reads.sql`
+
+These will create:
    - 5 database tables with proper relationships
    - Sample achievement templates
    - Sample drink menu items
@@ -79,9 +79,9 @@ Deploy the Edge Functions to your Supabase project:
 
 ```bash
 supabase functions deploy logScan
-supabase functions deploy logJager
 supabase functions deploy orderDrink
 supabase functions deploy getGuestData
+supabase functions deploy getDashboardData
 ```
 
 ### 5. Install Dependencies
@@ -132,10 +132,9 @@ The application will be available at `http://localhost:3000`
 
 ### For NFC Hardware Integration
 
-The system expects NFC readers to make HTTP POST requests to:
+The system expects NFC readers to POST to:
 
-- **General Scans**: `/api/logScan` (proxies to Edge Function)
-- **Jager Machine**: `/api/logJager` (proxies to Edge Function)
+- **General Scans**: `/api/logScan` (proxies to Edge Function and handles drink/achievement logic)
 
 Request format:
 ```json
@@ -170,10 +169,10 @@ Request format:
 
 ### Supabase Edge Functions
 
-- `POST /functions/v1/logScan` - Process NFC scan and unlock achievements
-- `POST /functions/v1/logJager` - Log Jager machine usage
+- `POST /functions/v1/logScan` - Process NFC scan (handles achievements and device-configured drink logging)
 - `POST /functions/v1/orderDrink` - Process drink order
 - `GET /functions/v1/getGuestData` - Fetch complete guest profile
+- `GET /functions/v1/getDashboardData` - Fetch guest profile + menu in one call
 
 ## File Structure
 

@@ -14,14 +14,15 @@ npm install
 NEXT_PUBLIC_SUPABASE_URL=your_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+ADMIN_PASSWORD=your_admin_password
 ```
 
-## 3. Set up Database
+## 3. Set up Database & RLS
 
 1. Go to your Supabase project dashboard
 2. Open the SQL Editor
-3. Copy and paste the contents of `supabase/migrations/001_initial_schema.sql`
-4. Run the migration
+3. Run the contents of `supabase/migrations/20250730_initial_tables.sql`
+4. Run the contents of `supabase/migrations/20250816_enable_public_reads.sql` (enables RLS and allows public reads on menu/recipes)
 
 ## 4. Deploy Edge Functions
 
@@ -29,9 +30,9 @@ Install Supabase CLI and deploy functions:
 ```bash
 supabase login
 supabase functions deploy logScan
-supabase functions deploy logJager
 supabase functions deploy orderDrink
 supabase functions deploy getGuestData
+supabase functions deploy getDashboardData
 ```
 
 ## 5. Import Sample Data
@@ -48,6 +49,10 @@ npm run dev
 ```
 
 Visit http://localhost:3000 to see the application.
+
+Note:
+- The Admin dashboard uses server routes protected by `ADMIN_PASSWORD`. On first admin action, the browser will prompt for the password and cache it in localStorage.
+- With RLS enabled, guest fallbacks read-only views work due to the public read policies; all writes and sensitive reads go through server/Edge Functions using the service role.
 
 ## Test the Demo
 

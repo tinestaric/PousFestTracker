@@ -70,10 +70,16 @@ serve(async (req: Request) => {
       )
     }
 
-    // Process drink summary efficiently
+    // Process drink summary efficiently (by drink name and by category)
     const drinkSummary = (guestWithData.drink_orders || []).reduce((acc: Record<string, number>, order: any) => {
       const drinkName = order.drink_menu?.name || 'Unknown'
       acc[drinkName] = (acc[drinkName] || 0) + order.quantity
+      return acc
+    }, {})
+
+    const summaryByCategory = (guestWithData.drink_orders || []).reduce((acc: Record<string, number>, order: any) => {
+      const category = order.drink_menu?.category || 'unknown'
+      acc[category] = (acc[category] || 0) + order.quantity
       return acc
     }, {})
 
@@ -82,6 +88,39 @@ serve(async (req: Request) => {
       ...drink,
       recipe: drink.recipes?.[0] || null // Assuming one recipe per drink
     }))
+
+    // Build favorites from drinkSummary
+    const favorites = Object.entries(drinkSummary)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => (b.count as number) - (a.count as number))
+      .slice(0, 5)
+
+    // Build simple 30-min cumulative timeline
+    const ordersSorted = (guestWithData.drink_orders || []).slice().sort((a: any, b: any) => new Date(a.ordered_at).getTime() - new Date(b.ordered_at).getTime())
+    let timeline = { labels: [] as string[], counts: [] as number[] }
+    if (ordersSorted.length > 0) {
+      const start = new Date(ordersSorted[0].ordered_at)
+      start.setMinutes(Math.floor(start.getMinutes() / 30) * 30, 0, 0)
+      const end = new Date(ordersSorted[ordersSorted.length - 1].ordered_at)
+      end.setMinutes(Math.floor(end.getMinutes() / 30) * 30, 0, 0)
+      const stepMs = 30 * 60 * 1000
+      const bucketToCount = new Map<number, number>()
+      let cumulative = 0
+      for (let t = start.getTime() - stepMs; t <= end.getTime() + stepMs; t += stepMs) {
+        bucketToCount.set(t, cumulative)
+      }
+      ordersSorted.forEach((o: any) => {
+        const bt = new Date(o.ordered_at)
+        bt.setMinutes(Math.floor(bt.getMinutes() / 30) * 30, 0, 0)
+        cumulative += o.quantity || 1
+        bucketToCount.set(bt.getTime(), cumulative)
+      })
+      const keys = Array.from(bucketToCount.keys()).sort((a, b) => a - b)
+      timeline = {
+        labels: keys.map(k => new Date(k).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })),
+        counts: keys.map(k => bucketToCount.get(k) || 0)
+      }
+    }
 
     return new Response(
       JSON.stringify({
@@ -97,6 +136,9 @@ serve(async (req: Request) => {
         achievements: guestWithData.guest_achievements || [],
         drink_orders: guestWithData.drink_orders || [],
         drink_summary: drinkSummary,
+        summary_by_category: summaryByCategory,
+        favorites,
+        timeline,
         drink_menu: drinkMenu,
         total_achievements: guestWithData.guest_achievements?.length || 0,
         total_drinks: (guestWithData.drink_orders || []).reduce((sum: number, order: any) => sum + order.quantity, 0)

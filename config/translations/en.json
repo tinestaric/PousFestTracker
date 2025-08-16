@@ -47,6 +47,12 @@
       "noTagUid": "No tag UID found. Please scan your NFC tag.",
       "orderFailed": "Drink order failed. Please try again."
     },
+    "hydration": {
+      "reminderTitle": "Hydration reminder",
+      "reminderMessage": "It’s been a while since your last water. Stay hydrated!",
+      "orderWater": "Order water",
+      "browseNonAlcoholic": "Browse non-alcoholic"
+    },
     "stats": {
       "achievements": "Achievements",
       "achievementsUnit": "badges unlocked",
@@ -75,7 +81,11 @@
       "drinkPreferences": "Your Drink Preferences",
       "drinkTimeline": "Drink Timeline",
       "alcoholTimeline": "Alcohol Timeline",
-      "alcoholTimelineCaption": "Estimated BAC over time. Approximate. Metabolism assumed at 0.017%/hr."
+      "alcoholTimelineCaption": "Estimated BAC over time. Approximate. Metabolism assumed at 0.017%/hr.",
+      "labels": {
+        "drinksConsumed": "Drinks consumed",
+        "estimatedBAC": "Estimated BAC"
+      }
     },
     "history": {
       "title": "{guestName}'s Festival Journey",
@@ -104,7 +114,8 @@
       },
       "buttons": {
         "viewFullHistory": "View Complete Festival Journey",
-        "viewActivity": "View Festival Activity"
+        "viewActivity": "View Festival Activity",
+        "viewAll": "View all"
       }
     },
     "social": {
@@ -158,7 +169,8 @@
       "activity": {
         "title": "Live Activity",
         "justOrdered": "just ordered",
-        "minutesAgo": "{minutes}m ago"
+        "minutesAgo": "{minutes}m ago",
+        "last30m": "Last 30 minutes"
       },
       "buttons": {
         "viewPartyPulse": "View Party Pulse"

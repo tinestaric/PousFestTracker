@@ -47,6 +47,12 @@
       "noTagUid": "Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.",
       "orderFailed": "Naročilo pijače ni uspelo. Prosimo, poskusi znova."
     },
+    "hydration": {
+      "reminderTitle": "Opomnik za hidracijo",
+      "reminderMessage": "Že nekaj časa nisi pil vode. Ostani hidriran!",
+      "orderWater": "Naroči vodo",
+      "browseNonAlcoholic": "Poglej brezalkoholne"
+    },
     "stats": {
       "achievements": "Dosežki",
       "achievementsUnit": "značk odklenjenih",
@@ -75,7 +81,11 @@
       "drinkPreferences": "Tvoje preference pijač",
       "drinkTimeline": "Časovnica pijač",
       "alcoholTimeline": "Časovnica alkohola",
-      "alcoholTimelineCaption": "Ocenjen BAC skozi čas. Približek. Presnova 0.017%/uro."
+      "alcoholTimelineCaption": "Ocenjen BAC skozi čas. Približek. Presnova 0.017%/uro.",
+      "labels": {
+        "drinksConsumed": "Zaužite pijače",
+        "estimatedBAC": "Ocenjen BAC"
+      }
     },
     "history": {
       "title": "{guestName}ova festivalska pot",
@@ -104,7 +114,8 @@
       },
       "buttons": {
         "viewFullHistory": "Poglej celotno festivalsko pot",
-        "viewActivity": "Poglej festivalsko aktivnost"
+        "viewActivity": "Poglej festivalsko aktivnost",
+        "viewAll": "Poglej vse"
       }
     },
     "social": {
@@ -158,7 +169,8 @@
       "activity": {
         "title": "Živa aktivnost",
         "justOrdered": "je pravkar naročil",
-        "minutesAgo": "pred {minutes}m"
+        "minutesAgo": "pred {minutes}m",
+        "last30m": "Zadnjih 30 minut"
       },
       "buttons": {
         "viewPartyPulse": "Poglej utrip zabave"

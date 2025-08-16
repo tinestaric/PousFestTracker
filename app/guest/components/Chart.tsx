@@ -98,10 +98,16 @@ export default function Chart({ type, data, title, icon, yTickStep, showDecimalY
                 if (data.labels.length && data.datasets.length) {
                   return data.labels.map((label: string, i: number) => {
                     const dataset = data.datasets[0];
+                    const backgroundArray = Array.isArray(dataset.backgroundColor)
+                      ? dataset.backgroundColor
+                      : new Array(data.labels.length).fill(dataset.backgroundColor || '#ffffff')
+                    const borderArray = Array.isArray(dataset.borderColor)
+                      ? dataset.borderColor
+                      : new Array(data.labels.length).fill(dataset.borderColor || backgroundArray[i])
                     return {
                       text: label.length > 15 ? label.substring(0, 15) + '...' : label,
-                      fillStyle: dataset.backgroundColor[i],
-                      strokeStyle: dataset.borderColor?.[i] || dataset.backgroundColor[i],
+                      fillStyle: backgroundArray[i],
+                      strokeStyle: borderArray[i] || backgroundArray[i],
                       lineWidth: dataset.borderWidth || 0,
                       hidden: false,
                       index: i,

@@ -13,6 +13,36 @@ Tech snapshot
 - Data: simple relational schema; CSVs for seed/demo; config in `config/` and `public/`.
 - Key dirs: `app/`, `lib/`, `supabase/functions/`, `supabase/migrations/`, `public/`.
 
+Architecture & structure
+- App Router structure lives under `app/`
+  - `app/guest/*`: guest dashboard, history, social
+  - `app/recipes/page.tsx`: recipe browser and ordering
+  - `app/food/*`: food selection
+  - `app/admin/*`: admin UI (pure client) calling server routes
+  - `app/api/*`: server routes
+    - Proxies to Edge Functions (e.g., `getGuestData`, `getDashboardData`, `orderDrink`, `logScan`)
+    - Admin server routes: `app/api/admin/{getAll,save,delete}` use service role + `x-admin-password`
+    - Food server routes: `getFoodData`, `orderFood` use service role
+- Supabase clients
+  - `lib/supabase.ts`: anon client for safe public reads only (browser)
+  - `lib/supabaseAdmin.ts`: service role client (server-only; API routes/Edge Functions)
+- Edge Functions (Deno)
+  - `logScan`: handles NFC scans, achievements, and device-configured drink logging
+  - `orderDrink`: processes drink orders
+  - `getGuestData`: legacy guest data
+  - `getDashboardData`: consolidated guest + menu payload
+- RLS & policies
+  - RLS enabled. Public SELECT allowed for `drink_menu`, `recipes`, `food_menu` via `20250816_enable_public_reads.sql`
+  - All writes and sensitive reads go through server routes/Edge Functions with service role
+  - Admin UI performs CRUD via `app/api/admin/*` guarded by `ADMIN_PASSWORD`
+- Environment vars
+  - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - `SUPABASE_SERVICE_ROLE_KEY` (server only)
+  - `ADMIN_PASSWORD` (server check; UI sends `x-admin-password` from localStorage)
+- NFC integration
+  - Devices POST to `app/api/logScan` (proxies to `functions/v1/logScan`)
+  - `logJager` is removed; `logScan` handles that flow
+
 Design principles
 - Keep it simple: straightforward code over patterns (no CQRS/DDD/hexagonal/complex DI).
 - Local-first UI: React state/hooks; avoid heavy state libs unless there is a clear pain point.

@@ -148,6 +148,7 @@ function GuestDashboard() {
   const [socialHighlights, setSocialHighlights] = useState<SocialHighlight[]>([])
   const [socialLoading, setSocialLoading] = useState(false)
   const [alcoholTimelineData, setAlcoholTimelineData] = useState<{ labels: string[]; datasets: any[] }>({ labels: [], datasets: [] })
+  const [recipeFromParam, setRecipeFromParam] = useState<string>('')
   const hasAnchoredScroll = useRef(false)
 
   // Memoize expensive category grouping calculation - moved before early returns
@@ -165,7 +166,7 @@ function GuestDashboard() {
   const userDrinkCategoryData = useMemo(() => ({
     labels: Object.keys(guestData?.drink_summary || {}),
     datasets: [{
-      label: 'Drinks Consumed',
+      label: getText('guest.charts.labels.drinksConsumed', config),
       data: Object.values(guestData?.drink_summary || {}),
       backgroundColor: config.ui.charts.pieColors,
       borderColor: config.ui.charts.pieBorders,
@@ -234,7 +235,7 @@ function GuestDashboard() {
     return {
       labels: buckets.map(b => b.time),
       datasets: [{
-        label: 'Total Drinks Consumed',
+        label: getText('guest.charts.labels.drinksConsumed', config),
         data: buckets.map(b => b.count),
         borderColor: config.ui.charts.timelineColor,
         backgroundColor: config.ui.charts.timelineBackground,
@@ -246,25 +247,12 @@ function GuestDashboard() {
     }
   }, [guestData?.drink_orders])
 
-  // Memoize and throttle scroll handler for better performance
+  // Scroll progress calculation (cheap) and IntersectionObserver for FAB visibility
   const handleScroll = useCallback(() => {
-    // Calculate scroll progress
     const totalScroll = document.documentElement.scrollHeight - window.innerHeight
     const currentScroll = window.pageYOffset
-    setScrollProgress((currentScroll / totalScroll) * 100)
-
-    // Show/hide floating action button based on drink ordering section visibility
-    const orderingSection = document.getElementById('drink-ordering')
-    if (orderingSection) {
-      const rect = orderingSection.getBoundingClientRect()
-      setShowQuickOrder(rect.top > window.innerHeight * 0.8)
-    }
+    setScrollProgress(totalScroll > 0 ? (currentScroll / totalScroll) * 100 : 0)
   }, [])
-
-  const throttledScrollHandler = useMemo(
-    () => throttle(handleScroll, 16), // 60fps for smooth performance
-    [handleScroll]
-  )
 
   const fetchSocialHighlights = useCallback(async (tagUid: string) => {
     if (!config.features.social) return
@@ -292,7 +280,7 @@ function GuestDashboard() {
       setAlcoholTimelineData({
         labels: data.labels || [],
         datasets: [{
-          label: 'Estimated BAC',
+          label: getText('guest.charts.labels.estimatedBAC', config),
           data: (data.values || []).map((v: number) => Math.round(v * 1000) / 1000),
           borderColor: '#f59e0b',
           backgroundColor: 'rgba(245, 158, 11, 0.2)',
@@ -336,7 +324,8 @@ function GuestDashboard() {
       }
       
       // If we're missing any data, fetch everything fresh
-      const response = await fetch(`/api/getDashboardData?tag_uid=${tagUid}`)
+      const controller = new AbortController()
+      const response = await fetch(`/api/getDashboardData?tag_uid=${tagUid}` , { signal: controller.signal })
       if (!response.ok) {
         throw new Error('Failed to fetch dashboard data')
       }
@@ -549,16 +538,30 @@ function GuestDashboard() {
         // Optimized single API call
         fetchDashboardData(storedTagUid)
       } else {
-                  setError('Ni najden tag UID. Prosimo, skeniraj svojo NFC oznako.')
-          setLoading(false)
+        setError(getText('guest.errors.noTagUid', config))
+        setLoading(false)
       }
     }
   }, [searchParams, fetchDashboardData])
 
   useEffect(() => {
-    window.addEventListener('scroll', throttledScrollHandler, { passive: true })
-    return () => window.removeEventListener('scroll', throttledScrollHandler)
-  }, [throttledScrollHandler])
+    const onScroll = throttle(handleScroll, 16)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [handleScroll])
+
+  // Use IntersectionObserver to toggle FAB visibility based on ordering section visibility
+  useEffect(() => {
+    const target = document.getElementById('drink-ordering')
+    if (!target || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[0]
+      // Show the FAB when ordering section is not mostly visible
+      setShowQuickOrder(!(entry.isIntersecting && entry.intersectionRatio > 0.2))
+    }, { threshold: [0, 0.2, 0.5, 1] })
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [])
 
   useEffect(() => {
     // Deep link support: if URL contains #drink-ordering on first load, scroll once then clear the hash
@@ -572,6 +575,13 @@ function GuestDashboard() {
         }
       }, 300)
       return () => clearTimeout(scrollTimer)
+    }
+  }, [])
+
+  // Compute recipe back-link param once to avoid hydration mismatch
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setRecipeFromParam(encodeURIComponent('/guest' + window.location.search + '#drink-ordering'))
     }
   }, [])
 
@@ -738,6 +748,8 @@ function GuestDashboard() {
             </div>
           </div>
 
+          {/* Hydration Nudge removed per request */}
+
           {/* Social Highlights */}
           {config.features.social && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
@@ -880,7 +892,7 @@ function GuestDashboard() {
                           </div>
                           <div className="flex items-center gap-2">
                             {drink.recipe && (
-                              <Link href={`/recipes?recipe=${drink.recipe.id}&from=${encodeURIComponent('/guest' + (typeof window !== 'undefined' ? window.location.search : '') + '#drink-ordering')}`}>
+                              <Link href={`/recipes?recipe=${drink.recipe.id}&from=${recipeFromParam}`}>
                                 <button className={`bg-gradient-to-r ${config.ui.secondaryButton} hover:bg-gradient-to-r hover:${config.ui.secondaryButtonHover} text-white font-semibold py-2 px-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl text-sm flex items-center gap-1`}>
                                   <BookOpen className="w-4 h-4" />
                                   {getText('buttons.recipe', config)}
@@ -912,7 +924,7 @@ function GuestDashboard() {
                           href="/guest/history"
                           className="text-sm text-white/80 hover:text-white transition-colors duration-200 underline underline-offset-2"
                         >
-                          View All
+                          {getText('guest.history.buttons.viewAll', config)}
                         </Link>
                       </div>
                       <div className="space-y-2">
@@ -953,6 +965,7 @@ function GuestDashboard() {
           <a 
             href="#drink-ordering"
             onClick={handleScrollToOrderingClick}
+            aria-label={getText('guest.orderSection.orderDrink', config)}
             className={`bg-gradient-to-r ${config.ui.primaryButton} p-4 rounded-full shadow-2xl hover:scale-110 transition-all duration-300 animate-pulse flex items-center justify-center`}
           >
             <Wine className="w-6 h-6 text-white" />
