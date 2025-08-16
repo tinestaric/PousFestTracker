@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { getStoredTagUid } from '@/lib/hooks/useTagUid'
 import { ArrowLeft, Wine, UtensilsCrossed, Clock, Calendar, TrendingUp, BarChart3, Trophy } from 'lucide-react'
@@ -69,18 +69,24 @@ export default function OrderHistory() {
     fetchOrderHistory()
   }, [router])
 
-  // Group items by hour for timeline view
-  const itemsByHour = items.reduce((acc, item) => {
-    const hour = new Date(item.ordered_at).getHours()
-    const hourKey = `${hour}:00`
-    if (!acc[hourKey]) {
-      acc[hourKey] = []
+  // Group items by local day, then by hour (avoid UTC/local mismatches)
+  const itemsByDate = useMemo(() => {
+    const grouped: Record<string, Record<string, OrderHistoryItem[]>> = {}
+    for (const item of items) {
+      const d = new Date(item.ordered_at)
+      const yyyy = d.getFullYear()
+      const mm = String(d.getMonth() + 1).padStart(2, '0')
+      const dd = String(d.getDate()).padStart(2, '0')
+      const dateKey = `${yyyy}-${mm}-${dd}`
+      const hourKey = String(d.getHours())
+      if (!grouped[dateKey]) grouped[dateKey] = {}
+      if (!grouped[dateKey][hourKey]) grouped[dateKey][hourKey] = []
+      grouped[dateKey][hourKey].push(item)
     }
-    acc[hourKey].push(item)
-    return acc
-  }, {} as Record<string, OrderHistoryItem[]>)
+    return grouped
+  }, [items])
 
-  const sortedHours = Object.keys(itemsByHour).sort()
+  const sortedDates = useMemo(() => Object.keys(itemsByDate).sort(), [itemsByDate])
 
   if (loading) {
     return (
@@ -199,66 +205,80 @@ export default function OrderHistory() {
                 </Link>
               </div>
             ) : (
-              <div className="space-y-4">
-                {sortedHours.map((hour) => (
-                  <div key={hour} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                        <Clock className="w-5 h-5 text-white" />
+              <div className="space-y-6">
+                {sortedDates.map((date) => {
+                  const hours = Object.keys(itemsByDate[date]).sort((a, b) => parseInt(a, 10) - parseInt(b, 10))
+                  const [y, m, d] = date.split('-').map((s) => parseInt(s, 10))
+                  const friendlyDate = new Date(y, m - 1, d).toLocaleDateString()
+                  return (
+                    <div key={date} className="space-y-4">
+                      <div className="sticky top-16 z-10">
+                        <div className="inline-block bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2 text-white text-sm font-semibold shadow-md">
+                          {friendlyDate}
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-white">{hour}</h3>
-                        <p className="text-sm text-white/80">
-                          {itemsByHour[hour].length} {itemsByHour[hour].length === 1 ? getText('guest.history.timeline.items', config) : getText('guest.history.timeline.itemsPlural', config)}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="grid gap-3">
-                      {itemsByHour[hour].map((item) => (
-                        <div key={item.id} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-center gap-4">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            item.type === 'drink' 
-                              ? 'bg-gradient-to-br from-purple-500 to-pink-500' 
-                              : item.type === 'food'
-                              ? 'bg-gradient-to-br from-orange-500 to-red-500'
-                              : 'bg-gradient-to-br from-yellow-500 to-amber-500'
-                          }`}>
-                            {item.type === 'drink' ? (
-                              <Wine className="w-5 h-5 text-white" />
-                            ) : item.type === 'food' ? (
-                              <UtensilsCrossed className="w-5 h-5 text-white" />
-                            ) : (
-                              <Trophy className="w-5 h-5 text-white" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-white">{item.name}</h4>
-                            {item.description && (
-                              <p className="text-sm text-white/70">{item.description}</p>
-                            )}
-                            <div className="flex items-center gap-4 mt-1">
-                              {item.type !== 'achievement' && (
-                                <span className="text-xs text-white/60 capitalize">{item.category}</span>
-                              )}
-                              {item.quantity > 1 && item.type !== 'achievement' && (
-                                <span className="text-xs text-white/60">{getText('guest.history.timeline.quantity', config)}: {item.quantity}</span>
-                              )}
-                              <span className="text-xs text-white/60">
-                                {new Date(item.ordered_at).toLocaleTimeString()}
-                              </span>
-                              {item.type === 'achievement' && (
-                                <span className="text-xs bg-yellow-500/20 text-yellow-200 px-2 py-1 rounded-full">
-                                  {getText('guest.history.timeline.achievementUnlocked', config)}
-                                </span>
-                              )}
+                      {hours.map((hour) => (
+                        <div key={hour} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-6">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                              <Clock className="w-5 h-5 text-white" />
                             </div>
+                            <div>
+                              <h3 className="text-lg font-semibold text-white">{String(hour).padStart(2, '0')}:00</h3>
+                              <p className="text-sm text-white/80">
+                                {itemsByDate[date][hour].length} {itemsByDate[date][hour].length === 1 ? getText('guest.history.timeline.items', config) : getText('guest.history.timeline.itemsPlural', config)}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="grid gap-3">
+                            {itemsByDate[date][hour].map((item) => (
+                              <div key={item.id} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 flex items-center gap-4">
+                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                                  item.type === 'drink' 
+                                    ? 'bg-gradient-to-br from-purple-500 to-pink-500' 
+                                    : item.type === 'food'
+                                    ? 'bg-gradient-to-br from-orange-500 to-red-500'
+                                    : 'bg-gradient-to-br from-yellow-500 to-amber-500'
+                                }`}>
+                                  {item.type === 'drink' ? (
+                                    <Wine className="w-5 h-5 text-white" />
+                                  ) : item.type === 'food' ? (
+                                    <UtensilsCrossed className="w-5 h-5 text-white" />
+                                  ) : (
+                                    <Trophy className="w-5 h-5 text-white" />
+                                  )}
+                                </div>
+                                <div className="flex-1">
+                                  <h4 className="font-semibold text-white">{item.name}</h4>
+                                  {item.description && (
+                                    <p className="text-sm text-white/70">{item.description}</p>
+                                  )}
+                                  <div className="flex items-center gap-4 mt-1">
+                                    {item.type !== 'achievement' && (
+                                      <span className="text-xs text-white/60 capitalize">{item.category}</span>
+                                    )}
+                                    {item.quantity > 1 && item.type !== 'achievement' && (
+                                      <span className="text-xs text-white/60">{getText('guest.history.timeline.quantity', config)}: {item.quantity}</span>
+                                    )}
+                                    <span className="text-xs text-white/60">
+                                      {new Date(item.ordered_at).toLocaleTimeString()}
+                                    </span>
+                                    {item.type === 'achievement' && (
+                                      <span className="text-xs bg-yellow-500/20 text-yellow-200 px-2 py-1 rounded-full">
+                                        {getText('guest.history.timeline.achievementUnlocked', config)}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       ))}
                     </div>
-                  </div>
-                ))}
+                  )
+                })}
               </div>
             )}
           </div>

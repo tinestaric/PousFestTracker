@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabaseAdmin'
 import { getEventConfig } from '@/lib/eventConfig'
 
 export async function GET(request: NextRequest) {
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get guest info
-    const { data: guest, error: guestError } = await supabase
+    const { data: guest, error: guestError } = await supabaseAdmin
       .from('guests')
       .select('id, name')
       .eq('tag_uid', tag_uid)
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get all drink orders with menu details
-    const { data: drinkOrders, error: drinkError } = await supabase
+    const { data: drinkOrders, error: drinkError } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         id,
@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     // Get food orders only if food feature is enabled
     let foodOrders: any[] = []
     if (config.features.food) {
-      const { data: foodData, error: foodError } = await supabase
+      const { data: foodData, error: foodError } = await supabaseAdmin
         .from('food_orders')
         .select(`
           id,
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
     // Get achievements only if achievements feature is enabled
     let achievements: any[] = []
     if (config.features.achievements) {
-      const { data: achievementData, error: achievementError } = await supabase
+      const { data: achievementData, error: achievementError } = await supabaseAdmin
         .from('guest_achievements')
         .select(`
           id,
