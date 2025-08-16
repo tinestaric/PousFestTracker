@@ -12,9 +12,12 @@ interface ChartProps {
   data: ChartData
   title: string
   icon: React.ReactNode
+  yTickStep?: number
+  showDecimalYTicks?: boolean
+  caption?: string
 }
 
-export default function Chart({ type, data, title, icon }: ChartProps) {
+export default function Chart({ type, data, title, icon, yTickStep, showDecimalYTicks, caption }: ChartProps) {
   const [ChartComponent, setChartComponent] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -132,8 +135,9 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
           y: {
             beginAtZero: true,
             ticks: {
-              stepSize: 1,
+              stepSize: yTickStep || (showDecimalYTicks ? 0.01 : 1),
               callback: function(value: any) {
+                if (showDecimalYTicks) return value
                 return Number.isInteger(value) ? value : null;
               }
             },
@@ -162,6 +166,9 @@ export default function Chart({ type, data, title, icon }: ChartProps) {
       }`}>
         <ChartComponent data={data} options={chartOptions} />
       </div>
+      {caption && (
+        <p className="text-xs text-white/70 mt-2">{caption}</p>
+      )}
     </div>
   )
 } 

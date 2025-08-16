@@ -1,7 +1,7 @@
 'use client'
 
 import { Suspense, lazy } from 'react'
-import { Wine, TrendingUp } from 'lucide-react'
+import { Wine, TrendingUp, BarChart3 } from 'lucide-react'
 
 import { getEventConfig, getText } from '@/lib/eventConfig'
 
@@ -20,6 +20,7 @@ interface LazyChartsProps {
     drink_summary: Record<string, number>
     drink_orders: any[]
   }
+  alcoholTimelineData?: ChartData
 }
 
 // Loading skeleton for charts
@@ -46,7 +47,7 @@ const ChartSkeleton = ({ title, icon, type }: { title: string; icon: React.React
   </div>
 )
 
-export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, guestData }: LazyChartsProps) {
+export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, guestData, alcoholTimelineData }: LazyChartsProps) {
   const config = getEventConfig()
   // Only render if we have data to display
   if (Object.keys(guestData.drink_summary).length === 0 && guestData.drink_orders.length === 0) {
@@ -54,40 +55,72 @@ export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, g
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-      {Object.keys(guestData.drink_summary).length > 0 && (
-        <Suspense fallback={
-          <ChartSkeleton 
-            title={getText('guest.charts.drinkPreferences', config)} 
-            icon={<TrendingUp className="w-6 h-6 text-white" />}
-            type="pie"
-          />
-        }>
-          <Chart 
-            type="pie"
-            data={userDrinkCategoryData}
-            title={getText('guest.charts.drinkPreferences', config)}
-            icon={<TrendingUp className="w-6 h-6 text-white" />}
-          />
-        </Suspense>
-      )}
-      
-      {guestData.drink_orders.length > 0 && (
-        <Suspense fallback={
-          <ChartSkeleton 
-            title={getText('guest.charts.drinkTimeline', config)} 
-            icon={<Wine className="w-6 h-6 text-white" />}
-            type="line"
-          />
-        }>
-          <Chart 
-            type="line"
-            data={drinkTimelineData}
-            title={getText('guest.charts.drinkTimeline', config)}
-            icon={<Wine className="w-6 h-6 text-white" />}
-          />
-        </Suspense>
-      )}
+    <div className="relative">
+      {/* Mobile horizontal scroll with snap; desktop grid */}
+      <div className="grid gap-4 sm:gap-6 grid-flow-col auto-cols-[100%] overflow-x-auto snap-x snap-mandatory lg:grid-flow-row lg:auto-cols-auto lg:grid-cols-2 lg:overflow-visible">
+        {Object.keys(guestData.drink_summary).length > 0 && (
+          <div className="snap-start shrink-0 w-full">
+            <Suspense fallback={
+              <ChartSkeleton 
+                title={getText('guest.charts.drinkPreferences', config)} 
+                icon={<TrendingUp className="w-6 h-6 text-white" />}
+                type="pie"
+              />
+            }>
+              <Chart 
+                type="pie"
+                data={userDrinkCategoryData}
+                title={getText('guest.charts.drinkPreferences', config)}
+                icon={<TrendingUp className="w-6 h-6 text-white" />}
+              />
+            </Suspense>
+          </div>
+        )}
+        
+        {guestData.drink_orders.length > 0 && (
+          <div className="snap-start shrink-0 w-full">
+            <Suspense fallback={
+              <ChartSkeleton 
+                title={getText('guest.charts.drinkTimeline', config)} 
+                icon={<Wine className="w-6 h-6 text-white" />}
+                type="line"
+              />
+            }>
+              <Chart 
+                type="line"
+                data={drinkTimelineData}
+                title={getText('guest.charts.drinkTimeline', config)}
+                icon={<Wine className="w-6 h-6 text-white" />}
+              />
+            </Suspense>
+          </div>
+        )}
+
+        {alcoholTimelineData && alcoholTimelineData.labels.length > 0 && (
+          <div className="snap-start shrink-0 w-full">
+            <Suspense fallback={
+              <ChartSkeleton 
+                title={getText('guest.charts.alcoholTimeline', config)} 
+                icon={<BarChart3 className="w-6 h-6 text-white" />}
+                type="line"
+              />
+            }>
+              <Chart 
+                type="line"
+                data={alcoholTimelineData}
+                title={getText('guest.charts.alcoholTimeline', config)}
+                icon={<BarChart3 className="w-6 h-6 text-white" />}
+                showDecimalYTicks
+                yTickStep={0.01}
+                caption={getText('guest.charts.alcoholTimelineCaption', config)}
+              />
+            </Suspense>
+          </div>
+        )}
+      </div>
+
+      {/* Subtle right fade cue for more content on mobile */}
+      <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-white/10 to-transparent rounded-r-2xl lg:hidden"></div>
     </div>
   )
 } 

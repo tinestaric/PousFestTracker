@@ -73,7 +73,9 @@
     },
     "charts": {
       "drinkPreferences": "Your Drink Preferences",
-      "drinkTimeline": "Drink Timeline"
+      "drinkTimeline": "Drink Timeline",
+      "alcoholTimeline": "Alcohol Timeline",
+      "alcoholTimelineCaption": "Estimated BAC over time. Approximate. Metabolism assumed at 0.017%/hr."
     },
     "history": {
       "title": "{guestName}'s Festival Journey",

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase } from '@/lib/supabase'
 import { getEventConfig, getText, getInterpolatedText } from '@/lib/eventConfig'
+import { calculateAlcoholMetrics } from '@/lib/alcohol'
 
 interface SocialHighlight {
   type: 'partyLeader' | 'hydrationCheck' | 'trending' | 'alcoholConsumption' | 'userRank'
@@ -192,7 +193,7 @@ export async function GET(request: NextRequest) {
     const userRank = fullAllTimeRanked.findIndex(entry => entry.name === currentGuest.name) + 1
     const userTotalDrinks = allTimeDrinkCounts.get(currentGuest.id)?.drinks || 0
 
-    // Calculate alcohol consumption
+    // Calculate alcohol consumption via shared utility
     const { data: userDrinkOrders } = await supabase
       .from('drink_orders')
       .select(`
@@ -202,59 +203,11 @@ export async function GET(request: NextRequest) {
       `)
       .eq('guest_id', currentGuest.id)
 
-    let totalAlcoholMl = 0
-    let lastHourAlcohol = 0
-    let currentBAC = 0
-    
-    userDrinkOrders?.forEach(order => {
-      const drink = (order as any).drink_menu
-      const pureAlcoholMl = (drink.alcohol_content_ml * drink.alcohol_percentage / 100) * order.quantity
-      totalAlcoholMl += pureAlcoholMl
-      
-      // Calculate last hour alcohol consumption
-      const orderTime = new Date(order.ordered_at)
-      if (orderTime >= oneHourAgo) {
-        lastHourAlcohol += pureAlcoholMl
-      }
-
-      // Calculate time-adjusted BAC contribution from this order
-      const hoursAgo = (now.getTime() - orderTime.getTime()) / (1000 * 60 * 60)
-      
-      // Skip drinks that are more than 24 hours old - BAC should be zero by then
-      if (hoursAgo > 24) {
-        return // Skip this drink entirely
-      }
-      
-      // BAC calculation for this drink using Widmark formula
-      const estimatedWeight = (currentGuest as any).gender === 'female' ? 60 : 70
-      const bodyWaterPercentage = (currentGuest as any).gender === 'female' ? 0.49 : 0.58
-      const bodyWaterLiters = estimatedWeight * bodyWaterPercentage
-      
-      // Convert alcohol to grams (alcohol density = 0.789 g/ml)
-      const alcoholGrams = pureAlcoholMl * 0.789
-      
-      // Widmark formula: BAC = (alcohol in grams) / (body weight in kg * r) * 1000
-      // Where r is the body water percentage, and we multiply by 1000 to get g/L
-      // Then divide by 10 to get the percentage (g/L / 10 = %)
-      const initialBAC = bodyWaterLiters > 0 ? (alcoholGrams / (estimatedWeight * bodyWaterPercentage * 10)) : 0
-      
-      // Apply metabolism: BAC decreases by approximately 0.015-0.020% per hour
-      // Using 0.017% per hour as average
-      const metabolismRate = 0.017 // BAC percentage decrease per hour
-      const remainingBAC = Math.max(0, initialBAC - (hoursAgo * metabolismRate))
-      
-      currentBAC += remainingBAC
-    })
-
-    // Standard drinks calculation (1 standard drink = 17.7ml pure alcohol)
-    const standardDrinks = totalAlcoholMl / 17.7
-
-    const alcoholConsumption = {
-      totalAlcoholMl: Math.round(totalAlcoholMl * 10) / 10,
-      standardDrinks: Math.round(standardDrinks * 10) / 10,
-      estimatedBAC: Math.round(currentBAC * 1000) / 1000, // 3 decimal places
-      lastHourAlcohol: Math.round(lastHourAlcohol * 10) / 10
-    }
+    const alcoholConsumption = calculateAlcoholMetrics(
+      (userDrinkOrders || []) as any,
+      (currentGuest as any).gender,
+      now
+    )
 
     // Get time since last non-alcoholic drink (simple: alcohol_percentage = 0.0)
     const { data: lastNonAlcoholicOrder } = await supabase

@@ -73,7 +73,9 @@
     },
     "charts": {
       "drinkPreferences": "Tvoje preference pijač",
-      "drinkTimeline": "Časovnica pijač"
+      "drinkTimeline": "Časovnica pijač",
+      "alcoholTimeline": "Časovnica alkohola",
+      "alcoholTimelineCaption": "Ocenjen BAC skozi čas. Približek. Presnova 0.017%/uro."
     },
     "history": {
       "title": "{guestName}ova festivalska pot",

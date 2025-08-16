@@ -146,6 +146,7 @@ function GuestDashboard() {
   const [allSocialHighlights, setAllSocialHighlights] = useState<SocialHighlight[]>([])
   const [socialHighlights, setSocialHighlights] = useState<SocialHighlight[]>([])
   const [socialLoading, setSocialLoading] = useState(false)
+  const [alcoholTimelineData, setAlcoholTimelineData] = useState<{ labels: string[]; datasets: any[] }>({ labels: [], datasets: [] })
 
   // Memoize expensive category grouping calculation - moved before early returns
   const drinksByCategory = useMemo(() => {
@@ -281,6 +282,28 @@ function GuestDashboard() {
     }
   }, [config.features.social])
 
+  const fetchAlcoholTimeline = useCallback(async (tagUid: string) => {
+    try {
+      const response = await fetch(`/api/getAlcoholTimeSeries?tag_uid=${tagUid}&step=15`)
+      if (!response.ok) return
+      const data = await response.json()
+      setAlcoholTimelineData({
+        labels: data.labels || [],
+        datasets: [{
+          label: 'Estimated BAC',
+          data: (data.values || []).map((v: number) => Math.round(v * 1000) / 1000),
+          borderColor: '#f59e0b',
+          backgroundColor: 'rgba(245, 158, 11, 0.2)',
+          fill: true,
+          tension: 0.2,
+          pointRadius: 0
+        }]
+      })
+    } catch (error) {
+      // Silent fail
+    }
+  }, [])
+
   // Optimized function that fetches all data in one call with caching
   const fetchDashboardData = useCallback(async (tagUid: string) => {
     try {
@@ -306,6 +329,7 @@ function GuestDashboard() {
         
         // Fetch social highlights (non-blocking)
         fetchSocialHighlights(tagUid)
+        fetchAlcoholTimeline(tagUid)
         return
       }
       
@@ -351,6 +375,7 @@ function GuestDashboard() {
       
       // Fetch social highlights (non-blocking)
       fetchSocialHighlights(tagUid)
+      fetchAlcoholTimeline(tagUid)
       
     } catch (err) {
       // Fallback to old API if new one fails
@@ -448,6 +473,7 @@ function GuestDashboard() {
       localStorage.removeItem(GUEST_DATA_CACHE_KEY)
       localStorage.removeItem(ACHIEVEMENTS_CACHE_KEY)
       fetchDashboardData(tagUid)
+      fetchAlcoholTimeline(tagUid)
     } catch (err) {
       console.error('Failed to order drink:', err)
       
@@ -766,6 +792,7 @@ function GuestDashboard() {
               drink_summary: guestData.drink_summary,
               drink_orders: guestData.drink_orders
             }}
+            alcoholTimelineData={alcoholTimelineData}
           />
 
           <div className={config.features.achievements ? "grid lg:grid-cols-2 gap-8" : "grid grid-cols-1"}>
@@ -866,7 +893,7 @@ function GuestDashboard() {
                   {guestData.drink_orders.length > 0 && (
                     <>
                       <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-white/90 drop-shadow-lg">Nedavna naročila</h3>
+                        <h3 className="text-lg font-semibold text-white/90 drop-shadow-lg">{getText('guest.sections.recentOrders', config)}</h3>
                         <Link 
                           href="/guest/history"
                           className="text-sm text-white/80 hover:text-white transition-colors duration-200 underline underline-offset-2"
