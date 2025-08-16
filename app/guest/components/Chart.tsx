@@ -15,9 +15,10 @@ interface ChartProps {
   yTickStep?: number
   showDecimalYTicks?: boolean
   caption?: string
+  xTickLabelFilter?: 'halfHour' | 'hour'
 }
 
-export default function Chart({ type, data, title, icon, yTickStep, showDecimalYTicks, caption }: ChartProps) {
+export default function Chart({ type, data, title, icon, yTickStep, showDecimalYTicks, caption, xTickLabelFilter }: ChartProps) {
   const [ChartComponent, setChartComponent] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
@@ -145,7 +146,8 @@ export default function Chart({ type, data, title, icon, yTickStep, showDecimalY
               callback: function(value: any) {
                 if (showDecimalYTicks) return value
                 return Number.isInteger(value) ? value : null;
-              }
+              },
+              color: '#ffffff'
             },
             grid: {
               color: 'rgba(0, 0, 0, 0.1)'
@@ -154,6 +156,34 @@ export default function Chart({ type, data, title, icon, yTickStep, showDecimalY
           x: {
             grid: {
               color: 'rgba(0, 0, 0, 0.1)'
+            },
+            ticks: {
+              autoSkip: true,
+              maxTicksLimit: 24,
+              autoSkipPadding: 4,
+              maxRotation: 0,
+              minRotation: 0,
+              color: '#ffffff',
+              callback: function(this: any, value: any, index: number, ticks: any[]) {
+                const resolvedLabel = (this && typeof this.getLabelForValue === 'function')
+                  ? this.getLabelForValue(value)
+                  : (typeof value === 'string' ? value : (ticks[index]?.label || ''))
+                if (!xTickLabelFilter) {
+                  return resolvedLabel
+                }
+                const label = resolvedLabel
+                // Expect HH:MM
+                const m = /:(\d{2})/.exec(label)
+                const mm = m ? m[1] : null
+                if (!mm) return ''
+                if (xTickLabelFilter === 'halfHour') {
+                  return (mm === '00' || mm === '30') ? label : ''
+                }
+                if (xTickLabelFilter === 'hour') {
+                  return mm === '00' ? label : ''
+                }
+                return label
+              }
             }
           }
         }

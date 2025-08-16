@@ -282,8 +282,8 @@ function GuestDashboard() {
         datasets: [{
           label: getText('guest.charts.labels.estimatedBAC', config),
           data: (data.values || []).map((v: number) => Math.round(v * 1000) / 1000),
-          borderColor: '#f59e0b',
-          backgroundColor: 'rgba(245, 158, 11, 0.2)',
+          borderColor: '#f97316',
+          backgroundColor: 'rgba(249, 115, 22, 0.2)',
           fill: true,
           tension: 0.2,
           pointRadius: 0

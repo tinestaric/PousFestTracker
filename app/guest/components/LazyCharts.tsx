@@ -113,6 +113,7 @@ export default function LazyCharts({ userDrinkCategoryData, drinkTimelineData, g
                 showDecimalYTicks
                 yTickStep={0.01}
                 caption={getText('guest.charts.alcoholTimelineCaption', config)}
+                xTickLabelFilter="hour"
               />
             </Suspense>
           </div>
