@@ -1,13 +1,11 @@
 name,description,category,available,created_at,alcohol_percentage,alcohol_content_ml
 "Aperol Spritz","Classic Italian aperitif with a fresh orange flavor and sparkling wine. Perfect for summer evenings.","cocktail",true,2024-01-01T00:00:00Z,11.0,150.0
-"Black Devil's Ice Tea","Strong cocktail with a mix of four spirits and a fresh blackberry note. Perfect for parties.","cocktail",true,2024-01-01T00:00:00Z,25.0,200.0
-"Cherry Bitherinho","Unique cocktail with Jägermeister and cherries. A perfect balance of bitter and sweet.","cocktail",true,2024-01-01T00:00:00Z,30.0,250.0
 "Red Bull Vodka","Energizing combination of vodka and Red Bull. Perfect for long nights and parties.","cocktail",true,2024-01-01T00:00:00Z,20.0,180.0
 "Classic Gin & Tonic","Elegant and refreshing cocktail with the botanical notes of gin and a bitter tonic.","cocktail",true,2024-01-01T00:00:00Z,23.0,160.0
 "Moscow Mule","Refreshing cocktail with vodka and ginger beer. Traditionally served in a copper mug.","cocktail",true,2024-01-01T00:00:00Z,15.0,180.0
 "Rum & Cola (Cuba Libre)","Classic combination of rum and cola with a touch of fresh lime juice for an authentic Cuban experience.","cocktail",true,2024-01-01T00:00:00Z,18.0,170.0
 "Draft Beer","Rotating tap: one keg at a time. Expect crisp lagers and seasonal picks. Always cold, foamy, and poured to perfection.","beer",true,2024-01-01T00:00:00Z,5.0,500.0
-"Radler Isotonic (0.0%)","Innovative mix of beer with isotonic minerals. Non-alcoholic version (0.0%) with orange and lemon balm flavors.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,0.0
+"Radler 0.0%","Kalnapilis Lite Radler 0.0% — raspberry and grapefruit. Bright, juicy berry‑citrus refreshment on a crisp alcohol‑free lager base.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,0.0
 "Heineken 0.0","World-famous Dutch beer in a non-alcoholic version. The full taste of real beer without alcohol.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,0.0
 "Water","Fresh drinking water. The essence of life and perfect for hydration at any moment.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,500.0
 "Red Bull","World-renowned energy drink with caffeine and taurine. Gives you wings and energy for active moments.","non-alcoholic",true,2024-01-01T00:00:00Z,0.0,250.0
@@ -15,3 +13,4 @@ name,description,category,available,created_at,alcohol_percentage,alcohol_conten
 "Jägermeister","German herbal liqueur with more than 56 natural ingredients. A complex flavor with a unique blend of herbs and spices.","shot",true,2024-01-01T00:00:00Z,35.0,20.0
 "Borovničke","Traditional Slovenian fruit brandy made from local blueberries. Intense wild berry flavor with a long-standing tradition.","shot",true,2024-01-01T00:00:00Z,40.0,20.0
 "Žalios Devynerios","Lithuanian herbal liqueur from the devynerios family: aromatic, bitter‑sweet blend of botanicals with notes of roots, citrus peel, and spice. Best served ice‑cold as a shot.","shot",true,2024-01-01T00:00:00Z,35.0,20.0
+"Jameson Irish Whiskey","Triple-distilled Irish whiskey. Smooth and balanced with vanilla, toasted wood, and spice. Best served as a shot.","shot",true,2024-01-01T00:00:00Z,40.0,20.0

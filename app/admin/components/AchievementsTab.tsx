@@ -73,13 +73,16 @@ export default function AchievementsTab({
               className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
               rows={3}
             />
-            <input
-              type="text"
-              placeholder="Logo URL"
-              value={editing.data?.logo_url || ''}
-              onChange={(e) => onUpdateEditingData({ logo_url: e.target.value })}
-              className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
-            />
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Emoji (e.g., 🏆)"
+                value={editing.data?.logo_url || ''}
+                onChange={(e) => onUpdateEditingData({ logo_url: e.target.value })}
+                className="px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/30 rounded-xl text-white placeholder-white/60 focus:bg-white/20 focus:border-white/50 transition-all duration-300"
+              />
+              <div className="text-white/70 text-sm flex items-center">Tip: paste an emoji; images are optional</div>
+            </div>
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-white/90 mb-2">From Time</label>

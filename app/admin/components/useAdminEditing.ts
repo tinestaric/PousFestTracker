@@ -56,7 +56,7 @@ export const useAdminEditing = (onDataChange: () => void) => {
         achievement_type: '', 
         title: '', 
         description: '', 
-        logo_url: '/icons/default.png',
+        logo_url: '🏆',
         from_time: new Date().toISOString().slice(0, 16),
         to_time: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16)
       },

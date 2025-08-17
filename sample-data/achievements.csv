@@ -1,18 +1,18 @@
 achievement_type,title,description,logo_url,from_time,to_time
 road_tripper,"Hit the Road!","Time to leave Vilnius behind! Flexible departure depending on when everyone's ready for the scenic hour drive.",🚗,2025-08-22 15:00:00+00,2025-08-22 16:00:00+00
 first_arrival,"Arrival at Lake Paradise","Welcome to Moletai! Simple, warm welcome to our lakeside adventure base after the pleasant drive.",🏞️,2025-08-22 17:00:00+00,2025-08-22 18:00:00+00
-fire_starter,"Campfire Chronicles & Chill Vibes","Kick back around the fire! Optional games, music, and that perfect Friday night relaxed energy. No pressure, just good vibes.",🔥,2025-08-22 19:00:00+00,2025-08-22 20:00:00+00
-early_bird,"Slovenian Breakfast Bonanza","Rise and shine, Slovenia! Keep it easy, keep it social, keep it delicious.",🐦,2025-08-23 06:00:00+00,2025-08-23 07:00:00+00
+fire_starter,"Campfire & Music","Guitars, stories, and quiet chats by the fire. Bring a blanket; stay for the stars.",🔥,2025-08-22 19:00:00+00,2025-08-22 20:00:00+00
+early_bird,"Slow Breakfast Start","Rise and shine, Lithuania! Keep it easy, keep it social, keep it delicious.",🐦,2025-08-23 06:00:00+00,2025-08-23 07:00:00+00
 welcome_committee,"Lithuanian Landing Party","The Lithuanians have arrived! Time for welcome drinks and the real party to begin.",🎉,2025-08-23 07:00:00+00,2025-08-23 08:00:00+00
-social_butterfly,"Meet & Greet Madness","Name tags, icebreakers, and the beautiful chaos of new friendships being born!",🦋,2025-08-23 08:00:00+00,2025-08-23 09:00:00+00
+social_butterfly,"Meet & Greet","Names, laughs, and who's who. Fast intros, friendly faces.",🦋,2025-08-23 08:00:00+00,2025-08-23 09:00:00+00
 quiz_master,"Mixed-Culture Quiz Battle","Slovenians vs Lithuanians? Nah! Mixed teams for maximum cultural chaos and fun!",🧠,2025-08-23 09:00:00+00,2025-08-23 10:00:00+00
-free_spirit,"Freedom Hour","Music, hammocks, optional activities - basically do whatever makes your soul happy!",🎵,2025-08-23 10:00:00+00,2025-08-23 11:00:00+00
-well_fed,"Lunch & Munch","Proper sit-down meal to fuel up for the afternoon adventures ahead.",🍽️,2025-08-23 11:30:00+00,2025-08-23 12:30:00+00
+free_spirit,"Freedom Hour","Hammocks, lake dips, a nap—or do nothing at all.",🎵,2025-08-23 10:00:00+00,2025-08-23 11:00:00+00
+well_fed,"Lunch Together","Plates up, stories down the table. Recharge for the afternoon.",🍽️,2025-08-23 11:30:00+00,2025-08-23 12:30:00+00
 nature_walker,"Park Explorer Mission","Guided tour of the park - perfect for digesting lunch with some light movement and nature vibes.",🌿,2025-08-23 13:00:00+00,2025-08-23 14:00:00+00
-water_warrior,"Splash Zone & Sports Spectacular","Water games, sports, drinks, and chats - the perfect combo for Saturday afternoon energy!",🏊‍♂️,2025-08-23 14:30:00+00,2025-08-23 15:30:00+00
-snack_master,"Snack Attack & Evening Prep","Free time with snacks - the perfect transition from day vibes to evening magic.",🍿,2025-08-23 15:30:00+00,2025-08-23 16:30:00+00
-dance_legend,"Evening Program Extravaganza","Dance floor is OPEN! Time to show off those moves and party like it's 2025!",🕺,2025-08-23 17:00:00+00,2025-08-23 18:00:00+00
+water_warrior,"Water & Games","Cannonballs, frisbee, and cold drinks nearby.",🏊‍♂️,2025-08-23 14:30:00+00,2025-08-23 15:30:00+00
+snack_master,"Snacks & Reset","Top up snacks, change shirts, breathe, and reset.",🍿,2025-08-23 15:30:00+00,2025-08-23 16:30:00+00
+dance_legend,"Evening Program","Lights down, playlist up—dance if you want.",🕺,2025-08-23 17:00:00+00,2025-08-23 18:00:00+00
 zen_master,"Slow Motion Morning","Wake up slowly with coffee, quiet music, and peaceful morning walks. No rush, just vibes.",☕,2025-08-24 07:00:00+00,2025-08-24 08:00:00+00
 brunch_lover,"Brunch & Heart-to-Hearts","The perfect time to eat, chat, and soak in those last precious moments together.",🥐,2025-08-24 08:00:00+00,2025-08-24 09:00:00+00
 memory_keeper,"Pack-Up & Memory Lane","Last hugs, final photos, and maybe some guestbook signing for the memories!",📸,2025-08-24 09:30:00+00,2025-08-24 10:30:00+00
-farewell_master,"Road Trip Back to Vilnius","Time for our Slovenian friends to hit the road back to Vilnius. Safe travels on the scenic drive!",🚗,2025-08-24 10:30:00+00,2025-08-24 11:30:00+00
+farewell_master,"Road Trip Back to Vilnius","Hugs, bags, and one last wave. Safe drive back to Vilnius.",🚗,2025-08-24 10:30:00+00,2025-08-24 11:30:00+00
