@@ -84,11 +84,11 @@ function AchievementsContent() {
 							{data.earned.length === 0 ? (
 								<p className="text-white/70 text-sm">{getText('guest.achievements.noAchievements', config)}</p>
 							) : (
-								<div className="grid grid-cols-2 gap-3">
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.earned.map(a => (
-										<div key={a.id} className="bg-white/20 border border-white/30 rounded-xl p-3">
+										<div key={a.id} className="bg-white/20 border border-white/30 rounded-2xl p-4">
 											<div className="flex items-start gap-2">
-												<div className="w-10 h-10 rounded-lg bg-orange-500/70 flex items-center justify-center"><span className="text-xl">{a.emoji}</span></div>
+												<div className="w-12 h-12 rounded-xl bg-orange-500/70 flex items-center justify-center"><span className="text-2xl">{a.emoji}</span></div>
 												<div className="overflow-hidden">
 													<div className="text-white font-semibold truncate">{a.title}</div>
 													<div className="text-white/80 text-xs line-clamp-2">{a.description}</div>
@@ -107,11 +107,11 @@ function AchievementsContent() {
 							{data.inProgress.length === 0 ? (
 								<p className="text-white/70 text-sm">{getText('guest.achievements.noAchievements', config)}</p>
 							) : (
-								<div className="grid grid-cols-2 gap-3">
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.inProgress.map(a => (
-										<div key={a.id} className="bg-white/10 border border-white/20 rounded-xl p-3">
+										<div key={a.id} className="bg-white/10 border border-white/20 rounded-2xl p-4">
 											<div className="flex items-start gap-2 mb-2">
-												<div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><span className="text-xl">{a.emoji}</span></div>
+												<div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center"><span className="text-2xl">{a.emoji}</span></div>
 												<div className="overflow-hidden">
 													<div className="text-white font-semibold truncate">{a.title}</div>
 													<div className="text-white/80 text-xs line-clamp-2">{a.description}</div>
@@ -131,11 +131,11 @@ function AchievementsContent() {
 							{data.upcoming.length === 0 ? (
 								<p className="text-white/70 text-sm">{getText('guest.achievements.noAchievements', config)}</p>
 							) : (
-								<div className="grid grid-cols-2 gap-3">
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.upcoming.map(a => (
-										<div key={a.id} className={`border rounded-xl p-3 ${a.expired ? 'bg-white/5 border-white/5 opacity-50' : 'bg-white/5 border-white/10 opacity-80'}`}>
+										<div key={a.id} className={`border rounded-2xl p-4 ${a.expired ? 'bg-white/5 border-white/5 opacity-50' : 'bg-white/5 border-white/10 opacity-80'}`}> 
 											<div className="flex items-start gap-2">
-												<div className={`w-10 h-10 rounded-lg ${a.expired ? 'bg-white/5' : 'bg-white/10'} flex items-center justify-center`}><span className="text-xl">{a.emoji}</span></div>
+												<div className={`w-12 h-12 rounded-xl ${a.expired ? 'bg-white/5' : 'bg-white/10'} flex items-center justify-center`}><span className="text-2xl">{a.emoji}</span></div>
 												<div className="overflow-hidden">
 													<div className="text-white font-semibold truncate">{a.title}</div>
 													<div className="text-white/80 text-xs line-clamp-2">{a.description}</div>
