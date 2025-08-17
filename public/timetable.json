@@ -19,21 +19,21 @@
       },
       {
         "time": "22:00",
-        "title": "Campfire Chronicles & Chill Vibes 🔥",
-        "description": "Kick back around the fire! Optional games, music, and that perfect Friday night relaxed energy. No pressure, just good vibes.",
+        "title": "Campfire & Music 🔥",
+        "description": "Guitars, stories, and quiet chats by the fire. Bring a blanket; stay for the stars.",
         "location": "Campfire Area",
         "achievement": "fire_starter"
       }
     ]
   },
   "day2": {
-    "date": "2025-08-12",
+    "date": "2025-08-23",
     "caption": "Saturday, August 23rd 2025 - The Main Event",
     "events": [
       {
         "time": "09:00",
-        "title": "Slovenian Breakfast Bonanza 🥞",
-        "description": "Rise and shine, Slovenia! Keep it easy, keep it social, keep it delicious.",
+        "title": "Slow Breakfast Start 🥞",
+        "description": "Rise and shine, Lithuania! Keep it easy, keep it social, keep it delicious.",
         "location": "Main Lodge",
         "achievement": "early_bird"
       },
@@ -46,8 +46,8 @@
       },
       {
         "time": "11:00",
-        "title": "Meet & Greet Madness 👋",
-        "description": "Name tags, icebreakers, and the beautiful chaos of new friendships being born!",
+        "title": "Meet & Greet 👋",
+        "description": "Names, laughs, and who's who. Fast intros, friendly faces.",
         "location": "Social Area",
         "achievement": "social_butterfly"
       },
@@ -61,14 +61,14 @@
       {
         "time": "13:00",
         "title": "Freedom Hour 🎵",
-        "description": "Music, hammocks, optional activities - basically do whatever makes your soul happy!",
+        "description": "Hammocks, lake dips, a nap—or do nothing at all.",
         "location": "Everywhere",
         "achievement": "free_spirit"
       },
       {
         "time": "14:30",
-        "title": "Lunch & Munch 🍽️",
-        "description": "Proper sit-down meal to fuel up for the afternoon adventures ahead.",
+        "title": "Lunch Together 🍽️",
+        "description": "Plates up, stories down the table. Recharge for the afternoon.",
         "location": "Dining Hall",
         "achievement": "well_fed"
       },
@@ -81,22 +81,22 @@
       },
       {
         "time": "17:30",
-        "title": "Splash Zone & Sports Spectacular 🏊‍♂️",
-        "description": "Water games, sports, drinks, and chats - the perfect combo for Saturday afternoon energy!",
+        "title": "Water & Games 🏊‍♂️",
+        "description": "Cannonballs, frisbee, and cold drinks nearby.",
         "location": "Waterfront",
         "achievement": "water_warrior"
       },
       {
         "time": "18:30",
-        "title": "Snack Attack & Evening Prep 🍿",
-        "description": "Free time with snacks - the perfect transition from day vibes to evening magic.",
+        "title": "Snacks & Reset 🍿",
+        "description": "Top up snacks, change shirts, breathe, and reset.",
         "location": "Lounge Area",
         "achievement": "snack_master"
       },
       {
         "time": "20:00",
-        "title": "Evening Program Extravaganza 🕺",
-        "description": "Dance floor is OPEN! Time to show off those moves and party like it's 2025!",
+        "title": "Evening Program 🕺",
+        "description": "Lights down, playlist up—dance if you want.",
         "location": "Dance Floor",
         "achievement": "dance_legend"
       }
@@ -123,14 +123,14 @@
       {
         "time": "12:30",
         "title": "Pack-Up & Memory Lane 📸",
-        "description": "Last hugs, final photos, and maybe some guestbook signing for the memories!",
+        "description": "Photos, notes in the guestbook, and a tidy space for the road.",
         "location": "Main Area",
         "achievement": "memory_keeper"
       },
       {
         "time": "13:30",
         "title": "Road Trip Back to Vilnius 🚗",
-        "description": "Time for our Slovenian friends to hit the road back to Vilnius. Safe travels on the scenic drive!",
+        "description": "Hugs, bags, and one last wave. Safe drive back to Vilnius.",
         "location": "Departure Zone",
         "achievement": "farewell_master"
       }

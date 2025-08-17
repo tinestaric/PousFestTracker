@@ -75,6 +75,7 @@ UX guidelines
 - Mobile-first: most usage is on phones at the venue.
 - Fast paths: minimize taps to log a drink or view achievements.
 - Favor delightful, simple visuals over enterprise polish; Tailwind is preferred.
+- Localization: All user-facing strings must come from `config/translations` via `getText`/`getInterpolatedText`. Do not hardcode text in components.
 
 Feature work guidelines
 - Always ask: does this matter for a 1-3 day, <=100 person event? If not, skip or defer.

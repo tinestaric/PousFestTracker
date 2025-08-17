@@ -6,6 +6,7 @@ export interface EventConfig {
     year: string
     fullTitle: string
     date: string
+    timezone?: string
     location: string
     description: string
     tagline: string
@@ -147,6 +148,18 @@ export function interpolateText(text: string, config: EventConfig, variables?: R
 export function getInterpolatedText(key: string, config: EventConfig, variables?: Record<string, string>): string {
   const text = getText(key, config)
   return interpolateText(text, config, variables)
+}
+
+export function formatInEventTimezone(dateIso: string | number | Date, config: EventConfig, options?: Intl.DateTimeFormatOptions): string {
+  const tz = config.event.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone
+  const date = new Date(dateIso)
+  const fmt = new Intl.DateTimeFormat(undefined, {
+    timeZone: tz,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit',
+    ...(options || {})
+  })
+  return fmt.format(date)
 }
 
 export function isFeatureEnabled(feature: string, config: EventConfig): boolean {

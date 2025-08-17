@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation'
 import { Trophy, Wine, User, Calendar, Home, Loader2, TrendingUp, Sparkles, ChevronDown, ArrowDown, BookOpen, RefreshCw, BarChart3, Crown, Droplets, Flame, Users } from 'lucide-react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { getEventConfig, getInterpolatedText, getText } from '@/lib/eventConfig'
+import { getEventConfig, getInterpolatedText, getText, formatInEventTimezone } from '@/lib/eventConfig'
+import { buildBacTimeSeries } from '@/lib/alcohol'
 import { TAG_UID_STORAGE_KEY, getStoredTagUid, setStoredTagUid } from '@/lib/hooks/useTagUid'
 import { supabase } from '@/lib/supabase'
 import type { Guest, GuestAchievement, DrinkOrder, DrinkMenuItem, Recipe } from '@/lib/supabase'
@@ -57,6 +58,13 @@ interface GuestData {
   drink_summary: Record<string, number>
   total_achievements: number
   total_drinks: number
+  achievements_view?: {
+    summary: { earned: number; total: number }
+    recent: Array<{ id: string; title: string; description: string; emoji: string; unlocked_at: string }>
+    earned: Array<{ id: string; title: string; description: string; emoji: string; unlocked_at: string }>
+    inProgress: Array<{ id: string; title: string; description: string; emoji: string; progress: { current: number; target: number } }>
+    upcoming: Array<{ id: string; title: string; description: string; emoji: string; starts_at?: string | null }>
+  }
 }
 
 interface GuestDataWithoutAchievements {
@@ -150,6 +158,8 @@ function GuestDashboard() {
   const [alcoholTimelineData, setAlcoholTimelineData] = useState<{ labels: string[]; datasets: any[] }>({ labels: [], datasets: [] })
   const [recipeFromParam, setRecipeFromParam] = useState<string>('')
   const hasAnchoredScroll = useRef(false)
+  const socialAbortRef = useRef<AbortController | null>(null)
+  const socialTimeoutRef = useRef<number | null>(null)
 
   // Memoize expensive category grouping calculation - moved before early returns
   const drinksByCategory = useMemo(() => {
@@ -254,12 +264,12 @@ function GuestDashboard() {
     setScrollProgress(totalScroll > 0 ? (currentScroll / totalScroll) * 100 : 0)
   }, [])
 
-  const fetchSocialHighlights = useCallback(async (tagUid: string) => {
+  const fetchSocialHighlights = useCallback(async (tagUid: string, signal?: AbortSignal) => {
     if (!config.features.social) return
     
     try {
       setSocialLoading(true)
-      const response = await fetch(`/api/getSocialData?tag_uid=${tagUid}`)
+      const response = await fetch(`/api/getSocialData?tag_uid=${tagUid}`, { signal })
       if (!response.ok) throw new Error('Failed to fetch social data')
       
       const data = await response.json()
@@ -271,6 +281,24 @@ function GuestDashboard() {
       setSocialLoading(false)
     }
   }, [config.features.social])
+
+  // Delay social load slightly to avoid contention on initial paint
+  const scheduleSocialHighlights = useCallback((tagUid: string) => {
+    try {
+      if (socialTimeoutRef.current) {
+        window.clearTimeout(socialTimeoutRef.current)
+      }
+      if (socialAbortRef.current) {
+        socialAbortRef.current.abort()
+      }
+      const controller = new AbortController()
+      socialAbortRef.current = controller
+      const id = window.setTimeout(() => {
+        fetchSocialHighlights(tagUid, controller.signal)
+      }, 1200)
+      socialTimeoutRef.current = id
+    } catch {}
+  }, [fetchSocialHighlights])
 
   const fetchAlcoholTimeline = useCallback(async (tagUid: string) => {
     try {
@@ -293,6 +321,37 @@ function GuestDashboard() {
       // Silent fail
     }
   }, [])
+
+  // Compute BAC timeline on the client to avoid network/DB cost; fallback to API if needed
+  const computeAlcoholTimelineClient = useCallback((tagUid: string, orders: DrinkOrder[], gender: any) => {
+    if (!orders || orders.length === 0) return false
+    try {
+      const now = new Date()
+      const firstOrder = new Date(orders[0].ordered_at)
+      const windowStart = new Date(Math.max(firstOrder.getTime(), now.getTime() - 12 * 60 * 60 * 1000))
+      // align to 15 min and add -15 min baseline
+      const start = new Date(windowStart)
+      start.setMinutes(Math.floor(start.getMinutes() / 15) * 15, 0, 0)
+      start.setTime(start.getTime() - 15 * 60 * 1000)
+      // Cast to expected shape (alcohol fields expected on drink_menu)
+      const series = buildBacTimeSeries((orders as any), gender, start, now, 15)
+      setAlcoholTimelineData({
+        labels: series.labels,
+        datasets: [{
+          label: getText('guest.charts.labels.estimatedBAC', config),
+          data: (series.values || []).map((v: number) => Math.round(v * 1000) / 1000),
+          borderColor: '#f97316',
+          backgroundColor: 'rgba(249, 115, 22, 0.2)',
+          fill: true,
+          tension: 0.2,
+          pointRadius: 0
+        }]
+      })
+      return series.labels.length > 0
+    } catch {
+      return false
+    }
+  }, [config])
 
   // Optimized function that fetches all data in one call with caching
   const fetchDashboardData = useCallback(async (tagUid: string) => {
@@ -317,9 +376,13 @@ function GuestDashboard() {
         setDrinkMenu(cachedDrinkMenu)
         setLoading(false)
         
-        // Fetch social highlights (non-blocking)
-        fetchSocialHighlights(tagUid)
-        fetchAlcoholTimeline(tagUid)
+        // Fetch social highlights (non-blocking, delayed)
+        scheduleSocialHighlights(tagUid)
+        // Compute client-side BAC timeline; fallback to API if missing alcohol fields
+        const computed = computeAlcoholTimelineClient(tagUid, (combinedGuestData.drink_orders || []), (combinedGuestData.guest as any).gender)
+        if (!computed) {
+          fetchAlcoholTimeline(tagUid)
+        }
         return
       }
       
@@ -350,7 +413,8 @@ function GuestDashboard() {
       const combinedGuestData: GuestData = {
         ...guestDataWithoutAchievements,
         achievements: achievementData.achievements,
-        total_achievements: achievementData.total_achievements
+        total_achievements: achievementData.total_achievements,
+        achievements_view: data.achievements_view
       }
       
       // Set data
@@ -364,9 +428,13 @@ function GuestDashboard() {
       }
       setCachedData(DRINK_MENU_CACHE_KEY, data.drink_menu || [])
       
-      // Fetch social highlights (non-blocking)
-      fetchSocialHighlights(tagUid)
-      fetchAlcoholTimeline(tagUid)
+      // Fetch social highlights (non-blocking, delayed)
+      scheduleSocialHighlights(tagUid)
+      // Compute client-side BAC timeline; fallback to API if missing alcohol fields
+      const computed = computeAlcoholTimelineClient(tagUid, (data.drink_orders || []), (data.guest as any).gender)
+      if (!computed) {
+        fetchAlcoholTimeline(tagUid)
+      }
       
     } catch (err) {
       // Fallback to old API if new one fails
@@ -754,16 +822,21 @@ function GuestDashboard() {
           {config.features.social && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {socialLoading ? (
-                // Skeleton placeholders while loading
+                // Animated skeleton while loading
                 <>
                   {[1, 2].map((index) => (
                     <div key={index} className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl p-4 md:p-6 shadow-xl">
                       <div className="flex items-center justify-between">
                         <div className="flex-1">
-                          <div className="h-4 md:h-5 bg-white/20 rounded w-24 md:w-32 mb-2 animate-pulse"></div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className="w-4 h-4 rounded-full bg-white/30 animate-pulse" />
+                            <div className="h-4 md:h-5 bg-white/20 rounded w-24 md:w-32 animate-pulse" />
+                          </div>
                           <div className="h-3 md:h-4 bg-white/20 rounded w-32 md:w-48 animate-pulse"></div>
                         </div>
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl animate-pulse"></div>
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center">
+                          <div className="w-5 h-5 rounded-full border-2 border-white/40 border-t-transparent animate-spin" />
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -829,31 +902,46 @@ function GuestDashboard() {
                   <Sparkles className="w-6 h-6" />
                   {getText('guest.sections.yourAchievements', config)}
                 </h2>
-                {guestData.achievements.length > 0 ? (
-                  <div className="space-y-4">
-                    {guestData.achievements.map((achievement) => (
-                      <div key={achievement.id} className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300">
-                        <div className="flex items-start gap-4">
-                          <div className="w-14 h-14 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                            <span className="text-2xl">
-                              {achievement.achievement_templates?.logo_url || '🏆'}
-                            </span>
+                {(guestData.achievements_view?.recent?.length || guestData.achievements.length) > 0 ? (
+                  <>
+                    <div className="space-y-3">
+                      {(guestData.achievements_view?.recent || guestData.achievements.slice(0,3).map(a => ({
+                        id: a.id,
+                        title: a.achievement_templates?.title || '',
+                        description: a.achievement_templates?.description || '',
+                        emoji: a.achievement_templates?.logo_url || '🏆',
+                        unlocked_at: a.unlocked_at
+                      }))).map((a: any) => {
+                        const isNew = Date.now() - new Date(a.unlocked_at).getTime() < 15 * 60 * 1000
+                        return (
+                          <div key={a.id} className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-4 shadow-xl">
+                            <div className="flex items-start gap-4">
+                              <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
+                                <span className="text-2xl">{a.emoji}</span>
+                              </div>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2">
+                                  <h3 className="font-bold text-white text-base drop-shadow-lg">{a.title}</h3>
+                                  {isNew && (
+                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/20 border border-white/30 text-white/90">New</span>
+                                  )}
+                                </div>
+                                {a.description && (
+                                  <p className="text-sm text-white/90 mb-1 line-clamp-2">{a.description}</p>
+                                )}
+                                <p className="text-xs text-white/80">{formatInEventTimezone(a.unlocked_at, config)}</p>
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex-1">
-                            <h3 className="font-bold text-white text-lg mb-1 drop-shadow-lg">
-                              {achievement.achievement_templates?.title}
-                            </h3>
-                            <p className="text-white/90 mb-2">
-                              {achievement.achievement_templates?.description}
-                            </p>
-                            <p className="text-sm text-white/70">
-                              {getText('guest.achievements.unlocked', config)}: {new Date(achievement.unlocked_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                        )
+                      })}
+                    </div>
+                    <div className="flex justify-end pt-2">
+                      <Link href="/guest/achievements" className="text-sm text-white/90 underline underline-offset-4">
+                        {getText('guest.achievements.buttons.viewAll', config)}
+                      </Link>
+                    </div>
+                  </>
                 ) : (
                   <div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
                     <Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />

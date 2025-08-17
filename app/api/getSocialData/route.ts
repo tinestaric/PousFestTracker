@@ -370,13 +370,21 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(socialData)
+    return NextResponse.json(socialData, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=60'
+      }
+    })
 
   } catch (error) {
     console.error('Error fetching social data:', error)
     return NextResponse.json(
       { error: 'Failed to fetch social data' },
-      { status: 500 }
+      { status: 500,
+        headers: {
+          'Cache-Control': 'public, s-maxage=10, stale-while-revalidate=30'
+        }
+      }
     )
   }
 }

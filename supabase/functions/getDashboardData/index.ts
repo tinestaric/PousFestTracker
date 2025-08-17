@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { buildAchievementsViewForGuest } from '../_shared/achievements.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -18,50 +19,58 @@ serve(async (req: Request) => {
     )
 
     const url = new URL(req.url)
-    const tag_uid = url.searchParams.get('tag_uid')
+    const tag_uid_raw = url.searchParams.get('tag_uid')
+    const tz = url.searchParams.get('tz') || undefined
 
-    if (!tag_uid) {
+    if (!tag_uid_raw) {
       return new Response(
         JSON.stringify({ error: 'tag_uid parameter is required' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       )
     }
+    const tag_uid = tag_uid_raw.trim()
 
-    // Single optimized query to get all guest data with joins
-    const { data: guestWithData, error: guestError } = await supabaseClient
+    // Step 1: Fetch the guest row only
+    const { data: guestRow, error: guestError } = await supabaseClient
       .from('guests')
-      .select(`
-        *,
-        guest_achievements!guest_achievements_guest_id_fkey (
-          *,
-          achievement_templates (*)
-        ),
-        drink_orders!drink_orders_guest_id_fkey (
-          *,
-          drink_menu (*)
-        )
-      `)
+      .select('id, name, tag_uid, gender, created_at')
       .eq('tag_uid', tag_uid)
-      .order('unlocked_at', { referencedTable: 'guest_achievements', ascending: false })
-      .order('ordered_at', { referencedTable: 'drink_orders', ascending: false })
       .single()
 
-    if (guestError || !guestWithData) {
+    if (guestError || !guestRow) {
       return new Response(
         JSON.stringify({ error: 'Guest not found' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 404 }
       )
     }
 
-    // Single query to get drink menu with recipes
-    const { data: drinkMenuWithRecipes, error: drinkMenuError } = await supabaseClient
-      .from('drink_menu')
-      .select(`
-        *,
-        recipes (*)
-      `)
-      .eq('available', true)
-      .order('category', { ascending: true })
+    // Step 2: Fetch children and drink menu in parallel
+    const [achievementsResult, ordersResult, drinkMenuResult] = await Promise.all([
+      supabaseClient
+        .from('guest_achievements')
+        .select('id, unlocked_at, achievement_templates (title, description, logo_url)')
+        .eq('guest_id', guestRow.id)
+        .order('unlocked_at', { ascending: false }),
+      supabaseClient
+        .from('drink_orders')
+        .select('id, quantity, ordered_at, drink_menu (id, name, category, alcohol_percentage, alcohol_content_ml)')
+        .eq('guest_id', guestRow.id)
+        .order('ordered_at', { ascending: true }),
+      supabaseClient
+        .from('drink_menu')
+        .select('id, name, description, category, available, recipes (id, drink_menu_id, name, serves, ingredients, instructions)')
+        .eq('available', true)
+        .order('category', { ascending: true })
+    ])
+
+    const drinkMenuWithRecipes = drinkMenuResult.data
+    const drinkMenuError = drinkMenuResult.error
+    const guestWithData = {
+      ...guestRow,
+      guest_achievements: achievementsResult.data || [],
+      drink_orders: ordersResult.data || []
+    }
+    
 
     if (drinkMenuError) {
       return new Response(
@@ -96,7 +105,14 @@ serve(async (req: Request) => {
       .slice(0, 5)
 
     // Build simple 30-min cumulative timeline
-    const ordersSorted = (guestWithData.drink_orders || []).slice().sort((a: any, b: any) => new Date(a.ordered_at).getTime() - new Date(b.ordered_at).getTime())
+    const ordersSorted = (guestWithData.drink_orders || [])
+      .slice()
+      .sort((a: any, b: any) => new Date(a.ordered_at).getTime() - new Date(b.ordered_at).getTime())
+      .filter((o: any, idx: number, arr: any[]) => {
+        // limit to last 24h to cap response size; adjust if event spans shorter window
+        const last = arr[arr.length - 1]
+        return new Date(o.ordered_at).getTime() >= new Date(last.ordered_at).getTime() - 24*60*60*1000
+      })
     let timeline = { labels: [] as string[], counts: [] as number[] }
     if (ordersSorted.length > 0) {
       const start = new Date(ordersSorted[0].ordered_at)
@@ -122,6 +138,9 @@ serve(async (req: Request) => {
       }
     }
 
+    // Build achievements view (earned, inProgress, upcoming, recent)
+    const achievementsView = await buildAchievementsViewForGuest(supabaseClient as any, guestWithData.id, new Date().toISOString(), tz)
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -134,16 +153,17 @@ serve(async (req: Request) => {
           updated_at: guestWithData.updated_at
         },
         achievements: guestWithData.guest_achievements || [],
+        achievements_view: achievementsView,
         drink_orders: guestWithData.drink_orders || [],
         drink_summary: drinkSummary,
         summary_by_category: summaryByCategory,
         favorites,
         timeline,
         drink_menu: drinkMenu,
-        total_achievements: guestWithData.guest_achievements?.length || 0,
+        total_achievements: achievementsView?.summary?.earned ?? (guestWithData.guest_achievements?.length || 0),
         total_drinks: (guestWithData.drink_orders || []).reduce((sum: number, order: any) => sum + order.quantity, 0)
       }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json', 'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=60' } }
     )
 
   } catch (error) {

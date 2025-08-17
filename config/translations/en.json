@@ -75,7 +75,24 @@
     "achievements": {
       "noAchievements": "No achievements yet",
       "noAchievementsMessage": "Keep participating to unlock badges!",
-      "unlocked": "Unlocked"
+      "unlocked": "Unlocked",
+      "newBadge": "New",
+      "buttons": {
+        "viewAll": "View all achievements"
+      }
+    },
+    "achievementsPage": {
+      "title": "Achievements",
+      "subtitle": "{earned}/{total} unlocked • Track progress and upcoming",
+      "loading": "Loading achievements...",
+      "sections": {
+        "unlocked": "Unlocked",
+        "inProgress": "In progress",
+        "upcoming": "Upcoming"
+      },
+      "emptyTitle": "No achievements yet",
+      "emptyMessage": "Start ordering to unlock your first badges!",
+      "starts": "Starts {date}"
     },
     "charts": {
       "drinkPreferences": "Your Drink Preferences",

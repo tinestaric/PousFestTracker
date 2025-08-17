@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getEventConfig } from '@/lib/eventConfig'
 import { proxySupabaseFunction } from '@/lib/api/proxySupabaseFunction'
 
 export async function GET(request: NextRequest) {
@@ -13,9 +14,10 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    const config = getEventConfig()
     const response = await proxySupabaseFunction('getDashboardData', {
       method: 'GET',
-      params: { tag_uid },
+      params: { tag_uid, tz: config.event.timezone },
     })
 
     if (!response.ok) {

@@ -59,7 +59,6 @@ const achievementIcons = {
 export default function Timetable() {
   const config = getEventConfig()
   const timetable = timetableData as TimetableData
-  const achievementsEnabled = config.features.achievements
   
   // Get all day keys and sort them
   const dayKeys = Object.keys(timetable).sort((a, b) => {
@@ -83,8 +82,7 @@ export default function Timetable() {
   
   const [selectedDay, setSelectedDay] = useState(getTodaysDay())
   const selectedDayData = timetable[selectedDay]
-  // Collect achievement opportunities for the selected day
-  const selectedDayAchievements = selectedDayData.events.filter((e) => !!e.achievement)
+  // Achievement opportunities section removed; dedicated achievements screen covers this UX now
   
   // Get day number for display
   const getDayNumber = (dayKey: string) => {
@@ -229,13 +227,7 @@ export default function Timetable() {
                         <h3 className="text-2xl font-bold text-white drop-shadow-lg">
                           {event.title}
                         </h3>
-                        {achievementsEnabled && event.achievement && (
-                          <div className="flex items-center gap-2 bg-gradient-to-r from-yellow-400 to-orange-400 text-yellow-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                            <Trophy className="w-4 h-4" />
-                            <span className="text-lg">{achievementIcons[event.achievement as keyof typeof achievementIcons]}</span>
-                            {getText('timetable.achievement', config)}
-                          </div>
-                        )}
+                        {/* Achievement chip removed per new dedicated achievements page */}
                       </div>
                       
                       <p className="text-white/90 mb-4 text-lg leading-relaxed">
@@ -262,37 +254,7 @@ export default function Timetable() {
             </div>
           </div>
 
-          {/* Achievement Legend */}
-          {achievementsEnabled && (
-            <div className="bg-gradient-to-r from-yellow-400/20 to-orange-400/20 backdrop-blur-sm border border-yellow-300/30 rounded-2xl p-8 shadow-2xl">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-3 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl shadow-lg">
-                  <Trophy className="w-8 h-8 text-yellow-900" />
-                </div>
-                <h3 className="text-2xl font-bold text-white drop-shadow-lg">
-                  {getText('timetable.achievementOpportunities', config)}
-                </h3>
-              </div>
-              <p className="text-white/90 mb-6 text-lg leading-relaxed">
-                {getText('timetable.achievementOpportunitiesMessage', config)}
-              </p>
-            {selectedDayAchievements.length > 0 ? (
-              <div className="grid md:grid-cols-2 gap-6">
-                {selectedDayAchievements.map((event, idx) => (
-                  <div key={`${event.time}-${event.title}-${idx}`} className="flex items-center gap-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 hover:bg-white/20 transition-all duration-300">
-                    <span className="text-3xl">{achievementIcons[event.achievement as keyof typeof achievementIcons] || '🏆'}</span>
-                    <div>
-                      <span className="font-bold text-white text-lg">{event.title}</span>
-                      <p className="text-white/80 flex items-center gap-2"><Clock className="w-4 h-4" /> {event.time}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-white/80 italic">{getText('timetable.noAchievementOpportunities', config)}</div>
-            )}
-            </div>
-          )}
+          {/* Achievement opportunities removed */}
         </div>
       </div>
     </div>

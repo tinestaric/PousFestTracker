@@ -75,7 +75,24 @@
     "achievements": {
       "noAchievements": "Še brez dosežkov",
       "noAchievementsMessage": "Nadaljuj s sodelovanjem za odklepanje značk!",
-      "unlocked": "Odklenjen"
+      "unlocked": "Odklenjen",
+      "newBadge": "Novo",
+      "buttons": {
+        "viewAll": "Poglej vse dosežke"
+      }
+    },
+    "achievementsPage": {
+      "title": "Dosežki",
+      "subtitle": "{earned}/{total} odklenjenih • Spremljaj napredek in prihajajoče",
+      "loading": "Nalagam dosežke...",
+      "sections": {
+        "unlocked": "Odklenjeni",
+        "inProgress": "V teku",
+        "upcoming": "Prihajajoči"
+      },
+      "emptyTitle": "Še brez dosežkov",
+      "emptyMessage": "Začni naročati za odklepanje prvih značk!",
+      "starts": "Začne se {date}"
     },
     "charts": {
       "drinkPreferences": "Tvoje preference pijač",

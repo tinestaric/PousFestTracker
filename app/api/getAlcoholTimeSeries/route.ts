@@ -44,7 +44,9 @@ export async function GET(request: NextRequest) {
     const now = new Date()
 
     if (!orders || orders.length === 0) {
-      return NextResponse.json({ labels: [], values: [] })
+      return NextResponse.json({ labels: [], values: [] }, {
+        headers: { 'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=60' }
+      })
     }
 
     // Determine start time aligned to step
@@ -57,13 +59,17 @@ export async function GET(request: NextRequest) {
 
     const { labels, values } = buildBacTimeSeries(orders as any, (guest as any).gender, start, now, stepMinutes)
 
-    return NextResponse.json({ labels, values })
+    return NextResponse.json({ labels, values }, {
+      headers: { 'Cache-Control': 'public, s-maxage=15, stale-while-revalidate=60' }
+    })
 
   } catch (error) {
     console.error('Error building alcohol time series:', error)
     return NextResponse.json(
       { error: 'Failed to build alcohol time series' },
-      { status: 500 }
+      { status: 500,
+        headers: { 'Cache-Control': 'public, s-maxage=5, stale-while-revalidate=30' }
+      }
     )
   }
 }
