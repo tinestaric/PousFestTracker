@@ -31,21 +31,14 @@
     "caption": "Saturday, August 23rd 2025 - The Main Event",
     "events": [
       {
-        "time": "09:00",
+        "time": "09:30",
         "title": "Slow Breakfast Start 🥞",
         "description": "Rise and shine, Lithuania! Keep it easy, keep it social, keep it delicious.",
         "location": "Main Lodge",
         "achievement": "early_bird"
       },
       {
-        "time": "10:00",
-        "title": "Lithuanian Landing Party 🎉",
-        "description": "The Lithuanians have arrived! Time for welcome drinks and the real party to begin.",
-        "location": "Arrival Area",
-        "achievement": "welcome_committee"
-      },
-      {
-        "time": "11:00",
+        "time": "10:30",
         "title": "Meet & Greet 👋",
         "description": "Names, laughs, and who's who. Fast intros, friendly faces.",
         "location": "Social Area",
