@@ -28,6 +28,7 @@ function AchievementsContent() {
 	const [data, setData] = useState<AchievementsView | null>(null)
 	const [loading, setLoading] = useState(true)
 	const [activeTab, setActiveTab] = useState<'earned' | 'inProgress' | 'upcoming'>('earned')
+	const [panelAnimClass, setPanelAnimClass] = useState('opacity-100 translate-y-0')
 
 	useEffect(() => {
 		const tagUid = getStoredTagUid()
@@ -46,6 +47,13 @@ function AchievementsContent() {
 		else if (data.earned?.length) setActiveTab('earned')
 		else setActiveTab('upcoming')
 	}, [data])
+
+	// Animate panel on tab change (simple fade/slide in)
+	useEffect(() => {
+		setPanelAnimClass('opacity-0 translate-y-2')
+		const id = requestAnimationFrame(() => setPanelAnimClass('opacity-100 translate-y-0'))
+		return () => cancelAnimationFrame(id)
+	}, [activeTab])
 
 	if (loading) {
 		return (
@@ -103,7 +111,7 @@ function AchievementsContent() {
 						</div>
 
 						{/* Active tab content */}
-						<div className="space-y-4 mt-4">
+						<div className={`space-y-4 mt-4 transition-all duration-200 ${panelAnimClass}`}>
 							{activeTab === 'earned' && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.earned.map(a => (
