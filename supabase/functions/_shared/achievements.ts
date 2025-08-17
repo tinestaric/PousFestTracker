@@ -183,15 +183,19 @@ export async function buildAchievementsViewForGuest(
 		const isBefore = startsAt && now < new Date(startsAt).toISOString()
 		const isAfter = endsAt && now > new Date(endsAt).toISOString()
 
+
+		// If this is a calculation-based achievement (recognized pattern), always surface under In Progress
+		if (progress) {
+			inProgress.push({ id: t.id, type: t.achievement_type, title: t.title, description: t.description, emoji: t.logo_url, progress: { current: Math.min(progress.current, progress.target), target: progress.target } })
+			continue
+		}
+
+		// Schedule-only achievements (no calculable progress)
 		if (isBefore) {
 			upcoming.push({ id: t.id, type: t.achievement_type, title: t.title, description: t.description, emoji: t.logo_url, starts_at: startsAt, expired: false })
 			continue
 		}
-		if (progress && progress.current > 0 && !isAfter) {
-			inProgress.push({ id: t.id, type: t.achievement_type, title: t.title, description: t.description, emoji: t.logo_url, progress: { current: Math.min(progress.current, progress.target), target: progress.target } })
-			continue
-		}
-		// If no progress or expired, include in upcoming and mark expired when past window
+		// If expired, include with expired flag
 		upcoming.push({ id: t.id, type: t.achievement_type, title: t.title, description: t.description, emoji: t.logo_url, starts_at: startsAt || null, expired: !!isAfter })
 	}
 

@@ -27,6 +27,7 @@ function AchievementsContent() {
 	const config = getEventConfig()
 	const [data, setData] = useState<AchievementsView | null>(null)
 	const [loading, setLoading] = useState(true)
+	const [activeTab, setActiveTab] = useState<'earned' | 'inProgress' | 'upcoming'>('earned')
 
 	useEffect(() => {
 		const tagUid = getStoredTagUid()
@@ -37,6 +38,14 @@ function AchievementsContent() {
 			setData(json.achievements_view || null)
 		}).catch(() => {}).finally(() => setLoading(false))
 	}, [])
+
+	// Pick a sensible default tab once data arrives
+	useEffect(() => {
+		if (!data) return
+		if (data.inProgress?.length) setActiveTab('inProgress')
+		else if (data.earned?.length) setActiveTab('earned')
+		else setActiveTab('upcoming')
+	}, [data])
 
 	if (loading) {
 		return (
@@ -70,20 +79,32 @@ function AchievementsContent() {
 						<h3 className="text-xl font-semibold text-white mb-2">{getText('guest.achievementsPage.emptyTitle', config)}</h3>
 						<p className="text-white/80">{getText('guest.achievementsPage.emptyMessage', config)}</p>
 					</div>
-				) : data.earned.length + data.inProgress.length + data.upcoming.length === 0 ? (
-					<div className="bg-white/20 backdrop-blur-sm border border-white/30 rounded-2xl shadow-xl text-center py-12 px-6">
-						<Trophy className="w-16 h-16 text-white/60 mx-auto mb-4" />
-						<h3 className="text-xl font-semibold text-white mb-2">{getText('guest.achievementsPage.emptyTitle', config)}</h3>
-						<p className="text-white/80">{getText('guest.achievementsPage.emptyMessage', config)}</p>
-					</div>
-				) : (
-					<div className="space-y-8">
-						{/* Earned */}
-						<div>
-							<h2 className="text-xl font-semibold text-white mb-3">{getText('guest.achievementsPage.sections.unlocked', config)}</h2>
-							{data.earned.length === 0 ? (
-								<p className="text-white/70 text-sm">{getText('guest.achievements.noAchievements', config)}</p>
-							) : (
+				) : ( 
+					<>
+						{/* Segmented tabs */}
+						<div className="flex items-center justify-center">
+							<div className="inline-flex bg-white/10 border border-white/20 rounded-xl p-1">
+								{(['earned','inProgress','upcoming'] as const).map((key) => {
+									const isActive = activeTab === key
+									const label = key === 'earned' ? getText('guest.achievementsPage.sections.unlocked', config) : key === 'inProgress' ? getText('guest.achievementsPage.sections.inProgress', config) : getText('guest.achievementsPage.sections.upcoming', config)
+									const count = key === 'earned' ? data.earned.length : key === 'inProgress' ? data.inProgress.length : data.upcoming.length
+									return (
+										<button key={key}
+											onClick={() => setActiveTab(key)}
+											className={`px-3 sm:px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${isActive ? 'bg-white text-gray-800' : 'text-white hover:bg-white/20'}`}
+											aria-pressed={isActive}
+										>
+											<span>{label}</span>
+											<span className={`ml-2 inline-flex items-center justify-center text-xs rounded-full px-2 py-0.5 ${isActive ? 'bg-gray-200 text-gray-800' : 'bg-white/20 text-white'}`}>{count}</span>
+										</button>
+									)
+								})}
+							</div>
+						</div>
+
+						{/* Active tab content */}
+						<div className="space-y-4 mt-4">
+							{activeTab === 'earned' && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.earned.map(a => (
 										<div key={a.id} className="bg-white/20 border border-white/30 rounded-2xl p-4">
@@ -99,14 +120,8 @@ function AchievementsContent() {
 									))}
 								</div>
 							)}
-						</div>
 
-						{/* In progress */}
-						<div>
-							<h2 className="text-xl font-semibold text-white mb-3">{getText('guest.achievementsPage.sections.inProgress', config)}</h2>
-							{data.inProgress.length === 0 ? (
-								<p className="text-white/70 text-sm">{getText('guest.achievements.noAchievements', config)}</p>
-							) : (
+							{activeTab === 'inProgress' && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.inProgress.map(a => (
 										<div key={a.id} className="bg-white/10 border border-white/20 rounded-2xl p-4">
@@ -123,17 +138,11 @@ function AchievementsContent() {
 									))}
 								</div>
 							)}
-						</div>
 
-						{/* Upcoming */}
-						<div>
-							<h2 className="text-xl font-semibold text-white mb-3">{getText('guest.achievementsPage.sections.upcoming', config)}</h2>
-							{data.upcoming.length === 0 ? (
-								<p className="text-white/70 text-sm">{getText('guest.achievements.noAchievements', config)}</p>
-							) : (
+							{activeTab === 'upcoming' && (
 								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
 									{data.upcoming.map(a => (
-										<div key={a.id} className={`border rounded-2xl p-4 ${a.expired ? 'bg-white/5 border-white/5 opacity-50' : 'bg-white/5 border-white/10 opacity-80'}`}> 
+										<div key={a.id} className={`border rounded-2xl p-4 ${a.expired ? 'bg-white/5 border-white/5 opacity-50' : 'bg-white/5 border-white/10 opacity-80'}`}>
 											<div className="flex items-start gap-2">
 												<div className={`w-12 h-12 rounded-xl ${a.expired ? 'bg-white/5' : 'bg-white/10'} flex items-center justify-center`}><span className="text-2xl">{a.emoji}</span></div>
 												<div className="overflow-hidden">
@@ -147,7 +156,7 @@ function AchievementsContent() {
 								</div>
 							)}
 						</div>
-					</div>
+					</>
 				)}
 			</div>
 		</div>
