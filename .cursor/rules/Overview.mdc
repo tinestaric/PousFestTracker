@@ -61,15 +61,13 @@ Data, consistency, and performance
 - Caching: prefer simple Next.js or in-memory caching when it clearly helps; avoid complex invalidation.
 - Queries: keep simple and indexed; optimize only with evidence of slowness.
 
+Database schema
+- Schema documentation available in `supabase/DATABASE_SCHEMA.md`
+
 Security and privacy
 - Secrets in env vars only; never commit secrets.
 - Guest names and tag UIDs are private to the event; keep logs minimal and short-lived.
 - Admin access can remain simple (env password) unless stricter controls are clearly needed.
-
-Testing and QA
-- Right-sized tests: add focused unit tests for tricky logic (time windows, achievements).
-- Skip exhaustive E2E unless driven by a bug.
-- Manual QA should mirror real flows: NFC scan -> guest dashboard -> ordering -> admin stats.
 
 UX guidelines
 - Mobile-first: most usage is on phones at the venue.
