@@ -57,10 +57,71 @@ export default function AdminDashboard() {
   const { data, stats, loading, refetch } = useAdminData()
   const editing = useAdminEditing(refetch)
 
-  // Loading state
-  if (loading) {
+  // De-dup: shared edit props passed to most tabs
+  const commonEditProps = {
+    editing: editing.editing,
+    showAddForm: editing.showAddForm,
+    validation: editing.validation,
+    loading: editing.loading,
+    onStartAdd: editing.startAdd,
+    onStartEdit: editing.startEdit,
+    onCancelEdit: editing.cancelEdit,
+    onSave: editing.handleSave,
+    onDelete: editing.handleDelete,
+    onUpdateEditingData: editing.updateEditingData,
+  }
+
+  // De-dup: map active tab to its renderer
+  const TAB_RENDERERS: Record<ActiveTab, () => JSX.Element> = {
+    overview: () => <OverviewTab data={data} />,
+    guests: () => (
+      <GuestsTab
+        guests={data.guests}
+        {...commonEditProps}
+      />
+    ),
+    achievements: () => (
+      <AchievementsTab
+        achievements={data.achievements}
+        guestAchievements={data.guestAchievements}
+        {...commonEditProps}
+      />
+    ),
+    drinks: () => (
+      <DrinksTab
+        drinks={data.drinks}
+        drinkOrders={data.drinkOrders}
+        {...commonEditProps}
+      />
+    ),
+    recipes: () => (
+      <RecipesTab
+        recipes={data.recipes}
+        drinks={data.drinks}
+        {...commonEditProps}
+      />
+    ),
+    food: () => (
+      <FoodTab
+        foodMenu={data.foodMenu}
+        foodOrders={data.foodOrders}
+        {...commonEditProps}
+      />
+    ),
+    devices: () => (
+      <DevicesTab
+        deviceConfigs={data.deviceConfigs}
+        drinks={data.drinks}
+        achievements={data.achievements}
+        {...commonEditProps}
+      />
+    ),
+  }
+
+  // De-dup: background layers reused in loading and content states
+  function BackgroundDecor() {
     return (
-      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden flex items-center justify-center`}>
+      <>
         {/* Background patterns */}
         <div className="absolute inset-0 opacity-20">
           <div className="absolute inset-0 bg-white/5" style={{
@@ -70,6 +131,15 @@ export default function AdminDashboard() {
         </div>
         <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
+      </>
+    )
+  }
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden flex items-center justify-center`}>
+        <BackgroundDecor />
         
         <div className="relative z-10 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-white/30 border-t-white mx-auto mb-6"></div>
@@ -81,15 +151,7 @@ export default function AdminDashboard() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${config.ui.heroGradient} relative overflow-hidden`}>
-      {/* Background patterns */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute inset-0 bg-white/5" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          backgroundSize: '60px 60px'
-        }}></div>
-      </div>
-      <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse"></div>
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-cyan-300/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2 animate-pulse delay-1000"></div>
+      <BackgroundDecor />
 
       <div className="relative z-10 p-4 sm:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
@@ -112,111 +174,7 @@ export default function AdminDashboard() {
           <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
           {/* Tab Content */}
-          {activeTab === 'overview' && (
-            <OverviewTab data={data} />
-          )}
-          
-          {activeTab === 'guests' && (
-            <GuestsTab
-              guests={data.guests}
-              editing={editing.editing}
-              showAddForm={editing.showAddForm}
-              validation={editing.validation}
-              loading={editing.loading}
-              onStartAdd={editing.startAdd}
-              onStartEdit={editing.startEdit}
-              onCancelEdit={editing.cancelEdit}
-              onSave={editing.handleSave}
-              onDelete={editing.handleDelete}
-              onUpdateEditingData={editing.updateEditingData}
-            />
-          )}
-
-          {activeTab === 'achievements' && (
-            <AchievementsTab
-              achievements={data.achievements}
-              guestAchievements={data.guestAchievements}
-              editing={editing.editing}
-              showAddForm={editing.showAddForm}
-              validation={editing.validation}
-              loading={editing.loading}
-              onStartAdd={editing.startAdd}
-              onStartEdit={editing.startEdit}
-              onDelete={editing.handleDelete}
-              onCancelEdit={editing.cancelEdit}
-              onSave={editing.handleSave}
-              onUpdateEditingData={editing.updateEditingData}
-            />
-          )}
-
-          {activeTab === 'drinks' && (
-            <DrinksTab
-              drinks={data.drinks}
-              drinkOrders={data.drinkOrders}
-              editing={editing.editing}
-              showAddForm={editing.showAddForm}
-              validation={editing.validation}
-              loading={editing.loading}
-              onStartAdd={editing.startAdd}
-              onStartEdit={editing.startEdit}
-              onDelete={editing.handleDelete}
-              onCancelEdit={editing.cancelEdit}
-              onSave={editing.handleSave}
-              onUpdateEditingData={editing.updateEditingData}
-            />
-          )}
-
-          {activeTab === 'recipes' && (
-            <RecipesTab
-              recipes={data.recipes}
-              drinks={data.drinks}
-              editing={editing.editing}
-              showAddForm={editing.showAddForm}
-              validation={editing.validation}
-              loading={editing.loading}
-              onStartAdd={editing.startAdd}
-              onStartEdit={editing.startEdit}
-              onDelete={editing.handleDelete}
-              onCancelEdit={editing.cancelEdit}
-              onSave={editing.handleSave}
-              onUpdateEditingData={editing.updateEditingData}
-            />
-          )}
-
-          {activeTab === 'food' && (
-            <FoodTab
-              foodMenu={data.foodMenu}
-              foodOrders={data.foodOrders}
-              editing={editing.editing}
-              showAddForm={editing.showAddForm}
-              validation={editing.validation}
-              loading={editing.loading}
-              onStartAdd={editing.startAdd}
-              onStartEdit={editing.startEdit}
-              onDelete={editing.handleDelete}
-              onCancelEdit={editing.cancelEdit}
-              onSave={editing.handleSave}
-              onUpdateEditingData={editing.updateEditingData}
-            />
-          )}
-
-          {activeTab === 'devices' && (
-            <DevicesTab
-              deviceConfigs={data.deviceConfigs}
-              drinks={data.drinks}
-              achievements={data.achievements}
-              editing={editing.editing}
-              showAddForm={editing.showAddForm}
-              validation={editing.validation}
-              loading={editing.loading}
-              onStartAdd={editing.startAdd}
-              onStartEdit={editing.startEdit}
-              onDelete={editing.handleDelete}
-              onCancelEdit={editing.cancelEdit}
-              onSave={editing.handleSave}
-              onUpdateEditingData={editing.updateEditingData}
-            />
-          )}
+          {TAB_RENDERERS[activeTab]()} 
 
           {/* Edit Modal */}
           <EditModal
