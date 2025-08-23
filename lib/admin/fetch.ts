@@ -53,3 +53,11 @@ export async function adminDelete(type: 'guest' | 'achievement' | 'drink' | 'rec
 }
 
 
+export async function adminGrantAchievement(guestId: string, achievementTemplateId: string, unlockedAt?: string) {
+	return api('/api/admin/grantAchievement', {
+		method: 'POST',
+		body: JSON.stringify({ guest_id: guestId, achievement_template_id: achievementTemplateId, unlocked_at: unlockedAt }),
+	})
+}
+
+

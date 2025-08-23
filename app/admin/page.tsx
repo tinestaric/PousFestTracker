@@ -35,6 +35,7 @@ import {
   useAdminEditing,
   type ActiveTab
 } from './components'
+import { adminGrantAchievement } from '@/lib/admin/fetch'
 
 // Register Chart.js components
 ChartJS.register(
@@ -77,6 +78,16 @@ export default function AdminDashboard() {
     guests: () => (
       <GuestsTab
         guests={data.guests}
+        achievements={data.achievements}
+        onGrantAchievement={async (guestId: string, achievementTemplateId: string) => {
+          try {
+            await adminGrantAchievement(guestId, achievementTemplateId)
+            editing.addError('Achievement granted', 'success')
+            refetch()
+          } catch (e: any) {
+            editing.addError('Failed to grant achievement', 'error', e?.message)
+          }
+        }}
         {...commonEditProps}
       />
     ),

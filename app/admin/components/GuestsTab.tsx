@@ -1,9 +1,10 @@
-import { Download, Plus, Edit, Trash2, Save, X } from 'lucide-react'
-import type { Guest } from '@/lib/supabase'
+import { Download, Plus, Edit, Trash2, Save, X, Award } from 'lucide-react'
+import type { Guest, AchievementTemplate } from '@/lib/supabase'
 import type { EditingItem, FormValidation, LoadingState } from './types'
 
 interface GuestsTabProps {
   guests: Guest[]
+  achievements?: AchievementTemplate[]
   editing: EditingItem
   showAddForm: boolean
   validation: FormValidation
@@ -14,10 +15,12 @@ interface GuestsTabProps {
   onSave: () => void
   onDelete: (id: string, type: 'guest') => void
   onUpdateEditingData: (updates: any) => void
+  onGrantAchievement?: (guestId: string, achievementTemplateId: string) => Promise<void> | void
 }
 
 export default function GuestsTab({ 
   guests, 
+  achievements = [],
   editing, 
   showAddForm, 
   validation,
@@ -27,7 +30,8 @@ export default function GuestsTab({
   onCancelEdit, 
   onSave, 
   onDelete, 
-  onUpdateEditingData 
+  onUpdateEditingData,
+  onGrantAchievement,
 }: GuestsTabProps) {
 
   const exportGuestData = () => {
@@ -143,7 +147,27 @@ export default function GuestsTab({
                     {new Date(guest.created_at).toLocaleDateString()}
                   </td>
                   <td className="py-3">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 items-center">
+                      {achievements.length > 0 && onGrantAchievement && (
+                        <div className="flex items-center gap-2">
+                          <select
+                            className="px-2 py-1 bg-white/10 border border-white/30 rounded-lg text-white text-xs"
+                            defaultValue=""
+                            onChange={async (e) => {
+                              const value = e.target.value
+                              if (!value) return
+                              e.currentTarget.value = ''
+                              await onGrantAchievement(guest.id, value)
+                            }}
+                          >
+                            <option value="" className="text-gray-800">Grant…</option>
+                            {achievements.map((a) => (
+                              <option key={a.id} value={a.id} className="text-gray-800">{a.title}</option>
+                            ))}
+                          </select>
+                          <Award className="w-4 h-4 text-yellow-300" />
+                        </div>
+                      )}
                       <button
                         onClick={() => onStartEdit(guest, 'guest')}
                         className="p-2 bg-blue-500/40 text-blue-100 rounded-lg hover:bg-blue-500/60 hover:text-white transition-all duration-300 shadow-md"
