@@ -46,15 +46,17 @@ export async function GET(request: NextRequest) {
     const now = new Date()
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000)
 
-    // Get hourly leaderboard
+    // Get hourly leaderboard (alcoholic drinks only)
     const { data: hourlyLeaderboard } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         guest_id,
         guests!inner(name),
-        quantity
+        quantity,
+        drink_menu!inner(alcohol_percentage)
       `)
       .gte('ordered_at', oneHourAgo.toISOString())
+      .gt('drink_menu.alcohol_percentage', 0)
       .order('ordered_at', { ascending: false })
 
     // Process hourly leaderboard
@@ -75,14 +77,16 @@ export async function GET(request: NextRequest) {
         rank: index + 1
       }))
 
-    // Get all-time leaderboard
+    // Get all-time leaderboard (alcoholic drinks only)
     const { data: allTimeLeaderboard } = await supabaseAdmin
       .from('drink_orders')
       .select(`
         guest_id,
         guests!inner(name),
-        quantity
+        quantity,
+        drink_menu!inner(alcohol_percentage)
       `)
+      .gt('drink_menu.alcohol_percentage', 0)
       .order('ordered_at', { ascending: false })
 
     // Process all-time leaderboard
